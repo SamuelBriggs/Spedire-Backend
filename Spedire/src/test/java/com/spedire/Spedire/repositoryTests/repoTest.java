@@ -29,7 +29,6 @@ public class repoTest {
     }
     @Test
     public void test_that_repoCanFindById(){
-
         Optional<User> user = userRepository.findById("64a1dda56902e05570863a80");
         System.out.println(user.get().getFirstName());
         Assertions.assertThat(user).isNotNull();
