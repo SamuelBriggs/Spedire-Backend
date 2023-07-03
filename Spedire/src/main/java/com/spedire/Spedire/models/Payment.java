@@ -14,9 +14,8 @@ public class Payment {
     @Id
     private String id;
 
-    private String orderId;
-
+    private Order orderId;
     private BigDecimal amount;
-
+    private PaymentMethod paymentMethod;
     private STATUS orderStatus;
 }
