@@ -31,6 +31,7 @@ public class repoTest {
     public void test_that_repoCanFindById(){
 
         Optional<User> user = userRepository.findById("64a1baa379b14e14b76e83a0");
+        System.out.println(user.toString());
         Assertions.assertThat(user).isNotNull();
     }
 
