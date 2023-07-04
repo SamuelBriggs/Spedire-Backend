@@ -1,11 +1,15 @@
 package com.spedire.Spedire.services;
 
+import com.spedire.Spedire.dtos.request.Recipient;
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
 import com.spedire.Spedire.dtos.request.SendEmailRequest;
+import com.spedire.Spedire.dtos.request.Sender;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
+import com.spedire.Spedire.dtos.templates.VerifyEmailTemplate;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
+import com.spedire.Spedire.utils.JwtUtil;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -21,6 +25,9 @@ import java.util.List;
 import java.util.Set;
 
 import static com.spedire.Spedire.models.Role.SENDER;
+import static com.spedire.Spedire.services.TokenService.generateToken;
+import static com.spedire.Spedire.utils.Constants.*;
+import static com.spedire.Spedire.utils.Constants.FRONTEND_BASE_URL;
 import static com.spedire.Spedire.utils.ResponseUtils.USER_REGISTRATION_SUCCESSFUL;
 
 @Service
@@ -30,7 +37,8 @@ public class SpedireUserService implements UserService {
     private final UserRepository userRepository;
     private final EmailService mailService;
     private final PasswordEncoder passwordEncoder;
-    public static BrevoEmailService brevoEmailService;
+    private final JwtUtil jwtUtil;
+    public static VerifyEmailTemplate verifyEmailTemplate = new VerifyEmailTemplate();
 
     @Override
     public RegistrationResponse register(RegistrationRequest request) throws SpedireException {
@@ -38,7 +46,7 @@ public class SpedireUserService implements UserService {
         validateRegistrationRequest(request);
         buildRegisterRequest(request, user);
         var savedUser = userRepository.save(user);
-        SendEmailRequest emailRequest = brevoEmailService.buildEmailRequest(savedUser);
+        SendEmailRequest emailRequest = buildEmailRequest(savedUser);
         mailService.sendMail(emailRequest);
         return buildRegisterResponse(savedUser.getId());
     }
@@ -57,6 +65,19 @@ public class SpedireUserService implements UserService {
         response.setId(userId);
 
         return response;
+    }
+
+    public SendEmailRequest buildEmailRequest(User user) throws SpedireException {
+        String token = generateToken(user, jwtUtil.secret());
+        SendEmailRequest request = new SendEmailRequest();
+        Sender sender = new Sender(APP_NAME, APP_EMAIL);
+        Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
+        request.setSender(sender);
+        request.setRecipients(Set.of(recipient));
+        request.setSubject(ACTIVATION_LINK_VALUE);
+        var link =  FRONTEND_BASE_URL+"/user/verify?token="+token;
+        request.setContent(verifyEmailTemplate.buildEmail(user.getFirstName(), link));
+        return request;
     }
     private void validateRegistrationRequest(RegistrationRequest request) throws SpedireException {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
