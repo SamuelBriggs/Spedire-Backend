@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Spedire/Spedire.iml" filepath="$PROJECT_DIR$/Spedire/Spedire.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Spedire-Backend.iml" filepath="$PROJECT_DIR$/.idea/Spedire-Backend.iml" />
     </modules>
   </component>
 </project>

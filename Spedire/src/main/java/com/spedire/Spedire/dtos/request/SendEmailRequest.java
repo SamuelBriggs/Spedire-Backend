@@ -1,0 +1,25 @@
+package com.spedire.Spedire.dtos.request;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+
+import java.util.Set;
+
+import static com.spedire.Spedire.utils.Constants.*;
+
+
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class SendEmailRequest {
+    @JsonProperty(SENDER)
+    private Sender sender;
+    @JsonProperty(TO)
+    private Set<Recipient> recipients;
+    @JsonProperty(SUBJECT)
+    private String subject;
+    @JsonProperty(HTML_CONTENT_VALUE)
+    private String content;
+}
