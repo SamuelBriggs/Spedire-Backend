@@ -22,14 +22,14 @@ public class repoTest {
 
     public void test_That_repoCanSave(){
 
-        User user = User.builder().firstName("Michael").lastName("Josh").email("mich@gmail.com").
+        User user = User.builder().firstName("Tinuade").lastName("Esther").email("tinuade@gmail.com").
                 build();
         var name = userRepository.save(user);
         Assertions.assertThat(name).isNotNull();
     }
     @Test
     public void test_that_repoCanFindById(){
-        Optional<User> user = userRepository.findById("64a1dda56902e05570863a80");
+        Optional<User> user = userRepository.findById("64a2b517e86b786d6be94a50");
         System.out.println(user.get().getFirstName());
         Assertions.assertThat(user).isNotNull();
     }
