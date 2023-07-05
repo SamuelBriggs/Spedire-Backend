@@ -26,21 +26,20 @@ public class SmsServiceImplTest {
     assertNotNull(response);
 
 }
-@Test
-public void testTwilioSms(){
-    var response =smsService.sendSmsWithTwilio("+2348138732503");
-    assertNotNull(response);
-}
-//@SneakyThrows
 //@Test
-//public void verifyOtpTest(){
-//    OtpVerificationRequest request = new OtpVerificationRequest();
-//    request.setOtpNumber(431198);
-//    request.setPhoneNumber("2348138732503");
-//    var response = smsService.verifyOtp(request);
-//    System.out.println(response.getMessage());
+//public void testTwilioSms(){
+//    var response =smsService.sendSmsWithTwilio("+2348138732503");
 //    assertNotNull(response);
-//
 //}
+@SneakyThrows
+@Test
+public void verifyOtpTest(){
+    OtpVerificationRequest request = new OtpVerificationRequest();
+    request.setOtpNumber(162556);
+    request.setPhoneNumber("+2348138732503");
+    var response = smsService.verifyOtp(request);
+    assertNotNull(response);
+
+}
 
 }

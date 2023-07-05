@@ -67,6 +67,7 @@ public class SpedireUserService implements UserService {
         return response;
     }
 
+
     public SendEmailRequest buildEmailRequest(User user) throws SpedireException {
         String token = generateToken(user, jwtUtil.secret());
         SendEmailRequest request = new SendEmailRequest();
