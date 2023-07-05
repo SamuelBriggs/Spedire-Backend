@@ -1,6 +1,7 @@
 package com.spedire.Spedire.repositoryTests;
 
 
+import com.spedire.Spedire.models.Role;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
 import org.assertj.core.api.Assertions;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
+import java.util.Set;
 
 
 @DataMongoTest
@@ -22,7 +24,11 @@ public class repoTest {
 
     public void test_That_repoCanSave(){
 
-        User user = User.builder().firstName("Michael").lastName("Josh").email("mich@gmail.com").
+        Role role = Role.USER;
+
+        User user = User.builder().firstName("Sam").lastName("Tolu").
+                email("tol.alawode@gmail.com").
+                phoneNumber("0905124313").password("1234").roles(Set.of(role)).
                 build();
         var name = userRepository.save(user);
         Assertions.assertThat(name).isNotNull();
@@ -30,13 +36,10 @@ public class repoTest {
     @Test
     public void test_that_repoCanFindById(){
 
-<<<<<<< HEAD
+
         Optional<User> user = userRepository.findById("64a1baa379b14e14b76e83a0");
         System.out.println(user.toString());
-=======
-        Optional<User> user = userRepository.findById("64a1dda56902e05570863a80");
-        System.out.println(user.get().getFirstName());
->>>>>>> 5ef0c82bacc420837850269f7c4faa1c752dc3b6
+
         Assertions.assertThat(user).isNotNull();
     }
 

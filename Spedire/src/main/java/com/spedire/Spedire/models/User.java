@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Document
 @Builder
@@ -34,7 +35,7 @@ public class User {
     @DBRef
     @Field("address_id")
     private Address addressId;
-    private Role USER;
+    private Set<Role> roles;
     private LocalDateTime createdAt;
     private Boolean isConfirmed = false;
     private Boolean isVerified = false;
