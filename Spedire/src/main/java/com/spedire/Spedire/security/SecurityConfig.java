@@ -15,7 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.spedire.Spedire.models.Role.USER;
+
 
 //import static com.spedire.Spedire.AppUtils.SecurityUtils.JWT_SIGNING_SECRET;
 
@@ -31,16 +31,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        UsernamePasswordAuthenticationFilter authenticationFilter = new SpedireAuthenticationFilter(authenticationManager, jwtUtil
+        UsernamePasswordAuthenticationFilter authenticationFilter = new SpedireAuthenticationFilter(authenticationManager, jwtUtil, null, null
                 );
         return httpSecurity.csrf(AbstractHttpConfigurer::disable).
                 cors(Customizer.withDefaults()).
                 sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
                 addFilterBefore(new SpedireAuthorizationFilter(), SpedireAuthenticationFilter.class)
-                .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class).
-                authorizeHttpRequests(c->c.requestMatchers("/api/user/hello").permitAll()).
-                authorizeHttpRequests(c->c.requestMatchers(HttpMethod.POST, "/api/user/welcome").
-                        hasAuthority("USER")).
+                .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(c->c.requestMatchers("/api/user/hello").permitAll()).
+                authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
+                        hasAnyRole("ADMIN", "USER")).
                 build();
 
     }

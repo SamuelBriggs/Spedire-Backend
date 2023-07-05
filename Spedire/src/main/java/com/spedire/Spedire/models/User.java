@@ -1,10 +1,7 @@
 package com.spedire.Spedire.models;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -19,6 +16,7 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
+@ToString
 public class User {
     @Id
     private String id;

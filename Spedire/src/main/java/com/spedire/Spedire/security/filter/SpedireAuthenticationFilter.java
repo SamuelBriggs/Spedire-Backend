@@ -17,15 +17,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.spedire.Spedire.AppUtils.ExceptionUtils.BADCREDENTIALSEXCEPTION;
+import static java.time.Instant.now;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AllArgsConstructor
@@ -37,14 +36,18 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private String phoneNumber = null;
+
+    private String password = null;
+
     @Override
 
     public Authentication attemptAuthentication (HttpServletRequest request, HttpServletResponse response){
 
         try {
             LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
-            String phoneNumber = loginRequest.getPhoneNumber();
-            String password = loginRequest.getPassword();
+            phoneNumber = loginRequest.getPhoneNumber();
+            password = loginRequest.getPassword();
             Authentication authentication = new UsernamePasswordAuthenticationToken(phoneNumber, password);
             Authentication authResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authResult);
@@ -58,19 +61,20 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
     public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                          FilterChain chain, Authentication authResult
                                          ) throws IOException {
-        String accessToken = generateAccessToken(authResult.getAuthorities());
+        String accessToken = generateAccessToken(authResult.getAuthorities(), request);
         response.setContentType(APPLICATION_JSON_VALUE);
         response.getOutputStream().write(objectMapper.writeValueAsBytes(Map.of("access_token", accessToken)));
     }
 
-    private String generateAccessToken(Collection<? extends GrantedAuthority> authorities){
-        Map<String, String> map = new HashMap<>();
+    private String generateAccessToken(Collection<? extends GrantedAuthority> authorities, HttpServletRequest request ) throws IOException {
+        Map<String, String > map = new HashMap<>();
         for (GrantedAuthority authority: authorities){
             map.put("role", authority.getAuthority());
         }
-        return JWT.create().withIssuedAt(Instant.now()).
-                withExpiresAt(Instant.now().plusSeconds(120000L)).
-                withClaim("Roles", map).sign(Algorithm.HMAC512("samuel".getBytes()));
+        return JWT.create().withIssuedAt(now()).
+                withExpiresAt(now().plusSeconds(120000L)).
+                withClaim("Roles", map).withClaim("phoneNumber", phoneNumber).
+                sign(Algorithm.HMAC512("samuel".getBytes()));
 
     }
 
