@@ -16,8 +16,12 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
+<<<<<<< HEAD
+@ToString
+=======
 @RequiredArgsConstructor
 @AllArgsConstructor
+>>>>>>> 49bf41d9b11a6c286851b8885a4c2a87c307b6ab
 public class User {
     @Id
     private String id;
@@ -35,7 +39,7 @@ public class User {
     @DBRef
     @Field("address_id")
     private Address addressId;
-    private Role USER;
+    private Set<Role> roles;
     private LocalDateTime createdAt;
     private Set<Role> roles;
 }
