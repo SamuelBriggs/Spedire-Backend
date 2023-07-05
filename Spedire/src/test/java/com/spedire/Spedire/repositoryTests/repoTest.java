@@ -24,23 +24,32 @@ public class repoTest {
 
     public void test_That_repoCanSave(){
 
+<<<<<<< HEAD
         Role role = Role.ROLE_USER;
         Role role2 = Role.ROLE_ADMIN;
 
         User user = User.builder().firstName("Sam").lastName("Tolu").
                 email("tolalwode@gmail.com").
                 phoneNumber("0905124").password("1234").roles(Set.of(role2)).
+=======
+        User user = User.builder().firstName("Tinuade").lastName("Esther").email("tinuade@gmail.com").
+>>>>>>> 49bf41d9b11a6c286851b8885a4c2a87c307b6ab
                 build();
         var name = userRepository.save(user);
         Assertions.assertThat(name).isNotNull();
     }
     @Test
     public void test_that_repoCanFindById(){
+<<<<<<< HEAD
 
 
         Optional<User> user = userRepository.findById("64a1baa379b14e14b76e83a0");
         User user1 = userRepository.findByPhoneNumber("0905124");
         System.out.println(user1.getFirstName());
+=======
+        Optional<User> user = userRepository.findById("64a2b517e86b786d6be94a50");
+        System.out.println(user.get().getFirstName());
+>>>>>>> 49bf41d9b11a6c286851b8885a4c2a87c307b6ab
         Assertions.assertThat(user).isNotNull();
     }
 
