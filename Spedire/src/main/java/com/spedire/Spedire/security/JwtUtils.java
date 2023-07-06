@@ -22,7 +22,7 @@ import java.util.function.Function;
 @AllArgsConstructor
 @Getter
 @Slf4j
-public class JwtUtil {
+public class JwtUtils {
     private final String secret;
 
     public static Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {

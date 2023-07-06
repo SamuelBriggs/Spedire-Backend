@@ -42,7 +42,7 @@ public class DummyController {
 
         User user1 =  userRepository.findByPhoneNumber(phoneNumber);
 
-        return user1.getFirstName();
+        return "issokay o";
 
 
     }

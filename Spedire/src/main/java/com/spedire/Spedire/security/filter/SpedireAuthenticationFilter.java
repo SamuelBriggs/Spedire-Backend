@@ -3,8 +3,8 @@ package com.spedire.Spedire.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spedire.Spedire.security.JwtUtil;
 import com.spedire.Spedire.dtos.request.LoginRequest;
+import com.spedire.Spedire.security.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
-    private final JwtUtil jwtUtil;
+    private final JwtUtils jwtUtil;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

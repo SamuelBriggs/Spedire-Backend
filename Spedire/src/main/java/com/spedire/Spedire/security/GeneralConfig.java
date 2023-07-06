@@ -13,12 +13,7 @@ public class GeneralConfig {
     private String jwt_secret;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
-    }
-
-    @Bean
-    public JwtUtil jwtUtil(){
-        return new JwtUtil("samuel");
+    public JwtUtils jwtUtils(){
+        return new JwtUtils("samuel");
     }
 }
