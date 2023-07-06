@@ -10,4 +10,5 @@ import lombok.*;
 public class SendSmsResponse {
     private String message;
     private boolean success;
+    private String data;
 }

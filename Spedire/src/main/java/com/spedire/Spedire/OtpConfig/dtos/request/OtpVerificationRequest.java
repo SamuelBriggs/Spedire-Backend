@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class OtpVerificationRequest {
     private String phoneNumber;
-    private int otpNumber;
+    private String otpNumber;
 }

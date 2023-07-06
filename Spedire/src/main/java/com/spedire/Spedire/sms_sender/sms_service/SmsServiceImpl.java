@@ -1,71 +1,52 @@
 package com.spedire.Spedire.sms_sender.sms_service;
 
-import com.nexmo.client.NexmoClient;
-import com.nexmo.client.NexmoClientException;
-import com.nexmo.client.sms.MessageStatus;
-import com.nexmo.client.sms.SmsSubmissionResponse;
-import com.nexmo.client.sms.messages.TextMessage;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.spedire.Spedire.Exception.SpedireException;
 import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
-import com.spedire.Spedire.OtpConfig.dtos.response.OtpResponse;
-import com.spedire.Spedire.OtpConfig.exceptions.OtpException;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.OtpConfig.services.OtpService;
+import com.spedire.Spedire.security.JwtUtils;
 import com.spedire.Spedire.sms_sender.config.TwilioConfig;
-import com.spedire.Spedire.sms_sender.dtos.request.SmsNotificationRequest;
 import com.spedire.Spedire.sms_sender.dtos.response.SendSmsResponse;
 import com.spedire.Spedire.sms_sender.utils.AppUtils;
+import com.spedire.Spedire.utils.JwtUtil;
 import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.verify.v2.service.Verification;
-import com.twilio.type.PhoneNumber;
+import com.twilio.rest.verify.v2.service.VerificationCheck;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFICATION_ERROR;
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
-import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.SMS_SEND_FAILED;
-import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.SMS_SENT_SUCCESS;
+import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
+import static java.time.Instant.now;
 
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class SmsServiceImpl implements SmsService {
-    private final NexmoClient nexmoClient;
     private final TwilioConfig twilioConfig;
-    private final OtpService otpService;
+    private final JwtUtil jwtUtil;
+
 
     @Override
-    public SendSmsResponse sendSms(String phoneNumber) throws IOException, NexmoClientException, PhoneNumberNotVerifiedException {
-        //find user by phone number first
-        if(!validatePhoneNumber(phoneNumber)){
-            throw new PhoneNumberNotVerifiedException(PHONE_VALIDATION_FAILED_MESSAGE);
+    public SendSmsResponse sendSmsWithTwilio(String phoneNumber) throws PhoneNumberNotVerifiedException {
+        if (!validatePhoneNumber(phoneNumber)){
+            throw new PhoneNumberNotVerifiedException(INVALID_PHONE_NUMBER);
         }
-        var otp=otpService.createNewOtp(phoneNumber);
-        String message= OTP_VERIFICATION_MESSAGE + otp.getOtpNumber();
-        SmsNotificationRequest request = new SmsNotificationRequest(phoneNumber,message);
-        TextMessage sms = new TextMessage(YOUR_NEXMO_PHONE_NUMBER, request.getTo(), request.getMessage());
-        SmsSubmissionResponse response = nexmoClient.getSmsClient().submitMessage(sms);
-        if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            log.info(SendSmsResponse.builder().message(otp.getMessage()).build().toString());
-            return SendSmsResponse.builder().message(otp.getMessage()).build();
-        } else {
-            return SendSmsResponse.builder().message(SMS_SEND_FAILED  + response.getMessages().get(0).getErrorText() ).build();
-
-        }
-    }
-
-    @Override
-    public SendSmsResponse sendSmsWithTwilio(String phoneNumber) {
         String phone = phoneNumber.substring(1);
         log.info("Result of number substring "+phone);
             Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
-            var otp=otpService.createNewOtp(phoneNumber);
-            String message= OTP_VERIFICATION_MESSAGE + otp.getOtpNumber();
            Verification verification = Verification.creator(
                    twilioConfig.getTwilioNumber(),
                     PHONE_NUMBER_PREFIX+phone,
@@ -73,24 +54,44 @@ public class SmsServiceImpl implements SmsService {
             ).create();
         log.info(verification.getStatus());
             if (verification.getStatus().equals(SMS_SENT_STATUS)) {
-                return SendSmsResponse.builder().message(SMS_SENT_SUCCESS+ phoneNumber).success(true).build();
-            } else {
+               String token= generateJwtToken(phoneNumber);
 
-                return SendSmsResponse.builder().message(SMS_SEND_FAILED + phoneNumber).success(false).build();
+                return SendSmsResponse.builder().message(SMS_SENT_SUCCESS+ phoneNumber).success(true).data(token).build();
+            } else {
+                throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
             }
         }
 
 
     @Override
-    public OtpResponse verifyOtp(OtpVerificationRequest request) throws OtpException, PhoneNumberNotVerifiedException {
-        var response = otpService.findByPhoneNumber(request.getPhoneNumber());
-        if (response.getOtpNumber() != request.getOtpNumber()) {
-            throw new OtpException(OTP_VERIFICATION_ERROR);
+    public SendSmsResponse verifyOtp(OtpVerificationRequest request) {
+        VerificationCheck verification = VerificationCheck.creator(
+                        twilioConfig.getTwilioNumber())
+                .setTo(request.getPhoneNumber())
+                .setCode(request.getOtpNumber())
+                .create();
+
+        System.out.println(verification.getStatus());
+        if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
+            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ request.getPhoneNumber()).success(true).build();
+        } else {
+
+            return SendSmsResponse.builder().message(SMS_SEND_FAILED + request.getPhoneNumber()).success(false).build();
         }
-        return  OtpResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).build();
     }
     private boolean validatePhoneNumber( String phoneNumber) {
         return AppUtils.isValidPhoneNumber(phoneNumber);
 
+    }
+    private String generateJwtToken(String phoneNumber) {
+       return JWT.create().withIssuedAt(now()).
+                withExpiresAt(now().plusSeconds(120000L)).
+                withClaim("phoneNumber", phoneNumber).
+                sign(Algorithm.HMAC512("samuel".getBytes()));
+    }
+    private static String validateToken(String token) throws SpedireException {
+        Map<String, Claim> map = JwtUtils.extractClaimsFromToken(token);
+        Claim phoneNumber = map.get("phoneNumber");
+        return phoneNumber.toString();
     }
 }

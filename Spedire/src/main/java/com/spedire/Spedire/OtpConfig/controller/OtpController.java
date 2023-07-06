@@ -23,22 +23,23 @@ public class OtpController {
 
         private final SmsService smsService;
 
-        @PostMapping("/send-otp")
+        @PostMapping("" +
+                "")
         public ResponseEntity<SendSmsResponse> sendSms(@RequestBody String phoneNumber){
             try{
-                SendSmsResponse response =smsService.sendSms(phoneNumber);
+                SendSmsResponse response =smsService.sendSmsWithTwilio(phoneNumber);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            }catch (IOException | NexmoClientException| PhoneNumberNotVerifiedException exception){
+            }catch (PhoneNumberNotVerifiedException exception){
                 return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(exception.getMessage()).build());
             }
         }
         @PostMapping("/verify-otp")
-        public ResponseEntity<OtpResponse> verifyOtp(@RequestBody OtpVerificationRequest request){
+        public ResponseEntity<SendSmsResponse> verifyOtp(@RequestBody OtpVerificationRequest request){
             try{
-                OtpResponse response = smsService.verifyOtp(request);
+                SendSmsResponse response = smsService.verifyOtp(request);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            } catch (OtpException | PhoneNumberNotVerifiedException e) {
-                return ResponseEntity.badRequest().body( OtpResponse.builder().message(e.getMessage()).build());
+            } catch (PhoneNumberNotVerifiedException e) {
+                return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(e.getMessage()).build());
             }
 
         }

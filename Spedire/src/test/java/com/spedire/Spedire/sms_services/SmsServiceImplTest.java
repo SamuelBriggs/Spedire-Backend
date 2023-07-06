@@ -21,10 +21,10 @@ public class SmsServiceImplTest {
     private SmsService smsService;
 
 @Test
-    public void sendSmsTest() throws IOException, NexmoClientException, PhoneNumberNotVerifiedException {
+    public void sendSmsTest() throws PhoneNumberNotVerifiedException {
     SmsNotificationRequest request = new SmsNotificationRequest("+2349051243133", "Hello world");
-    var response = smsService.sendSms(request.getTo());
-    System.out.println(response.getMessage());
+    var response = smsService.sendSmsWithTwilio(request.getTo());
+    System.out.println(response.toString());
     assertNotNull(response);
 
 }
@@ -37,7 +37,7 @@ public class SmsServiceImplTest {
 @Test
 public void verifyOtpTest(){
     OtpVerificationRequest request = new OtpVerificationRequest();
-    request.setOtpNumber(162556);
+
     request.setPhoneNumber("+2348138732503");
     var response = smsService.verifyOtp(request);
     assertNotNull(response);

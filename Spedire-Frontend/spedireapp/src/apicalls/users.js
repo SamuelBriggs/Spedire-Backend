@@ -2,7 +2,7 @@ import { axiosInstance } from ".";
 export const VerifyPhoneNumber = async (phoneNumber) => {
 	try {
 		const response = await axiosInstance.post(
-			"/api/v1/user/send-otp",
+			"/api/v1/user/verify-number",
 			phoneNumber
 		);
 		return response.data;
