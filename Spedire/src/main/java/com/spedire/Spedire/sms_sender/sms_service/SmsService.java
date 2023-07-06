@@ -11,7 +11,8 @@ import com.spedire.Spedire.sms_sender.dtos.response.SendSmsResponse;
 import java.io.IOException;
 
 public interface SmsService {
-    SendSmsResponse sendSms(String phoneNumber) throws IOException, NexmoClientException;
+    SendSmsResponse sendSms(String phoneNumber) throws IOException, NexmoClientException, PhoneNumberNotVerifiedException;
     SendSmsResponse sendSmsWithTwilio(String phoneNumber);
     OtpResponse verifyOtp(OtpVerificationRequest request) throws OtpException, PhoneNumberNotVerifiedException;
+
 }

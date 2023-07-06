@@ -3,6 +3,7 @@ package com.spedire.Spedire.sms_services;
 
 import com.nexmo.client.NexmoClientException;
 import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
+import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.sms_sender.dtos.request.SmsNotificationRequest;
 import com.spedire.Spedire.sms_sender.sms_service.SmsService;
 import lombok.SneakyThrows;
@@ -20,9 +21,10 @@ public class SmsServiceImplTest {
     private SmsService smsService;
 
 @Test
-    public void sendSmsTest() throws IOException, NexmoClientException {
-    SmsNotificationRequest request = new SmsNotificationRequest("2349051243133", "Hello world");
+    public void sendSmsTest() throws IOException, NexmoClientException, PhoneNumberNotVerifiedException {
+    SmsNotificationRequest request = new SmsNotificationRequest("+2349051243133", "Hello world");
     var response = smsService.sendSms(request.getTo());
+    System.out.println(response.getMessage());
     assertNotNull(response);
 
 }

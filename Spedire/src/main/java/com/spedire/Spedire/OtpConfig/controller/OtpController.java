@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/customer")
+@RequestMapping("/api/v1/user")
 public class OtpController {
 
         private final SmsService smsService;
@@ -28,7 +28,7 @@ public class OtpController {
             try{
                 SendSmsResponse response =smsService.sendSms(phoneNumber);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            }catch (IOException | NexmoClientException exception){
+            }catch (IOException | NexmoClientException| PhoneNumberNotVerifiedException exception){
                 return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(exception.getMessage()).build());
             }
         }

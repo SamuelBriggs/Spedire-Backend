@@ -9,4 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 public class SendSmsResponse {
     private String message;
+    private boolean success;
 }
