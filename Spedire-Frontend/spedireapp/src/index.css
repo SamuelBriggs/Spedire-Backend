@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+	font-family: "Montserrat";
+}
+input {
+	height: 40px;
+	border: 1px solid #5c7ae8;
+	border-radius: 5px;
+	padding-left: 20px;
+}
+input:focus {
+	outline: none;
+	border: 1px solid #061b68;
+}
+.outlined-btn {
+	color: #1031a5;
+	border: 1px solid #1031a5;
+	padding: 10px, 20px;
+	height: 40px;
+	border-radius: 5px;
+	text-transform: uppercase;
+}
+.contained-btn {
+	background-color: #5c7ae8;
+	color: white;
+	padding: 7px, 40px;
+	height: 40px;
+	border-radius: 5px;
+	/* text-transform: uppercase; */
+}
