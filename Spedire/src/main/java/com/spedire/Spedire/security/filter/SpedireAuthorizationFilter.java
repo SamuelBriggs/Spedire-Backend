@@ -3,7 +3,7 @@ package com.spedire.Spedire.security.filter;
 import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spedire.Spedire.Exception.SpedireException;
-import com.spedire.Spedire.security.JwtUtil;
+import com.spedire.Spedire.security.JwtUtils;
 import com.spedire.Spedire.security.SecurityUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -71,7 +71,7 @@ public class SpedireAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void authorizeToken(String token) throws SpedireException {
-        Map<String, Claim> map = JwtUtil.extractClaimsFromToken(token);
+        Map<String, Claim> map = JwtUtils.extractClaimsFromToken(token);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         Claim claim = map.get("Roles");
         Claim phoneNumber = map.get("phoneNumber");
