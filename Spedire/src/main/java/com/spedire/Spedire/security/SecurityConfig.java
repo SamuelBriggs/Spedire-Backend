@@ -55,7 +55,7 @@ public class SecurityConfig {
                 sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
                 addFilterBefore(new SpedireAuthorizationFilter(), SpedireAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/**").permitAll()).
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
                         hasAnyRole("ADMIN", "USER")).
                 build();

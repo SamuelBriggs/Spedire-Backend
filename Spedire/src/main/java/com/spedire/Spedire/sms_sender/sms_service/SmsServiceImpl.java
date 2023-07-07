@@ -20,9 +20,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
+import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
 import static com.spedire.Spedire.utils.Constants.ZERO_STRING;
@@ -41,6 +43,7 @@ public class SmsServiceImpl implements SmsService {
 
     @Override
     public SendSmsResponse sendSmsWithTwilio(String phoneNumber) throws PhoneNumberNotVerifiedException, com.spedire.Spedire.exceptions.SpedireException {
+        //String phoneNumber = phone_number.substring(1,12);
         if (!validatePhoneNumber(phoneNumber)){
             throw new PhoneNumberNotVerifiedException(INVALID_PHONE_NUMBER);
         }
@@ -66,14 +69,15 @@ public class SmsServiceImpl implements SmsService {
 
 
     @Override
-    public SendSmsResponse verifyOtp(OtpVerificationRequest request) throws SpedireException, PhoneNumberNotVerifiedException {
-       String phoneNumber = validateToken(request.getToken());
+    public SendSmsResponse verifyOtp(String aToken, String otp) throws SpedireException, PhoneNumberNotVerifiedException {
+       String token = aToken.split(" ")[1];
+        String phoneNumber = validateToken(token);
         String phone = phoneNumber.substring(2,12);
         Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
         VerificationCheck verification = VerificationCheck.creator(
                         twilioConfig.getTwilioNumber())
                 .setTo(PHONE_NUMBER_PREFIX+phone)
-                .setCode(request.getOtpNumber())
+                .setCode(otp)
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
            ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
@@ -88,9 +92,13 @@ public class SmsServiceImpl implements SmsService {
 
     }
     private String generateJwtToken(String phoneNumber) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("role", NEW_USER.toString());
+
        return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).
                 withClaim("phoneNumber", phoneNumber).
+               withClaim("Roles", map).
                 sign(Algorithm.HMAC512("samuel".getBytes()));
     }
     private static String validateToken(String token) throws SpedireException {
