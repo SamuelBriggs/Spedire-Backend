@@ -16,6 +16,6 @@ public class UserRegisterDetails implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new SpredireSecureUser(userRepository.findByPhoneNumber(username));
+        return new SpredireSecureUser(userRepository.findUserByPhoneNumber(username).get());
     }
 }

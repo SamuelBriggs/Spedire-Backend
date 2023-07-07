@@ -76,7 +76,7 @@ public class SpedireAuthorizationFilter extends OncePerRequestFilter {
         Claim claim = map.get("Roles");
         Claim phoneNumber = map.get("phoneNumber");
         addClaimToUserAuthorities(authorities,claim);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(phoneNumber.toString(), null, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(phoneNumber, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

@@ -5,18 +5,18 @@ import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/user")
 @Slf4j
+
+@CrossOrigin("http://localhost:3001")
 public class DummyController {
 
     @Autowired
@@ -35,14 +35,23 @@ public class DummyController {
 
     @PostMapping("/detail")
 
-    public String detail(){
+    public User detail(){
 
 
-        String phoneNumber = Principal.class.getName();
+        String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
-        User user1 =  userRepository.findByPhoneNumber(phoneNumber);
+        System.out.println(phoneNumber);
 
-        return "issokay o";
+        log.info("{}",phoneNumber);
+        String newPhoneNumber = phoneNumber.substring(1, phoneNumber.length()-1);
+        log.info(newPhoneNumber);
+        var user1 =  userRepository.findUserByPhoneNumber(newPhoneNumber);
+        log.info("{}", userRepository);
+
+
+        log.info("{}",user1.get());
+
+        return user1.get();
 
 
     }

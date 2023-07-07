@@ -4,36 +4,39 @@ package com.spedire.Spedire.repositoryTests;
 import com.spedire.Spedire.models.Role;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 import java.util.Set;
 
 
-@DataMongoTest
+@SpringBootTest
+@Slf4j
 public class repoTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+
+    private PasswordEncoder passwordEncoder;
 
     @Test
 
     public void test_That_repoCanSave(){
 
 
-        Role role = Role.ROLE_USER;
-        Role role2 = Role.ROLE_ADMIN;
-
+        Role role = Role.USER;
+        Role role2 = Role.ADMIN;
         User user = User.builder().firstName("Sam").lastName("Tolu").
-                email("tolalwode@gmail.com").
-                phoneNumber("0905124").password("1234").roles(Set.of(role2)).build();
-
-        User user2 = User.builder().firstName("Tinuade").lastName("Esther").email("tinuade@gmail.com").
-                build();
+                email("to@gmail.com").
+                phoneNumber("090").password(passwordEncoder.encode("1234")).roles(Set.of(role2)).build();
         var name = userRepository.save(user);
         Assertions.assertThat(name).isNotNull();
     }
@@ -41,7 +44,10 @@ public class repoTest {
     public void test_that_repoCanFindById(){
 
         Optional<User> user = userRepository.findById("64a1baa379b14e14b76e83a0");
-        User user1 = userRepository.findByPhoneNumber("0905124");
+        Optional<User> userByPhone = userRepository.findUserByPhoneNumber("090");
+        System.out.println(userByPhone.get().getFirstName());
+
+
         Assertions.assertThat(user).isNotNull();
     }
 
