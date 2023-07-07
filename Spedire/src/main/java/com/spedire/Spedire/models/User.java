@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -35,11 +36,20 @@ public class User {
     private String email;
     @DBRef
     @Field("bank_id")
-    private String bankId;
+    private Bank bankId;
     @DBRef
     @Field("address_id")
     private Address addressId;
+<<<<<<< HEAD
     private Set<Role> roles;
     private LocalDateTime createdAt;
 
+=======
+    @DBRef
+    private Role USER;
+    private LocalDateTime createdAt;
+    private Set<Role> roles;
+    private Boolean isConfirmed = false;
+    private Boolean isVerified = false;
+>>>>>>> e10467bc7d8031ee3cfb02133d2fff3769db5c0d
 }
