@@ -6,7 +6,7 @@ import com.spedire.Spedire.models.User;
 
 import java.time.Instant;
 
-import static com.spedire.Spedire.utils.Constants.ID;
+import static com.spedire.Spedire.utils.EmailConstants.ID;
 import static java.time.Instant.now;
 public class TokenService {
 

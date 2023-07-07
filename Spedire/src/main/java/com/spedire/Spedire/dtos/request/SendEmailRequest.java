@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.util.Set;
 
-import static com.spedire.Spedire.utils.Constants.*;
+import static com.spedire.Spedire.utils.EmailConstants.*;
 
 
 @Setter

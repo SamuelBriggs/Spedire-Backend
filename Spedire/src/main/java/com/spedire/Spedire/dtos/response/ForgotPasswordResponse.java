@@ -7,11 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RegistrationResponse {
+public class ForgotPasswordResponse {
 
     private String id;
-    private String name;
-    private String email;
     private String message;
-
+    private String email;
 }

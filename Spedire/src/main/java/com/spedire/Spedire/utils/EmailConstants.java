@@ -1,6 +1,6 @@
 package com.spedire.Spedire.utils;
 
-public class Constants {
+public class EmailConstants {
     public static final String APP_NAME="Spedire Tech";
     public static final String APP_EMAIL="noreply@spediretech";
     public static final String ACTIVATION_LINK_VALUE="Activation Link";
@@ -12,5 +12,6 @@ public class Constants {
     public static final String TO = "to";
     public static final String SUBJECT="subject";
     public static  final String HTML_CONTENT_VALUE = "htmlContent";
+
 
 }

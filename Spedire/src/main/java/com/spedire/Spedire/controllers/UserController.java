@@ -17,22 +17,16 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
-        try {
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) throws SpedireException {
             RegistrationResponse response = userService.register(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (SpedireException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
     }
 
     @GetMapping("/checkUserExistence")
     public ResponseEntity<?> findUserByEmail(@RequestParam("email") String email) throws SpedireException {
-        try {
             RegistrationResponse response = userService.checkUserExistence(email);
                 return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (SpedireException e) {
-            return ResponseEntity.badRequest().body("User with the provided email already exists, Kindly login");
-        }
+
     }
+
 }

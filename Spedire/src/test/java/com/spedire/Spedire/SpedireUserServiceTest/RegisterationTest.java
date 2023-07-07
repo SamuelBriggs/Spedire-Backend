@@ -1,4 +1,4 @@
-package com.spedire.Spedire;
+package com.spedire.Spedire.SpedireUserServiceTest;
 
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;

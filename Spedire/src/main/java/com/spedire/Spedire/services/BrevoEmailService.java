@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 
-import static com.spedire.Spedire.utils.Constants.*;
+import static com.spedire.Spedire.utils.EmailConstants.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Service
@@ -31,7 +31,6 @@ public class BrevoEmailService implements EmailService{
                 new RequestEntity<>(emailRequest,httpHeaders, HttpMethod.POST, URI.create(EMAIL_URL));
         ResponseEntity<SendEmailResponse> response =
                 restTemplate.postForEntity(EMAIL_URL, entity, SendEmailResponse.class);
-
 
         return response.getBody();
     }
