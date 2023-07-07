@@ -28,31 +28,25 @@ private UserService userService;
 
 @Test
     public void sendSmsTest() throws PhoneNumberNotVerifiedException, SpedireException {
-    SmsNotificationRequest request = new SmsNotificationRequest("08138732503", "Hello world");
+    SmsNotificationRequest request = new SmsNotificationRequest("09051243133", "Hello world");
     var response = smsService.sendSmsWithTwilio(request.getTo());
     System.out.println(response.toString());
     assertNotNull(response);
-
 }
-//@Test
-//public void testTwilioSms(){
-//    var response =smsService.sendSmsWithTwilio("+2348138732503");
-//    assertNotNull(response);
-//}
 @SneakyThrows
 @Test
 public void verifyOtpTest(){
     OtpVerificationRequest request = new OtpVerificationRequest();
 
-    request.setOtpNumber("949239");
-    request.setToken("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg2ODI4NTQsImV4cCI6MTY4ODgwMjg1NCwicGhvbmVOdW1iZXIiOiIwODEzODczMjUwMyJ9.NCWg_MsLsaVn3Rgsqk-Tp34tQ9f0uvud3EuKxckFZZeX9pDRoviiaUDwkjIfppU9Eb-f4vAMYm9ee2LaSoARyA");
+    request.setOtpNumber("792660");
+    request.setToken("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg3MzMzOTEsImV4cCI6MTY4ODg1MzM5MSwicGhvbmVOdW1iZXIiOiIwOTA1MTI0MzEzMyJ9.f_yii-ewt3jd_Cqmwb-OGbocTRPrfw-gqVuumjocKbRNmmBbZe-w62GPfmmI9swAlUkQpzeNOuzywlichZ1Ptw");
     var response = smsService.verifyOtp(request);
     assertNotNull(response);
 
 }
 @Test
     public void testFindUserByPhone() throws SpedireException {
-    var found =userService.findUserByPhoneNumber("08138732503");
+    var found =userService.findUserByPhoneNumber("09051243133");
     assertTrue(found);
     }
 

@@ -12,5 +12,5 @@ public class Constants {
     public static final String TO = "to";
     public static final String SUBJECT="subject";
     public static  final String HTML_CONTENT_VALUE = "htmlContent";
-
+    public static  final String ZERO_STRING ="0";
 }

@@ -25,6 +25,7 @@ import java.util.Map;
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
+import static com.spedire.Spedire.utils.Constants.ZERO_STRING;
 import static com.spedire.Spedire.utils.ResponseUtils.USER_ALREADY_EXIST;
 import static java.time.Instant.now;
 
@@ -47,7 +48,6 @@ public class SmsServiceImpl implements SmsService {
 
         if(found){ throw new UserAlreadyExistsException(USER_ALREADY_EXIST);}
         String phone = phoneNumber.substring(1);
-        log.info("Result of number substring "+phone+" and "+PHONE_NUMBER_PREFIX+phone );
             Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
            Verification verification = Verification.creator(
                    twilioConfig.getTwilioNumber(),
@@ -66,24 +66,21 @@ public class SmsServiceImpl implements SmsService {
 
 
     @Override
-    public SendSmsResponse verifyOtp(OtpVerificationRequest request) throws SpedireException{
+    public SendSmsResponse verifyOtp(OtpVerificationRequest request) throws SpedireException, PhoneNumberNotVerifiedException {
        String phoneNumber = validateToken(request.getToken());
-        String phone = phoneNumber.substring(1);
+        String phone = phoneNumber.substring(2,12);
         Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
         VerificationCheck verification = VerificationCheck.creator(
                         twilioConfig.getTwilioNumber())
                 .setTo(PHONE_NUMBER_PREFIX+phone)
                 .setCode(request.getOtpNumber())
                 .create();
-
-        System.out.println(verification.getStatus());
-        if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
-           ApiResponse newUser= userService.saveNewUser(phoneNumber);
-            System.out.println(SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data(newUser.getData()).build());
+                if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
+           ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data(newUser.getData()).build();
         } else {
-
             return SendSmsResponse.builder().message(SMS_SEND_FAILED + phoneNumber).success(false).build();
+
         }
     }
     private boolean validatePhoneNumber( String phoneNumber) {
