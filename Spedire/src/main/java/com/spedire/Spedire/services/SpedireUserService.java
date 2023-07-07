@@ -7,7 +7,7 @@ import com.spedire.Spedire.dtos.request.Sender;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.FindUserResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
-import com.spedire.Spedire.dtos.templates.VerifyEmailTemplate;
+import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
@@ -102,7 +102,8 @@ public class SpedireUserService implements UserService {
         request.setSender(sender);
         request.setRecipients(Set.of(recipient));
         request.setSubject(ACTIVATION_LINK_VALUE);
-        var link =  FRONTEND_BASE_URL+"/user/verify?token="+token;
+//        var link =  FRONTEND_BASE_URL+"/user/verify?token="+token;
+        var link =  FRONTEND_BASE_URL;
         request.setContent(verifyEmailTemplate.buildEmail(user.getFirstName(), link));
         return request;
     }
