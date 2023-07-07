@@ -1,4 +1,4 @@
-package com.spedire.Spedire.dtos.templates;
+package com.spedire.Spedire.services.templates;
 
 public class VerifyEmailTemplate {
     private String name;
