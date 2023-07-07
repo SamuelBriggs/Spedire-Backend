@@ -40,7 +40,8 @@ public class SmsServiceImpl implements SmsService {
 
 
     @Override
-    public SendSmsResponse sendSmsWithTwilio(String phoneNumber) throws PhoneNumberNotVerifiedException, com.spedire.Spedire.exceptions.SpedireException {
+    public SendSmsResponse sendSmsWithTwilio(String phone_number) throws PhoneNumberNotVerifiedException, com.spedire.Spedire.exceptions.SpedireException {
+        String phoneNumber = phone_number.substring(1,12);
         if (!validatePhoneNumber(phoneNumber)){
             throw new PhoneNumberNotVerifiedException(INVALID_PHONE_NUMBER);
         }

@@ -18,16 +18,16 @@ public class RegisterationTest {
 
     private RegistrationResponse response;
 
-        @BeforeEach
-        public void setUp() throws SpedireException {
-            response = new RegistrationResponse();
-            RegistrationRequest request = new RegistrationRequest();
-            request.setEmail("spediretech@gmail.com");
-            request.setFirstName("Michael");
-            request.setLastName("Josh");
-            request.setPassword("Mich1234!");
-            userService.register(request);
-        }
+//        @BeforeEach
+//        public void setUp() throws SpedireException {
+//            response = new RegistrationResponse();
+//            RegistrationRequest request = new RegistrationRequest();
+//            request.setEmail("spediretech@gmail.com");
+//            request.setFirstName("Michael");
+//            request.setLastName("Josh");
+//            request.setPassword("Mich1234!");
+//            userService.register(request);
+//        }
         @Test
         public void testThatUserCanRegister() throws SpedireException {
             assertThat(response).isNotNull();

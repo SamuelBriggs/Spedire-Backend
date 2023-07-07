@@ -5,25 +5,17 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.spedire.Spedire.Exception.SpedireException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
 import java.util.Map;
-import java.util.function.Function;
 
 @AllArgsConstructor
 @Getter
 @Slf4j
 public class JwtUtils {
-    private final String secret;
+    private final String secret ="samuel";
 
     public static Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {
         DecodedJWT decodedJwt = validateToken(token);

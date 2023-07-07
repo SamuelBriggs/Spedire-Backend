@@ -1,4 +1,4 @@
-package com.spedire.Spedire.sms_sender.controller;
+package com.spedire.Spedire.controllers;
 
 import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
@@ -9,10 +9,7 @@ import com.spedire.Spedire.sms_sender.sms_service.SmsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -21,7 +18,7 @@ public class SmsController {
     private final SmsService smsService;
 
     @PostMapping("/verify-number")
-    public ResponseEntity<SendSmsResponse> verifyPhoneNumber(@RequestBody String phoneNumber){
+    public ResponseEntity<SendSmsResponse> verifyPhoneNumber(@RequestParam String phoneNumber){
         try{
             SendSmsResponse response =smsService.sendSmsWithTwilio(phoneNumber);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -32,7 +29,7 @@ public class SmsController {
         }
     }
     @PostMapping("/verify-otp")
-    public ResponseEntity<SendSmsResponse> verifyOtp(@RequestBody OtpVerificationRequest request){
+    public ResponseEntity<SendSmsResponse> verifyOtp(@RequestParam OtpVerificationRequest request){
         try{
             SendSmsResponse response = smsService.verifyOtp(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);

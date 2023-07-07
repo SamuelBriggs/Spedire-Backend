@@ -1,11 +1,9 @@
 package com.spedire.Spedire.sms_services;
 
 
-import com.nexmo.client.NexmoClientException;
 import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.exceptions.SpedireException;
-import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
 import com.spedire.Spedire.services.UserService;
 import com.spedire.Spedire.sms_sender.dtos.request.SmsNotificationRequest;
 import com.spedire.Spedire.sms_sender.sms_service.SmsService;
@@ -13,8 +11,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;

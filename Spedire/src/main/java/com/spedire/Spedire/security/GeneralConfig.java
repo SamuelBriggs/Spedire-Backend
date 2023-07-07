@@ -14,6 +14,6 @@ public class GeneralConfig {
 
     @Bean
     public JwtUtils jwtUtils(){
-        return new JwtUtils("samuel");
+        return new JwtUtils();
     }
 }

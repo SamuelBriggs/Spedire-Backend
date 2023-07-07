@@ -1,16 +1,20 @@
 package com.spedire.Spedire.dtos.request;
 
-import com.spedire.Spedire.models.Address;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class RegistrationRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UpdateUserRequest {
     @Email
     private String email;
 
@@ -30,7 +34,9 @@ public class RegistrationRequest {
     @NotBlank(message = "Last name is required.")
     @Size(min = 2, message = "Last name should have at least 2 letters.")
     private String lastName;
-    private Address addressId;
     private String phoneNumber;
-
+    private String bankId;
+    private String accountName;
+    private String accountNumber;
+    private MultipartFile profileImage;
 }

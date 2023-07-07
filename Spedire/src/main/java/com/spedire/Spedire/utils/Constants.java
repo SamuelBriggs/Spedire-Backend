@@ -13,4 +13,5 @@ public class Constants {
     public static final String SUBJECT="subject";
     public static  final String HTML_CONTENT_VALUE = "htmlContent";
     public static  final String ZERO_STRING ="0";
+    public static final String CLOUDINARY_IMAGE_URL = "https://api.cloudinary.com/v1_1/spedire/image/upload";
 }
