@@ -31,7 +31,7 @@ public class User {
     @Indexed(unique = true)
     private String phoneNumber;
     private String profileImage;
-    @Indexed(unique = true)
+//    @Indexed(unique = true)
     private String email;
     @DBRef
     @Field("bank_id")

@@ -16,6 +16,7 @@ public class AppUtils {
     public static final String PHONE_NUMBER_PREFIX="+234";
     public static final String SMS_SENT_STATUS="pending";
     public static final String OTP_VALIDATION_STATUS="approved";
+    public static  final String OTP_VERIFIED_FAILED= "OTP verification failed";
     public static boolean isValidPhoneNumber(String phoneNumber) {
         return pattern.matcher(phoneNumber).matches();
     }

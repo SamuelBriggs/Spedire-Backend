@@ -72,7 +72,6 @@ public class SpedireUserService implements UserService {
     @Override
     public boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException {
         User foundUser = userRepository.findByPhoneNumber(phoneNumber);
-        System.out.println("Repo says "+foundUser);
        return foundUser != null;
     }
 
