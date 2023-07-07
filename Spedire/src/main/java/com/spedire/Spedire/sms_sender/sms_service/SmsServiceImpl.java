@@ -83,7 +83,7 @@ public class SmsServiceImpl implements SmsService {
            ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data(newUser.getData()).build();
         } else {
-            return SendSmsResponse.builder().message(SMS_SEND_FAILED + phoneNumber).success(false).build();
+            throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
 
         }
     }
