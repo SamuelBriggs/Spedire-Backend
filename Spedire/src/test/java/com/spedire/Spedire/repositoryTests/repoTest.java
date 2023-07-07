@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 import java.util.Set;
@@ -25,8 +24,8 @@ public class repoTest {
     public void test_That_repoCanSave(){
 
 
-        Role role = Role.ROLE_USER;
-        Role role2 = Role.ROLE_ADMIN;
+        Role role = Role.NEW_USER;
+        Role role2 = Role.ADMIN;
 
         User user = User.builder().firstName("Sam").lastName("Tolu").
                 email("tolalwode@gmail.com").
@@ -40,11 +39,22 @@ public class repoTest {
     @Test
     public void test_that_repoCanFindById(){
 
-        Optional<User> user = userRepository.findById("64a1baa379b14e14b76e83a0");
-        User user1 = userRepository.findByPhoneNumber("0905124");
+        Optional<User> user = userRepository.findById("64a741c8d91461440b1b5d7a");
+        System.out.println(user);
         Assertions.assertThat(user).isNotNull();
+
+    }
+    @Test
+    public void test_that_repoCanFindByPhoneNumber(){
+        User user1 = userRepository.findByPhoneNumber("08138732503");
+        System.out.println(user1);
+        Assertions.assertThat(user1).isNotNull();
     }
 
-
-
+    @Test
+    public void test_that_repoCanFindByEmail(){
+        User user1 = userRepository.findByEmail("spediretech@gmail.com");
+        System.out.println(user1);
+        Assertions.assertThat(user1).isNotNull();
+    }
 }

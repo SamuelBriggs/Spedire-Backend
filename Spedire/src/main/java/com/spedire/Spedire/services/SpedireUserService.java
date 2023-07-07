@@ -4,6 +4,8 @@ import com.spedire.Spedire.dtos.request.Recipient;
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
 import com.spedire.Spedire.dtos.request.SendEmailRequest;
 import com.spedire.Spedire.dtos.request.Sender;
+import com.spedire.Spedire.dtos.response.ApiResponse;
+import com.spedire.Spedire.dtos.response.FindUserResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
 import com.spedire.Spedire.exceptions.SpedireException;
@@ -19,16 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.models.Role.SENDER;
 import static com.spedire.Spedire.services.TokenService.generateToken;
 import static com.spedire.Spedire.utils.Constants.*;
 import static com.spedire.Spedire.utils.Constants.FRONTEND_BASE_URL;
-import static com.spedire.Spedire.utils.ResponseUtils.USER_REGISTRATION_SUCCESSFUL;
+import static com.spedire.Spedire.utils.ResponseUtils.*;
 
 @Service
 @AllArgsConstructor
@@ -59,6 +59,20 @@ public class SpedireUserService implements UserService {
             throw new SpedireException("User with the provided email already exists, Kindly login");
         }
         return null;
+    }
+    @Override
+    public ApiResponse saveNewUser(String phoneNumber){
+        User user = new User();
+        user.setPhoneNumber(phoneNumber);
+        user.setRoles(new HashSet<>());
+        user.getRoles().add(NEW_USER);
+        var savedUser =userRepository.save(user);
+        return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY).success(true).data(savedUser.getId()).build();
+    }
+    @Override
+    public boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException {
+        User foundUser = userRepository.findByPhoneNumber(phoneNumber);
+       return foundUser != null;
     }
 
 

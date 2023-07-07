@@ -11,5 +11,5 @@ public class TwilioConfig {
 
     private String authToken;
 
-    private String twilioPhoneNumber;
+    private String twilioNumber;
 }
