@@ -28,8 +28,7 @@ private UserService userService;
 
 @Test
     public void sendSmsTest() throws PhoneNumberNotVerifiedException, SpedireException {
-    SmsNotificationRequest request = new SmsNotificationRequest("09051243133", "Hello world");
-    var response = smsService.sendSmsWithTwilio(request.getTo());
+    var response = smsService.sendSmsWithTwilio("08138732503");
     System.out.println(response.toString());
     assertNotNull(response);
 }
@@ -38,9 +37,9 @@ private UserService userService;
 public void verifyOtpTest(){
     OtpVerificationRequest request = new OtpVerificationRequest();
 
-    request.setOtpNumber("792660");
-    request.setToken("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg3MzMzOTEsImV4cCI6MTY4ODg1MzM5MSwicGhvbmVOdW1iZXIiOiIwOTA1MTI0MzEzMyJ9.f_yii-ewt3jd_Cqmwb-OGbocTRPrfw-gqVuumjocKbRNmmBbZe-w62GPfmmI9swAlUkQpzeNOuzywlichZ1Ptw");
-    var response = smsService.verifyOtp(request);
+    String otp ="596489";
+    String token ="eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg3NTM1NjksImV4cCI6MTY4ODg3MzU2OSwicGhvbmVOdW1iZXIiOiIwODEzODczMjUwMyJ9.DdXFPI9-jIadGKCuXUDEYocyD5NLRgfUW59tRI4RAwhosRfeva1py8dmhDzZyt_dhPmzZLWuUcv_7JP2rXxC2w";
+    var response = smsService.verifyOtp(token, otp);
     assertNotNull(response);
 
 }
