@@ -1,5 +1,5 @@
 import { axiosInstance } from ".";
-export const VerifyPhoneNumber = async (phoneNumber) => {
+export const VerifyPhone = async (phoneNumber) => {
 	try {
 		const response = await axiosInstance.post(
 			"/api/v1/user/verify-number",

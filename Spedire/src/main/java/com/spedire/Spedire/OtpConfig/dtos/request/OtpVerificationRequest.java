@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OtpVerificationRequest {
-    private String phoneNumber;
+    private String token;
     private String otpNumber;
 }

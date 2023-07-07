@@ -3,7 +3,9 @@ package com.spedire.Spedire.sms_sender.utils;
 import java.util.regex.Pattern;
 
 public class AppUtils {
-    private static final String NIGERIAN_PHONE_REGEX = "((^090)([23589]))|((^070)([1-9]))|((^080)([2-9]))|((^081)([0-9]))(\\d{7})";
+    private static final String NIGERIAN_PHONE_REGEX = "^[0-9]{11}$";
+//    private static final String NIGERIAN_PHONE_REGEX = "(^090[23589])|(^070[1-9])|(^080[2-9])|(^081[0-9])(\\d{7})";
+    ;
     private static final Pattern pattern = Pattern.compile(NIGERIAN_PHONE_REGEX);
     public static final String PHONE_VALIDATION_FAILED_MESSAGE= "Your Spedire verification code is: ";
     public static final String TWILO_ACCOUNT_SID="${twilio.accountSid}";

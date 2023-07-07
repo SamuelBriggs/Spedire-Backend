@@ -1,0 +1,128 @@
+.body {
+	background-color: #fffff3;
+}
+
+.input {
+	background-color: #d9d9d9;
+	height: 40px;
+	width: 393px;
+	margin-left: 6.5%;
+	border: none;
+	background-image: url("../../assets/verifyPhoneNumber/phone-icon.svg");
+	background-position: 10px center;
+	background-repeat: no-repeat;
+	border: 1px solid #ccc;
+
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+	border-radius: 10px;
+
+	padding: 10px 5px 10px 20px;
+	text-indent: 30px;
+
+	-webkit-transition: all 0.2s;
+	-moz-transition: all 2s;
+	transition: all 0.2s;
+}
+
+.backButton {
+	height: 50px;
+	width: 90px;
+	background-color: #5c7ae8;
+	border-radius: 10px;
+	border: none;
+	color: white;
+	font-size: smaller;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.spedireContainer {
+	margin-top: -10px;
+}
+
+.spedire {
+	color: #5c7ae8;
+}
+
+.central {
+	display: flex;
+}
+
+.button {
+	margin-left: 80%;
+	margin-top: 1%;
+}
+
+.topContainer {
+	margin-top: 1%;
+	display: flex;
+	margin-left: 1%;
+}
+
+.formContainer {
+	border: solid 1px #d9d9d9;
+	width: 490px;
+	height: 401px;
+	margin-left: 35%;
+	margin-top: 5%;
+	background-color: #ffffff;
+	border-radius: 10%;
+}
+
+*::placeholder {
+	color: #ffffff;
+	font-weight: 700;
+}
+
+.mailIconImage {
+	background-color: red;
+}
+
+.forgotPassword {
+	margin-top: 10%;
+}
+
+.error {
+	color: red;
+	margin-left: 7%;
+	margin-top: -2%;
+}
+
+.forgotPasswordText {
+	color: #5c7ae8;
+}
+
+.img {
+	width: 70%;
+	height: 70%;
+}
+
+.submit {
+	background-color: #5c7ae8;
+	height: 60px;
+	width: 420px;
+	margin-left: 6.5%;
+	border-radius: 10px;
+	border: none;
+	color: white;
+	font-size: larger;
+	font-weight: 700;
+	cursor: pointer;
+}
+.option {
+	color: #4e4848;
+	margin-left: 6.5%;
+	font-weight: 300;
+	cursor: pointer;
+	font-size: medium;
+}
+.option-span:hover {
+	color: red;
+	text-decoration: underline;
+	font-weight: 300;
+	cursor: pointer;
+	font-size: medium;
+}

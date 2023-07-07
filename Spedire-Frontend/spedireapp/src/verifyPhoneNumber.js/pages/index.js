@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast;";
-import MapIcon from "../assets/verifyPhoneNumber/map-icon.svg";
+import { toast } from "react-hot-toast";
+import MapIcon from "../../assets/verifyPhoneNumber/map-icon.svg";
+import { VerifyPhone } from "../../apicalls/users";
 
 const VerifyPhoneNumber = () => {
-	const navigate = useNavigate();
+	//const navigate = useNavigate();
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [error, setError] = useState("");
 
@@ -24,7 +25,7 @@ const VerifyPhoneNumber = () => {
 			setError("Invalid phone number");
 		}
 		try {
-			const response = await VerifyPhoneNumber(phoneNumber);
+			const response = await VerifyPhone(phoneNumber);
 			if (response.success) {
 				toast.success(response.message);
 				setPhoneNumber("");
@@ -47,7 +48,7 @@ const VerifyPhoneNumber = () => {
 					<h3>Verify Phone Number</h3>
 					<hr className="mt-3" />
 					<input
-						className="mt-3 bg-zinc-200 text-white w-full"
+						className="mt-3 bg-zinc-200 text-black w-full"
 						type="text"
 						name="phoneNumber"
 						placeholder="Enter phone number"
@@ -58,13 +59,13 @@ const VerifyPhoneNumber = () => {
 						required
 					/>
 
-					{error ? <p>{error}</p> : ""}
+					{error ? <p className="text-red-500">{error}</p> : ""}
 					<br />
 					<button className="contained-btn mt-3 w-full" type="submit">
 						Verify Phone Number
 					</button>
 				</form>
-				<h6 onClick={navigate("/login")}>Sign in to an existing account</h6>
+				<h6>Sign in to an existing account</h6>
 			</div>
 		</div>
 	);
