@@ -1,4 +1,4 @@
-package com.spedire.Spedire.sms_sender.dtos.response;
+package com.spedire.Spedire.dtos.response;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @ToString
 @AllArgsConstructor
-public class SendSmsResponse {
+public class ApiResponse {
     private String message;
     private boolean success;
     private String data;

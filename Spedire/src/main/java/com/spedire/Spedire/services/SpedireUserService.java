@@ -1,8 +1,17 @@
 package com.spedire.Spedire.services;
 
+<<<<<<< HEAD
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ForgotPasswordResponse;
 import com.spedire.Spedire.dtos.response.PasswordResetResponse;
+=======
+import com.spedire.Spedire.dtos.request.Recipient;
+import com.spedire.Spedire.dtos.request.RegistrationRequest;
+import com.spedire.Spedire.dtos.request.SendEmailRequest;
+import com.spedire.Spedire.dtos.request.Sender;
+import com.spedire.Spedire.dtos.response.ApiResponse;
+import com.spedire.Spedire.dtos.response.FindUserResponse;
+>>>>>>> 4c179b2c0f4695b92f531e636253a866c3da9bc3
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.EmailNotFoundException;
 import com.spedire.Spedire.services.templates.ResetPasswordEmailTemplate;
@@ -22,13 +31,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.models.Role.SENDER;
 import static com.spedire.Spedire.services.TokenService.generateToken;
+<<<<<<< HEAD
 import static com.spedire.Spedire.utils.AppUtils.*;
 import static com.spedire.Spedire.utils.EmailConstants.*;
 import static com.spedire.Spedire.utils.EmailConstants.FRONTEND_BASE_URL;
 import static com.spedire.Spedire.utils.ResponseUtils.PASSWORD_RESET_LINK_SENT_SUCCESSFULLY;
 import static com.spedire.Spedire.utils.ResponseUtils.USER_REGISTRATION_SUCCESSFUL;
+=======
+import static com.spedire.Spedire.utils.Constants.*;
+import static com.spedire.Spedire.utils.Constants.FRONTEND_BASE_URL;
+import static com.spedire.Spedire.utils.ResponseUtils.*;
+>>>>>>> 4c179b2c0f4695b92f531e636253a866c3da9bc3
 
 @Service
 @AllArgsConstructor
@@ -61,6 +77,20 @@ public class SpedireUserService implements UserService {
             throw new SpedireException("User with the provided email already exists, Kindly login");
         }
         return null;
+    }
+    @Override
+    public ApiResponse saveNewUser(String phoneNumber){
+        User user = new User();
+        user.setPhoneNumber(phoneNumber);
+        user.setRoles(new HashSet<>());
+        user.getRoles().add(NEW_USER);
+        var savedUser =userRepository.save(user);
+        return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY).success(true).data(savedUser.getId()).build();
+    }
+    @Override
+    public boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException {
+        User foundUser = userRepository.findByPhoneNumber(phoneNumber);
+       return foundUser != null;
     }
 
     @Override

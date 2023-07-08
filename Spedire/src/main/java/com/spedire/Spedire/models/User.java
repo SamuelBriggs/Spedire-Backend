@@ -29,10 +29,10 @@ public class User {
     private String firstName;
     private String lastName;
     private String password;
-//    @Indexed(unique = true)
+    @Indexed(unique = true)
     private String phoneNumber;
     private String profileImage;
-    @Indexed(unique = true)
+//    @Indexed(unique = true)
     private String email;
     @DBRef
     @Field("bank_id")
@@ -40,16 +40,17 @@ public class User {
     @DBRef
     @Field("address_id")
     private Address addressId;
-<<<<<<< HEAD
-    private Set<Role> roles;
-    private LocalDateTime createdAt;
 
-=======
-    @DBRef
-    private Role USER;
-    private LocalDateTime createdAt;
     private Set<Role> roles;
-    private Boolean isConfirmed = false;
-    private Boolean isVerified = false;
->>>>>>> e10467bc7d8031ee3cfb02133d2fff3769db5c0d
+    private LocalDateTime createdAt;
+//
+//=======
+//    @DBRef
+//    private Role USER;
+//    private LocalDateTime createdAt;
+//    private Set<Role> roles;
+//    private Boolean isConfirmed = false;
+//    private Boolean isVerified = false;
+//>>>>>>> e10467bc7d8031ee3cfb02133d2fff3769db5c0d
+
 }

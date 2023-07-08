@@ -3,6 +3,10 @@ package com.spedire.Spedire.sms_services;
 
 import com.nexmo.client.NexmoClientException;
 import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
+import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
+import com.spedire.Spedire.exceptions.SpedireException;
+import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
+import com.spedire.Spedire.services.UserService;
 import com.spedire.Spedire.sms_sender.dtos.request.SmsNotificationRequest;
 import com.spedire.Spedire.sms_sender.sms_service.SmsService;
 import lombok.SneakyThrows;
@@ -13,33 +17,36 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class SmsServiceImplTest {
 @Autowired
     private SmsService smsService;
+@Autowired
+private UserService userService;
 
 @Test
-    public void sendSmsTest() throws IOException, NexmoClientException {
-    SmsNotificationRequest request = new SmsNotificationRequest("2349051243133", "Hello world");
-    var response = smsService.sendSms(request.getTo());
+    public void sendSmsTest() throws PhoneNumberNotVerifiedException, SpedireException {
+    var response = smsService.sendSmsWithTwilio("08138732503");
+    System.out.println(response.toString());
     assertNotNull(response);
-
 }
-//@Test
-//public void testTwilioSms(){
-//    var response =smsService.sendSmsWithTwilio("+2348138732503");
-//    assertNotNull(response);
-//}
 @SneakyThrows
 @Test
 public void verifyOtpTest(){
     OtpVerificationRequest request = new OtpVerificationRequest();
-    request.setOtpNumber(162556);
-    request.setPhoneNumber("+2348138732503");
-    var response = smsService.verifyOtp(request);
+
+    String otp ="596489";
+    String token ="eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg3NTM1NjksImV4cCI6MTY4ODg3MzU2OSwicGhvbmVOdW1iZXIiOiIwODEzODczMjUwMyJ9.DdXFPI9-jIadGKCuXUDEYocyD5NLRgfUW59tRI4RAwhosRfeva1py8dmhDzZyt_dhPmzZLWuUcv_7JP2rXxC2w";
+    var response = smsService.verifyOtp(token, otp);
     assertNotNull(response);
 
 }
+@Test
+    public void testFindUserByPhone() throws SpedireException {
+    var found =userService.findUserByPhoneNumber("09051243133");
+    assertTrue(found);
+    }
 
 }

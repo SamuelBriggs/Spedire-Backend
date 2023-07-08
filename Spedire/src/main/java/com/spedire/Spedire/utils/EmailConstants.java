@@ -12,6 +12,10 @@ public class EmailConstants {
     public static final String TO = "to";
     public static final String SUBJECT="subject";
     public static  final String HTML_CONTENT_VALUE = "htmlContent";
+<<<<<<< HEAD:Spedire/src/main/java/com/spedire/Spedire/utils/EmailConstants.java
 
 
+=======
+    public static  final String ZERO_STRING ="0";
+>>>>>>> 4c179b2c0f4695b92f531e636253a866c3da9bc3:Spedire/src/main/java/com/spedire/Spedire/utils/Constants.java
 }

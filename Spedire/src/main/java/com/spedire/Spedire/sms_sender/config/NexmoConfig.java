@@ -5,17 +5,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
+
+
 @Configuration
 public class NexmoConfig {
-    @Value("${twilio.accountSid}")
+    @Value(TWILO_ACCOUNT_SID)
     private String accountSid;
-    @Value("${twilio.authToken}")
+    @Value(TWILO_AUTH_TOKEN)
     private String authToken;
-    @Value("${twilio.phoneNumber}")
-    private String twilioPhoneNumber;
-    @Value("${nexmo.creds.api-key}")
+    @Value(TWILO_NUMBER)
+    private String twilioNumber;
+    @Value(VONAGE_API_KEYS)
     private String VONAGE_API_KEY;
-    @Value("${nexmo.creds.secret}")
+    @Value(VONAGE_API_SECRETS)
     private String VONAGE_API_SECRET;
     @Bean
     public NexmoClient nexmoClient(){
@@ -23,6 +26,6 @@ public class NexmoConfig {
     }
     @Bean
     public TwilioConfig twilioConfig(){
-        return new TwilioConfig(accountSid,authToken,twilioPhoneNumber);
+        return new TwilioConfig(accountSid,authToken,twilioNumber);
     }
 }
