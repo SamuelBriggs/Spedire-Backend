@@ -24,7 +24,7 @@ private UserService userService;
 
 @Test
     public void sendSmsTest() throws PhoneNumberNotVerifiedException, SpedireException {
-    var response = smsService.sendSmsWithTwilio("08138732503");
+    var response = smsService.sendSmsWithTwilio("07069310006");
     System.out.println(response.toString());
     assertNotNull(response);
 }

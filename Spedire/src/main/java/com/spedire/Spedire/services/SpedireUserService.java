@@ -13,7 +13,6 @@ import com.github.fge.jsonpatch.JsonPatchOperation;
 import com.github.fge.jsonpatch.ReplaceOperation;
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ApiResponse;
-import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
@@ -62,7 +61,8 @@ public class SpedireUserService implements UserService {
         try {
             String phoneNumber = validateToken(token);
             User foundUser = userRepository.findByPhoneNumber(phoneNumber);
-            verifyUserNumber(foundUser == null, PHONE_NOT_VALID);
+            System.out.println(foundUser);
+            if (foundUser == null) throw new SpedireException(PHONE_NOT_VALID);
             validateRegistrationRequest(registrationRequest);
             var builtUser = buildRegistrationRequest(registrationRequest, foundUser);
             var savedUser = userRepository.save(builtUser);
@@ -93,17 +93,11 @@ public class SpedireUserService implements UserService {
                 sign(Algorithm.HMAC512("samuel".getBytes()));
     }
 
-    private static void verifyUserNumber(boolean foundUser, String message) throws SpedireException {
-        if (foundUser) {
-            throw new SpedireException(message);
-        }
-    }
-
     @Override
-    public RegistrationResponse checkUserExistence(String email) throws SpedireException {
+    public User findUserByEmail(String email) throws SpedireException {
         User existingUser = userRepository.findByEmail(email);
-        verifyUserNumber(existingUser != null, "User with the provided email already exists, Kindly login");
-        return null;
+        if (existingUser == null) throw new SpedireException("User with the provided email already exists, Kindly login");
+        return existingUser;
     }
 
     @Override
@@ -188,7 +182,7 @@ public class SpedireUserService implements UserService {
         }
     }
 
-    private void uploadImage(MultipartFile image, User user) throws SpedireException, IOException {
+    private void uploadImage(MultipartFile image, User user) throws SpedireException, IOException, com.spedire.Spedire.Exception.SpedireException {
         String imageUrl = cloudService.upload(image.getBytes());
         user.setProfileImage(imageUrl);
     }

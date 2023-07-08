@@ -40,8 +40,10 @@ public class SmsServiceImpl implements SmsService {
 
 
     @Override
-    public SendSmsResponse sendSmsWithTwilio(String phone_number) throws PhoneNumberNotVerifiedException, com.spedire.Spedire.exceptions.SpedireException {
-        String phoneNumber = phone_number.substring(1,12);
+    public SendSmsResponse sendSmsWithTwilio(String phoneNumber)
+            throws PhoneNumberNotVerifiedException,
+            com.spedire.Spedire.exceptions.SpedireException {
+        //String phoneNumber = phone_number.substring(1,12);
         if (!validatePhoneNumber(phoneNumber)){
             throw new PhoneNumberNotVerifiedException(INVALID_PHONE_NUMBER);
         }
@@ -49,36 +51,41 @@ public class SmsServiceImpl implements SmsService {
 
         if(found){ throw new UserAlreadyExistsException(USER_ALREADY_EXIST);}
         String phone = phoneNumber.substring(1);
-            Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
-           Verification verification = Verification.creator(
-                   twilioConfig.getTwilioNumber(),
-                    PHONE_NUMBER_PREFIX+phone,
-                    "sms"
-            ).create();
+        System.out.println(phone);
+        System.out.println(twilioConfig.getAuthToken());
+        System.out.println(twilioConfig.getAccountSid());
+        System.out.println(twilioConfig.getTwilioNumber());
+        Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
+        Verification verification = Verification.creator(
+                twilioConfig.getTwilioNumber(),
+                PHONE_NUMBER_PREFIX+phone,
+                "sms"
+        ).create();
         log.info(verification.getStatus());
-            if (verification.getStatus().equals(SMS_SENT_STATUS)) {
-               String token= generateJwtToken(phoneNumber);
+        if (verification.getStatus().equals(SMS_SENT_STATUS)) {
+            String token= generateJwtToken(phoneNumber);
 
-                return SendSmsResponse.builder().message(SMS_SENT_SUCCESS+ phoneNumber).success(true).data(token).build();
-            } else {
-                throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
-            }
+            return SendSmsResponse.builder().message(SMS_SENT_SUCCESS+ phoneNumber).success(true).data(token).build();
+        } else {
+            throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
         }
+    }
 
 
     @Override
-    public SendSmsResponse verifyOtp(OtpVerificationRequest request) throws SpedireException, PhoneNumberNotVerifiedException {
-       String phoneNumber = validateToken(request.getToken());
+    public SendSmsResponse verifyOtp(String aToken, String otp) throws SpedireException, PhoneNumberNotVerifiedException {
+        String token = aToken.split(" ")[1];
+        String phoneNumber = validateToken(token);
         String phone = phoneNumber.substring(2,12);
         Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
         VerificationCheck verification = VerificationCheck.creator(
                         twilioConfig.getTwilioNumber())
                 .setTo(PHONE_NUMBER_PREFIX+phone)
-                .setCode(request.getOtpNumber())
+                .setCode(otp)
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
-           ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
-            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data(newUser.getData()).build();
+           ApiResponse<?> newUser= userService.saveNewUser(ZERO_STRING+phone);
+            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data(String.valueOf(newUser.getData())).build();
         } else {
             return SendSmsResponse.builder().message(SMS_SEND_FAILED + phoneNumber).success(false).build();
 

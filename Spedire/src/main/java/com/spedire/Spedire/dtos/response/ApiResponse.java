@@ -1,7 +1,5 @@
 package com.spedire.Spedire.dtos.response;
 
-import lombok.*;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 

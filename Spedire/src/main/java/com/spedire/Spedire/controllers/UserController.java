@@ -2,8 +2,8 @@ package com.spedire.Spedire.controllers;
 
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
 import com.spedire.Spedire.dtos.request.UpdateUserRequest;
-import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.SpedireException;
+import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,17 +27,27 @@ public class UserController {
     }
 
     @GetMapping("/checkUserExistence")
-    public ResponseEntity<?> findUserByEmail(@RequestParam("email") String email) throws SpedireException {
+    public ResponseEntity<?> findUserByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber) throws SpedireException {
         try {
-            RegistrationResponse response = userService.checkUserExistence(email);
+            boolean response = userService.findUserByPhoneNumber(phoneNumber);
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (SpedireException e) {
             return ResponseEntity.badRequest().body("User with the provided email already exists, Kindly login");
         }
     }
 
-    @PatchMapping()
-    public ResponseEntity<?> updateCustomerAccount(@RequestParam String id, @ModelAttribute UpdateUserRequest updateUserRequest){
+    @GetMapping("/findByEmail")
+    public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws SpedireException {
+        try {
+            User response = userService.findUserByEmail(email);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (SpedireException e) {
+            return ResponseEntity.badRequest().body("User with the provided email already exists, Kindly login");
+        }
+    }
+
+    @PatchMapping("updateProfile")
+    public ResponseEntity<?> updateProfile(@RequestParam String id, @ModelAttribute UpdateUserRequest updateUserRequest){
         try{
             var response = userService.updateUserDetails(id, updateUserRequest);
             return ResponseEntity.ok(response);
