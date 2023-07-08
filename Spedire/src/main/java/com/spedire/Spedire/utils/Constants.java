@@ -13,4 +13,6 @@ public class Constants {
     public static final String SUBJECT="subject";
     public static  final String HTML_CONTENT_VALUE = "htmlContent";
     public static  final String ZERO_STRING ="0";
+    public static final String SENDIN_BLU_API_KEY="${sendinblue.api.key}";
+    public static final String JWT_SIGNING_SECRET="${jwt.signing.secret}";
 }
