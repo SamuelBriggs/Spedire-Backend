@@ -2,11 +2,12 @@ package com.spedire.Spedire.utils;
 
 public class AppUtils {
 
-<<<<<<< HEAD
     public static final String NOT_FOUND = " not found";
     public static final String  PASSWORD_RESET_BASE_URL = "http://localhost:3000/changepassword";
     public static final String  PASSWORD_RESET_SUCCESSFUL = "Password reset successful";
-=======
+    public static final String  PASSWORD_RESET_FAILED = "Password reset failed";
+    public static final String  PASSWORD_DOES_NOT_MATCH = "Password do not match";
+    public static final String  EMPTY_STRING = " ";
     public static final String AUTHENTICATION_FAILED_FOR_USER_WITH_PHONE_NUMBER = "User details not found";
     public static final String USER_WITH_PHONE_NUMBER_NOT_FOUND = "Not found";
     public static final String CLAIM_VALUE = "claim";
@@ -17,5 +18,4 @@ public class AppUtils {
 
     public static final String UPDATE_CUSTOMER_ENDPOINT=CUSTOMER_API_VALUE+"?*+";
 
->>>>>>> e10467bc7d8031ee3cfb02133d2fff3769db5c0d
 }

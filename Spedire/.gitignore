@@ -31,16 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 
 secret.properties
-=======
-secret.properties
 
->>>>>>> 49bf41d9b11a6c286851b8885a4c2a87c307b6ab
-=======
-
-secret.properties
->>>>>>> e10467bc7d8031ee3cfb02133d2fff3769db5c0d

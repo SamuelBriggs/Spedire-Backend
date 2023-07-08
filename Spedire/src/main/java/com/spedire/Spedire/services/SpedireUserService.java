@@ -1,19 +1,20 @@
 package com.spedire.Spedire.services;
 
-<<<<<<< HEAD
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ForgotPasswordResponse;
 import com.spedire.Spedire.dtos.response.PasswordResetResponse;
-=======
 import com.spedire.Spedire.dtos.request.Recipient;
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
 import com.spedire.Spedire.dtos.request.SendEmailRequest;
 import com.spedire.Spedire.dtos.request.Sender;
 import com.spedire.Spedire.dtos.response.ApiResponse;
-import com.spedire.Spedire.dtos.response.FindUserResponse;
->>>>>>> 4c179b2c0f4695b92f531e636253a866c3da9bc3
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.EmailNotFoundException;
+import com.spedire.Spedire.exceptions.PasswordResetFailedException;
 import com.spedire.Spedire.services.templates.ResetPasswordEmailTemplate;
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
 import com.spedire.Spedire.exceptions.SpedireException;
@@ -34,17 +35,10 @@ import java.util.*;
 import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.models.Role.SENDER;
 import static com.spedire.Spedire.services.TokenService.generateToken;
-<<<<<<< HEAD
 import static com.spedire.Spedire.utils.AppUtils.*;
 import static com.spedire.Spedire.utils.EmailConstants.*;
 import static com.spedire.Spedire.utils.EmailConstants.FRONTEND_BASE_URL;
-import static com.spedire.Spedire.utils.ResponseUtils.PASSWORD_RESET_LINK_SENT_SUCCESSFULLY;
-import static com.spedire.Spedire.utils.ResponseUtils.USER_REGISTRATION_SUCCESSFUL;
-=======
-import static com.spedire.Spedire.utils.Constants.*;
-import static com.spedire.Spedire.utils.Constants.FRONTEND_BASE_URL;
 import static com.spedire.Spedire.utils.ResponseUtils.*;
->>>>>>> 4c179b2c0f4695b92f531e636253a866c3da9bc3
 
 @Service
 @AllArgsConstructor
@@ -54,7 +48,7 @@ public class SpedireUserService implements UserService {
     private final EmailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private String email;
+//    private String email;
     public static VerifyEmailTemplate verifyEmailTemplate = new VerifyEmailTemplate();
     private static ResetPasswordEmailTemplate resetPasswordEmailTemplate = new ResetPasswordEmailTemplate();
 
@@ -100,35 +94,43 @@ public class SpedireUserService implements UserService {
         if (user == null) throw new EmailNotFoundException(String.format(emailAddress, NOT_FOUND));
         SendEmailRequest request =  buildResetPasswordEmailRequest(user);
         mailService.sendMail(request);
-        return buildForgotPasswordResponse(user.getEmail());
+        return buildForgotPasswordResponse(request.getToken(), user.getEmail());
     }
 
-    private ForgotPasswordResponse buildForgotPasswordResponse(String emailAddress) {
+    private ForgotPasswordResponse buildForgotPasswordResponse(String token, String emailAddress) {
         ForgotPasswordResponse response = new ForgotPasswordResponse();
         response.setMessage(String.format(PASSWORD_RESET_LINK_SENT_SUCCESSFULLY, emailAddress));
-        response.setEmail(emailAddress);
-        email = emailAddress;
+        response.setSuccess(true);
+        response.setData(token);
         return response;
     }
 
-    private String buildUserEmail() {
-        return email;
-    }
-
     @Override
-    public PasswordResetResponse resetPassword(PasswordResetRequest passwordResetRequest) throws EmailNotFoundException {
-        String userEmail = buildUserEmail();
-        User user = userRepository.findByEmail(userEmail);
-        if (user == null) throw new EmailNotFoundException(String.format(userEmail, NOT_FOUND));
-        user.setPassword(passwordResetRequest.getConfirmEmailAddress());
+    public PasswordResetResponse resetPassword(PasswordResetRequest passwordResetRequest) throws PasswordResetFailedException {
+        String token = passwordResetRequest.getToken();
+        String newPassword = passwordResetRequest.getNewPassword();
+        validatePasswordMatch(passwordResetRequest);
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtUtil.secret().getBytes()))
+                .build().verify(token);
+        if (decodedJWT == null) throw new PasswordResetFailedException(PASSWORD_RESET_FAILED);
+        Claim claim = decodedJWT.getClaim(ID);
+        Long id = claim.asLong();
+        User user = userRepository.findById(String.valueOf(id)).orElseThrow(() ->
+                new PasswordResetFailedException(String.format(NOT_FOUND, id)));
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         return buildPasswordResetPassword();
     }
 
+    private void validatePasswordMatch(PasswordResetRequest passwordResetRequest) throws PasswordResetFailedException {
+        String newPassword = passwordResetRequest.getNewPassword();
+        String confirmPassword = passwordResetRequest.getConfirmPassword();
+        if (!newPassword.equals(confirmPassword)) throw new PasswordResetFailedException(PASSWORD_DOES_NOT_MATCH);
+    }
+
+
     private PasswordResetResponse buildPasswordResetPassword() {
-        PasswordResetResponse response = new PasswordResetResponse();
-        response.setMessage(PASSWORD_RESET_SUCCESSFUL);
-        return response;
+        return PasswordResetResponse.builder().success(true).message(PASSWORD_RESET_SUCCESSFUL).data(EMPTY_STRING).build();
     }
 
 
@@ -163,16 +165,16 @@ public class SpedireUserService implements UserService {
     }
 
     public SendEmailRequest buildResetPasswordEmailRequest(User user) throws SpedireException {
-//        String token = generateToken(user, jwtUtil.secret());
+        String token = generateToken(user, jwtUtil.secret());
         SendEmailRequest request = new SendEmailRequest();
         Sender sender = new Sender(APP_NAME, APP_EMAIL);
         Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
         request.setSender(sender);
         request.setRecipients(Set.of(recipient));
         request.setSubject(ACTIVATION_LINK_VALUE);
-//        var link =  FRONTEND_BASE_URL+"/user/verify?token="+token;
-        var link =  PASSWORD_RESET_BASE_URL;
+        var link =  PASSWORD_RESET_BASE_URL+"?token="+token;
         request.setContent(resetPasswordEmailTemplate.buildEmail(user.getFirstName(), link));
+        request.setToken(token);
         return request;
     }
 

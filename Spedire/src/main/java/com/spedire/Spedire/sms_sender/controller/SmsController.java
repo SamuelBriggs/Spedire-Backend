@@ -1,13 +1,12 @@
 package com.spedire.Spedire.sms_sender.controller;
 
-import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.dtos.request.VerifyOtpRequest;
 import com.spedire.Spedire.dtos.request.VerifyPhoneNumberRequest;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
 import com.spedire.Spedire.sms_sender.dtos.response.SendSmsResponse;
-import com.spedire.Spedire.sms_sender.sms_service.SmsService;
+import com.spedire.Spedire.sms_sender.dtos.request.sms_service.SmsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

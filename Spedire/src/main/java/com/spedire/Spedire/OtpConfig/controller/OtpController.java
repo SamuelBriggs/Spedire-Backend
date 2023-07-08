@@ -7,7 +7,7 @@
 //import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 //import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
 //import com.spedire.Spedire.sms_sender.dtos.response.SendSmsResponse;
-//import com.spedire.Spedire.sms_sender.sms_service.SmsService;
+//import com.spedire.Spedire.sms_sender.dtos.request.sms_service.SmsService;
 //import lombok.AllArgsConstructor;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;

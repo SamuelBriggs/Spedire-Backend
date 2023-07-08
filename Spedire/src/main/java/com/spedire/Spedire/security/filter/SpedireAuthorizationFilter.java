@@ -2,7 +2,7 @@ package com.spedire.Spedire.security.filter;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spedire.Spedire.Exception.SpedireException;
+import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.security.JwtUtils;
 import com.spedire.Spedire.security.SecurityUtils;
 import jakarta.servlet.FilterChain;

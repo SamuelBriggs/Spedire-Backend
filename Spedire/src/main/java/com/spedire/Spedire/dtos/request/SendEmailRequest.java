@@ -22,4 +22,6 @@ public class SendEmailRequest {
     private String subject;
     @JsonProperty(HTML_CONTENT_VALUE)
     private String content;
+
+    private String token;
 }

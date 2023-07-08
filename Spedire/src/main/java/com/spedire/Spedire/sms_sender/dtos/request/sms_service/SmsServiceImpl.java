@@ -1,12 +1,11 @@
-package com.spedire.Spedire.sms_sender.sms_service;
+package com.spedire.Spedire.sms_sender.dtos.request.sms_service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
-import com.spedire.Spedire.Exception.SpedireException;
-import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.dtos.response.ApiResponse;
+import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
 import com.spedire.Spedire.security.JwtUtils;
 import com.spedire.Spedire.services.UserService;
@@ -27,7 +26,7 @@ import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUC
 import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
-import static com.spedire.Spedire.utils.Constants.ZERO_STRING;
+import static com.spedire.Spedire.utils.EmailConstants.ZERO_STRING;
 import static com.spedire.Spedire.utils.ResponseUtils.USER_ALREADY_EXIST;
 import static java.time.Instant.now;
 

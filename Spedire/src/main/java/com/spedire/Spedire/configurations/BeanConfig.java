@@ -38,5 +38,10 @@ public class BeanConfig {
         return new JwtUtil(jwt_secret);
     }
 
+//    @Bean
+//    public String myString() {
+//        return "My String Value";
+//    }
+
 
 }
