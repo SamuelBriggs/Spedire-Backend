@@ -1,7 +1,5 @@
 package com.spedire.Spedire.utils;
 
-import javax.swing.plaf.PanelUI;
-
 public class Constants {
     public static final String APP_NAME="Spedire Tech";
     public static final String APP_EMAIL="noreply@spediretech";
@@ -28,6 +26,6 @@ public class Constants {
     public static final String TWILIO_ACCOUNT_SID = "${twilio.accountSid}";
     public static final String TWILIO_AUTH_TOKEN = "${twilio.authToken}";
     public static final String TWILIO_NUMBER = "${twilio.number}";
-
+    public static final String EMAIL_NOT_FOUND = "Email not found";
 
 }

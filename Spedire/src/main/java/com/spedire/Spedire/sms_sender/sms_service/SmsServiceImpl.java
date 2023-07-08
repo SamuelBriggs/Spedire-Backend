@@ -117,7 +117,7 @@ public class SmsServiceImpl implements SmsService {
        return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).
                 withClaim("phoneNumber", phoneNumber).
-               withClaim("Roles", map).
+                withClaim("Roles", map).
                 sign(Algorithm.HMAC512("samuel".getBytes()));
     }
     private static String validateToken(String token) throws SpedireException {

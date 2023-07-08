@@ -38,5 +38,10 @@ public class UpdateUserRequest {
     private String bankId;
     private String accountName;
     private String accountNumber;
+    private String streetName;
+    private String streetNumber;
+    private String landMark;
+    private String state;
+    private String city;
     private MultipartFile profileImage;
 }

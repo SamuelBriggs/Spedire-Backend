@@ -2,7 +2,7 @@ package com.spedire.Spedire.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -24,25 +24,25 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import java.lang.reflect.Field;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.models.Role.SENDER;
-import static com.spedire.Spedire.services.TokenService.generateToken;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.PHONE_NOT_VALID;
 import static com.spedire.Spedire.utils.Constants.*;
 import static com.spedire.Spedire.utils.ExceptionUtils.PROFILE_UPDATE_FAILED;
 import static com.spedire.Spedire.utils.ExceptionUtils.USER_WITH_ID_NOT_FOUND;
 import static com.spedire.Spedire.utils.ResponseUtils.*;
 import static java.time.Instant.now;
+
 
 @Service
 @AllArgsConstructor
@@ -53,25 +53,22 @@ public class SpedireUserService implements UserService {
     private final CloudService cloudService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtil;
-    private final ObjectMapper objectMapper;
     public static VerifyEmailTemplate verifyEmailTemplate = new VerifyEmailTemplate();
 
     @Override
-    public ApiResponse<?> register(String token, RegistrationRequest registrationRequest) throws SpedireException {
-        try {
-            String phoneNumber = validateToken(token);
-            User foundUser = userRepository.findByPhoneNumber(phoneNumber);
-            System.out.println(foundUser);
-            if (foundUser == null) throw new SpedireException(PHONE_NOT_VALID);
-            validateRegistrationRequest(registrationRequest);
-            var builtUser = buildRegistrationRequest(registrationRequest, foundUser);
-            var savedUser = userRepository.save(builtUser);
-            mailService.sendMail(buildEmailRequest(savedUser));
-            String newToken = generateJwtToken(savedUser);
-            return ApiResponse.builder().message(USER_REGISTRATION_SUCCESSFUL).success(true).data(newToken).build();
-        } catch (com.spedire.Spedire.Exception.SpedireException e) {
-            throw new RuntimeException(e);
-        }
+    public ApiResponse<?> register(String token, RegistrationRequest registrationRequest)
+            throws SpedireException {
+        DecodedJWT decodedJWT = jwtUtil.verifyToken(token);
+        String phoneNumber = decodedJWT.getClaim("phoneNumber").asString();
+        System.out.println(phoneNumber);
+        User foundUser = userRepository.findByPhoneNumber(phoneNumber);
+        if (foundUser == null) throw new SpedireException(PHONE_NOT_VALID);
+        validateRegistrationRequest(registrationRequest);
+        var builtUser = buildRegistrationRequest(registrationRequest, foundUser);
+        var savedUser = userRepository.save(builtUser);
+        mailService.sendMail(buildEmailRequest(savedUser));
+        String newToken = generateJwtToken(savedUser);
+        return ApiResponse.builder().message(USER_REGISTRATION_SUCCESSFUL).success(true).data(newToken).build();
     }
 
     private User buildRegistrationRequest(RegistrationRequest registrationRequest, User foundUser) {
@@ -83,20 +80,25 @@ public class SpedireUserService implements UserService {
         foundUser.setCreatedAt(LocalDateTime.now());
         return foundUser;
     }
-
     private String generateJwtToken(User registrationResponse) {
-        return JWT.create().withIssuedAt(now()).
-                withExpiresAt(now().plusSeconds(86400L)).
-                withClaim("id", registrationResponse.getId()).
-                withClaim("role", (Map<String, ?>) registrationResponse.getRoles()).
-                withClaim("phoneNumber", registrationResponse.getPhoneNumber()).
-                sign(Algorithm.HMAC512("samuel".getBytes()));
+        List<String> rolesList = registrationResponse.getRoles()
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+
+        return JWT.create()
+                .withIssuedAt(now())
+                .withExpiresAt(now().plusSeconds(86400L))
+                .withClaim("id", registrationResponse.getId())
+                .withClaim("role", rolesList)
+                .withClaim("phoneNumber", registrationResponse.getPhoneNumber())
+                .sign(Algorithm.HMAC512("samuel".getBytes()));
     }
 
     @Override
     public User findUserByEmail(String email) throws SpedireException {
         User existingUser = userRepository.findByEmail(email);
-        if (existingUser == null) throw new SpedireException("User with the provided email already exists, Kindly login");
+        if (existingUser == null) throw new SpedireException(EMAIL_NOT_FOUND);
         return existingUser;
     }
 
@@ -107,7 +109,8 @@ public class SpedireUserService implements UserService {
         user.setRoles(new HashSet<>());
         user.getRoles().add(NEW_USER);
         var savedUser = userRepository.save(user);
-        return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY).success(true).data(savedUser.getId()).build();
+        return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY)
+                .success(true).data(savedUser.getId()).build();
     }
 
     @Override
@@ -116,14 +119,7 @@ public class SpedireUserService implements UserService {
         return foundUser != null;
     }
 
-    private static String validateToken(String token) throws com.spedire.Spedire.Exception.SpedireException {
-        Map<String, Claim> map = JwtUtils.extractClaimsFromToken(token);
-        Claim phoneNumber = map.get("phoneNumber");
-        return phoneNumber.toString();
-    }
-
     public SendEmailRequest buildEmailRequest(User user) throws SpedireException {
-        String token = generateToken(user, jwtUtil.getSecret());
         SendEmailRequest request = new SendEmailRequest();
         Sender sender = new Sender(APP_NAME, APP_EMAIL);
         Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
@@ -141,7 +137,6 @@ public class SpedireUserService implements UserService {
         Set<ConstraintViolation<RegistrationRequest>> violations = validator.validate(request);
 
         if (!violations.isEmpty()) {
-            // Collect validation error messages
             List<String> errorMessages = new ArrayList<>();
             for (ConstraintViolation<RegistrationRequest> violation : violations) {
                 errorMessages.add(violation.getMessage());
@@ -151,12 +146,13 @@ public class SpedireUserService implements UserService {
         }
     }
     @Override
-    public ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest) throws SpedireException, JsonPointerException, IllegalAccessException {
+    public ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest)
+            throws SpedireException, JsonPointerException, IllegalAccessException {
         Optional<User> foundUser = userRepository.findById(id);
         MultipartFile image = updateUserRequest.getProfileImage();
         JsonPatch jsonPatch = buildUpdatePatch(updateUserRequest);
         User user = foundUser.orElseThrow(()->
-                new SpedireException(String.format(USER_WITH_ID_NOT_FOUND, id)));
+                new SpedireException(USER_WITH_ID_NOT_FOUND));
         User updatedUser =  updateUser(user,jsonPatch, image);
         userRepository.save(updatedUser);
         return ApiResponse.builder()
@@ -182,16 +178,20 @@ public class SpedireUserService implements UserService {
         }
     }
 
-    private void uploadImage(MultipartFile image, User user) throws SpedireException, IOException, com.spedire.Spedire.Exception.SpedireException {
+    private void uploadImage(MultipartFile image, User user) throws SpedireException,
+            IOException, com.spedire.Spedire.Exception.SpedireException {
         String imageUrl = cloudService.upload(image.getBytes());
         user.setProfileImage(imageUrl);
     }
 
 
-    private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) throws IllegalAccessException, JsonPointerException {
+    private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest)
+            throws IllegalAccessException, JsonPointerException {
         List<JsonPatchOperation> operations =new ArrayList<>();
         List<String> updateFields =
-                List.of("bankName", "accountName", "accountNumber", "email", "password", "profileImage");
+                List.of("bankName", "accountName", "accountNumber", "email",
+                        "password", "profileImage", "firstName", "lastName", "phoneNumber",
+                        "streetName", "streetNumber", "landMark", "state", "city");
         Field[] fields = updateUserRequest.getClass().getDeclaredFields();
         for (Field field:fields) {
             field.setAccessible(true);
@@ -213,7 +213,7 @@ public class SpedireUserService implements UserService {
                     );
                 }else{
                     operation = new ReplaceOperation(
-                            new JsonPointer("/bioData/" + field.getName()),
+                            new JsonPointer("/address/" + field.getName()),
                             new TextNode(field.get(updateUserRequest).toString())
                     );
                 }
