@@ -2,6 +2,8 @@ package com.spedire.Spedire.sms_sender.controller;
 
 import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
+import com.spedire.Spedire.dtos.request.VerifyOtpRequest;
+import com.spedire.Spedire.dtos.request.VerifyPhoneNumberRequest;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
 import com.spedire.Spedire.sms_sender.dtos.response.SendSmsResponse;
@@ -20,10 +22,9 @@ public class SmsController {
     private final SmsService smsService;
 
     @PostMapping("/verify-number")
-    public ResponseEntity<SendSmsResponse> verifyPhoneNumber(@RequestParam String phoneNumber){
-        System.out.println("First point "+ phoneNumber);
+    public ResponseEntity<SendSmsResponse> verifyPhoneNumber(@RequestBody VerifyPhoneNumberRequest request){
         try{
-            SendSmsResponse response =smsService.sendSmsWithTwilio(phoneNumber);
+            SendSmsResponse response =smsService.sendSmsWithTwilio(request.getPhoneNumber());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch (PhoneNumberNotVerifiedException | UserAlreadyExistsException exception){
             return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(exception.getMessage()).build());
@@ -32,9 +33,9 @@ public class SmsController {
         }
     }
     @PostMapping("/verify-otp")
-    public ResponseEntity<SendSmsResponse> verifyOtp(@RequestHeader("Authorization") String token, @RequestParam String otp){
+    public ResponseEntity<SendSmsResponse> verifyOtp(@RequestHeader("Authorization") String token, @RequestBody VerifyOtpRequest request){
         try{
-            SendSmsResponse response = smsService.verifyOtp(token, otp);
+            SendSmsResponse response = smsService.verifyOtp(token, request.getOtpNumber());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(e.getMessage()).build());
