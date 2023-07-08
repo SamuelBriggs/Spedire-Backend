@@ -43,7 +43,6 @@ public class SmsServiceImpl implements SmsService {
 
     @Override
     public SendSmsResponse sendSmsWithTwilio(String phoneNumber) throws PhoneNumberNotVerifiedException, com.spedire.Spedire.exceptions.SpedireException {
-        //String phoneNumber = phone_number.substring(1,12);
         if (!validatePhoneNumber(phoneNumber)){
             throw new PhoneNumberNotVerifiedException(INVALID_PHONE_NUMBER);
         }
@@ -81,12 +80,32 @@ public class SmsServiceImpl implements SmsService {
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
            ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
-            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data(newUser.getData()).build();
+            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
         } else {
             throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
 
         }
     }
+
+    @Override
+    public SendSmsResponse resendOtp(String aToken) throws SpedireException, PhoneNumberNotVerifiedException {
+        String token = aToken.split(" ")[1];
+        String phoneNumber = validateToken(token);
+        String phone = phoneNumber.substring(2,12);
+        Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
+        Verification verification = Verification.creator(
+                twilioConfig.getTwilioNumber(),
+                PHONE_NUMBER_PREFIX+phone,
+                "sms"
+        ).create();
+        log.info(verification.getStatus());
+        if (verification.getStatus().equals(SMS_SENT_STATUS)) {
+            return SendSmsResponse.builder().message(SMS_SENT_SUCCESS+ ZERO_STRING+phone).success(true).build();
+        } else {
+            throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
+        }
+    }
+
     private boolean validatePhoneNumber( String phoneNumber) {
         return AppUtils.isValidPhoneNumber(phoneNumber);
 

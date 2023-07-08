@@ -42,4 +42,14 @@ public class SmsController {
         }
 
     }
+    @GetMapping("/resend-otp")
+    public ResponseEntity<SendSmsResponse> resendOtp(@RequestHeader("Authorization") String token){
+        try{
+            SendSmsResponse response = smsService.resendOtp(token);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(e.getMessage()).build());
+        }
+
+    }
 }
