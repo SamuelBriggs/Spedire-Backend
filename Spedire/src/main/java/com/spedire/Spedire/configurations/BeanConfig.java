@@ -19,7 +19,6 @@ public class BeanConfig {
      @Value("${jwt.signing.secret}")
     private String jwt_secret;
 
-
     @Bean
     public ModelMapper modelMapper(){
         return new ModelMapper();
@@ -40,5 +39,8 @@ public class BeanConfig {
         return new JwtUtil(jwt_secret);
     }
 
-
+    @Bean
+    public String string(){
+        return new String();
+    }
 }

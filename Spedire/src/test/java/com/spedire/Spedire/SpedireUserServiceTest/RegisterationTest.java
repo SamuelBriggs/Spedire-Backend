@@ -1,4 +1,4 @@
-package com.spedire.Spedire;
+package com.spedire.Spedire.SpedireUserServiceTest;
 
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
@@ -22,11 +22,11 @@ public class RegisterationTest {
         public void setUp() throws SpedireException {
             response = new RegistrationResponse();
             RegistrationRequest request = new RegistrationRequest();
-            request.setEmail("spediretech@gmail.com");
-            request.setFirstName("Michael");
-            request.setLastName("Josh");
+            request.setEmail("carzahegni@gufum.com");
+            request.setFirstName("car");
+            request.setLastName("zahn");
             request.setPassword("Mich1234!");
-            userService.register(request);
+            response = userService.register(request);
         }
         @Test
         public void testThatUserCanRegister() throws SpedireException {

@@ -1,12 +1,10 @@
 package com.spedire.Spedire.services;
 
-import com.spedire.Spedire.dtos.request.Recipient;
-import com.spedire.Spedire.dtos.request.RegistrationRequest;
-import com.spedire.Spedire.dtos.request.SendEmailRequest;
-import com.spedire.Spedire.dtos.request.Sender;
-import com.spedire.Spedire.dtos.response.ApiResponse;
-import com.spedire.Spedire.dtos.response.FindUserResponse;
-import com.spedire.Spedire.dtos.response.RegistrationResponse;
+import com.spedire.Spedire.dtos.request.*;
+import com.spedire.Spedire.dtos.response.*;
+import com.spedire.Spedire.exceptions.EmailNotFoundException;
+import com.spedire.Spedire.exceptions.PasswordDoesNotMatchException;
+import com.spedire.Spedire.services.templates.ResetPasswordEmailTemplate;
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.User;
@@ -39,6 +37,8 @@ public class SpedireUserService implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     public static VerifyEmailTemplate verifyEmailTemplate = new VerifyEmailTemplate();
+    private static ResetPasswordEmailTemplate resetPasswordEmailTemplate = new ResetPasswordEmailTemplate();
+    private String email;
 
     @Override
     public RegistrationResponse register(RegistrationRequest request) throws SpedireException {
@@ -89,6 +89,65 @@ public class SpedireUserService implements UserService {
         response.setMessage(USER_REGISTRATION_SUCCESSFUL);
         response.setId(userId);
 
+        return response;
+    }
+
+    @Override
+    public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest forgotPasswordRequest) throws SpedireException {
+        String emailAddress = forgotPasswordRequest.getEmailAddress();
+        User user = userRepository.findByEmail(emailAddress);
+        if (user == null) throw new EmailNotFoundException(String.format(emailAddress, NOT_FOUND));
+        SendEmailRequest request =  buildResetPasswordEmailRequest(user);
+        mailService.sendMail(request);
+        return buildForgotPasswordResponse(user.getEmail());
+    }
+
+    public SendEmailRequest buildResetPasswordEmailRequest(User user)  {
+//        String token = generateToken(user, jwtUtil.secret());
+        SendEmailRequest request = new SendEmailRequest();
+        Sender sender = new Sender(APP_NAME, APP_EMAIL);
+        Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
+        request.setSender(sender);
+        request.setRecipients(Set.of(recipient));
+        request.setSubject(ACTIVATION_LINK_VALUE);
+//        var link =  FRONTEND_BASE_URL+"/user/verify?token="+token;
+        var link =  PASSWORD_RESET_BASE_URL;
+        request.setContent(resetPasswordEmailTemplate.buildEmail(user.getFirstName(), link));
+        return request;
+    }
+
+    private ForgotPasswordResponse buildForgotPasswordResponse(String emailAddress) {
+        ForgotPasswordResponse response = new ForgotPasswordResponse();
+        response.setMessage(String.format(PASSWORD_RESET_LINK_SENT_SUCCESSFULLY, emailAddress));
+        response.setEmail(emailAddress);
+        email = emailAddress;
+        return response;
+    }
+
+    private String buildUserEmail() {
+        return email;
+    }
+
+    @Override
+    public PasswordResetResponse resetPassword(PasswordResetRequest passwordResetRequest) throws EmailNotFoundException, PasswordDoesNotMatchException {
+        String userEmail = buildUserEmail();
+        User user = userRepository.findByEmail(userEmail);
+        if (user == null) throw new EmailNotFoundException(String.format(userEmail, NOT_FOUND));
+        validatePasswordIsEqual(passwordResetRequest);
+        user.setPassword(passwordResetRequest.getConfirmPassword());
+        userRepository.save(user);
+        return buildPasswordResetPassword();
+    }
+
+    private void validatePasswordIsEqual(PasswordResetRequest passwordResetRequest) throws PasswordDoesNotMatchException {
+        String newPassword = passwordResetRequest.getNewPassword();
+        String confirmPassword = passwordResetRequest.getConfirmPassword();
+        if (!newPassword.equals(confirmPassword)) throw new PasswordDoesNotMatchException(PASSWORD_DOES_NOT_MATCH);
+    }
+
+    private PasswordResetResponse buildPasswordResetPassword() {
+        PasswordResetResponse response = new PasswordResetResponse();
+        response.setMessage(PASSWORD_RESET_SUCCESSFUL);
         return response;
     }
 
