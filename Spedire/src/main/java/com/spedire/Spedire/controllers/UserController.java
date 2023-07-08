@@ -1,27 +1,28 @@
 package com.spedire.Spedire.controllers;
 
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
+import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3001", methods = {RequestMethod.GET, RequestMethod.POST})
+
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/user")
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-<<<<<<< HEAD
-    public ResponseEntity<RegistrationResponse> registerUser(@RequestBody RegistrationRequest request) {
-=======
+
+
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
->>>>>>> 6fbaeba464c189bb1538bf62ba3dc804757c3eb7
+
         try {
             RegistrationResponse response = userService.register(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -39,4 +40,19 @@ public class UserController {
             return ResponseEntity.badRequest().body("User with the provided email already exists, Kindly login");
         }
     }
+
+    @GetMapping("/getCurrentUser")
+    public ResponseEntity<?> getCurrentUser(){
+
+        String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String newPhoneNumber = phoneNumber.substring(1, phoneNumber.length()-1);
+        ApiResponse apiResponse = userService.getCurrentUser(newPhoneNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+
+    }
+
+
+
+
+
 }

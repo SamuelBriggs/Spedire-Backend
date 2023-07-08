@@ -9,6 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -30,11 +31,10 @@ import java.util.Map;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 @Slf4j
-
-
-
+@AllArgsConstructor
 public class SpedireAuthorizationFilter extends OncePerRequestFilter {
 
+    private JwtUtils jwtUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -57,7 +57,6 @@ public class SpedireAuthorizationFilter extends OncePerRequestFilter {
     private void authorizeRequest(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws SpedireException, ServletException, IOException {
         authorize(request, response, filterChain);
         filterChain.doFilter(request, response);
-
     }
 
     private void authorize(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws SpedireException {
@@ -71,7 +70,7 @@ public class SpedireAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void authorizeToken(String token) throws SpedireException {
-        Map<String, Claim> map = JwtUtils.extractClaimsFromToken(token);
+        Map<String, Claim> map = jwtUtils.extractClaimsFromToken(token);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         Claim claim = map.get("Roles");
         Claim phoneNumber = map.get("phoneNumber");

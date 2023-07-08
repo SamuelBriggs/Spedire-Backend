@@ -68,6 +68,14 @@ public class SpedireUserService implements UserService {
         var savedUser =userRepository.save(user);
         return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY).success(true).data(savedUser.getId()).build();
     }
+
+    @Override
+    public ApiResponse getCurrentUser(String phoneNumber) {
+        User foundUser = userRepository.findByPhoneNumber(phoneNumber);
+
+        return ApiResponse.builder().success(true).message("User Found").data(foundUser).build();
+    }
+
     @Override
     public boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException {
         User foundUser = userRepository.findByPhoneNumber(phoneNumber);

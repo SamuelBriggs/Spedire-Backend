@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
+
 @RequestMapping("/api/user")
 @Slf4j
 
@@ -40,16 +40,12 @@ public class DummyController {
 
         String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
-        System.out.println(phoneNumber);
 
-        log.info("{}",phoneNumber);
+
         String newPhoneNumber = phoneNumber.substring(1, phoneNumber.length()-1);
-        log.info(newPhoneNumber);
+
         var user1 =  userRepository.findUserByPhoneNumber(newPhoneNumber);
-        log.info("{}", userRepository);
 
-
-        log.info("{}",user1.get());
 
         return user1.get();
 

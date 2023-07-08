@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -19,18 +20,22 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.spedire.Spedire.utils.Constants.JWT_SECRET;
+
 @AllArgsConstructor
 @Getter
 @Slf4j
 public class JwtUtils {
     private final String secret;
 
-    public static Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {
+
+
+    public  Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {
         DecodedJWT decodedJwt = validateToken(token);
             return decodedJwt.getClaims();
     }
-    private static DecodedJWT validateToken(String token){
-        return JWT.require(Algorithm.HMAC512("samuel".getBytes()))
+    private DecodedJWT validateToken(String token){
+        return JWT.require(Algorithm.HMAC512(secret))
                 .build().verify(token);
     }
 

@@ -4,6 +4,6 @@ import java.util.List;
 
 public class SecurityUtils {
 
-    public static final List<String> UNAUTHORIZEDENDPOINTS = List.of("/user", "/support", "/login");
+    public static final List<String> UNAUTHORIZEDENDPOINTS = List.of("/user", "/login");
 
 }

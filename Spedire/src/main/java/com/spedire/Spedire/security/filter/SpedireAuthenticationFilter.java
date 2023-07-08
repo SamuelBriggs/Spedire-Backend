@@ -44,6 +44,7 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
 
     public Authentication attemptAuthentication (HttpServletRequest request, HttpServletResponse response){
 
+
         try {
             LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
             phoneNumber = loginRequest.getPhoneNumber();
@@ -74,7 +75,7 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
         return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).
                 withClaim("Roles", map).withClaim("phoneNumber", phoneNumber).
-                sign(Algorithm.HMAC512("samuel".getBytes()));
+                sign(Algorithm.HMAC512(jwtUtil.getSecret()));
 
     }
 

@@ -13,4 +13,8 @@ public interface UserService {
     RegistrationResponse checkUserExistence(String request) throws SpedireException;
     boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException;
     ApiResponse saveNewUser(String phoneNumber);
+
+    ApiResponse getCurrentUser(String phoneNumber);
+
+
 }

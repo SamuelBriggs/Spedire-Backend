@@ -37,6 +37,8 @@ public class SmsServiceImpl implements SmsService {
     private final TwilioConfig twilioConfig;
     private final UserService userService;
 
+    private final JwtUtils jwtUtils;
+
 
 
     @Override
@@ -77,7 +79,7 @@ public class SmsServiceImpl implements SmsService {
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
            ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
-            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data(newUser.getData()).build();
+            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data((String) newUser.getData()).build();
         } else {
             return SendSmsResponse.builder().message(SMS_SEND_FAILED + phoneNumber).success(false).build();
 
@@ -93,8 +95,9 @@ public class SmsServiceImpl implements SmsService {
                 withClaim("phoneNumber", phoneNumber).
                 sign(Algorithm.HMAC512("samuel".getBytes()));
     }
-    private static String validateToken(String token) throws SpedireException {
-        Map<String, Claim> map = JwtUtils.extractClaimsFromToken(token);
+    private  String validateToken(String token) throws SpedireException {
+
+        Map<String, Claim> map = jwtUtils.extractClaimsFromToken(token);
         Claim phoneNumber = map.get("phoneNumber");
         return phoneNumber.toString();
     }
