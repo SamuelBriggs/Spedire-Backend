@@ -20,9 +20,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
+import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
 import static com.spedire.Spedire.utils.Constants.ZERO_STRING;
@@ -68,31 +70,60 @@ public class SmsServiceImpl implements SmsService {
 
 
     @Override
-    public SendSmsResponse verifyOtp(OtpVerificationRequest request) throws SpedireException, PhoneNumberNotVerifiedException {
-       String phoneNumber = validateToken(request.getToken());
+    public SendSmsResponse verifyOtp(String aToken, String otp) throws SpedireException, PhoneNumberNotVerifiedException {
+       String token = aToken.split(" ")[1];
+        String phoneNumber = validateToken(token);
         String phone = phoneNumber.substring(2,12);
         Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
         VerificationCheck verification = VerificationCheck.creator(
                         twilioConfig.getTwilioNumber())
                 .setTo(PHONE_NUMBER_PREFIX+phone)
-                .setCode(request.getOtpNumber())
+                .setCode(otp)
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
            ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
+<<<<<<< HEAD
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data((String) newUser.getData()).build();
+=======
+            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
+>>>>>>> ce8b91e6dd16e1bf16139c1c783b7a6485a5c13d
         } else {
-            return SendSmsResponse.builder().message(SMS_SEND_FAILED + phoneNumber).success(false).build();
+            throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
 
         }
     }
+
+    @Override
+    public SendSmsResponse resendOtp(String aToken) throws SpedireException, PhoneNumberNotVerifiedException {
+        String token = aToken.split(" ")[1];
+        String phoneNumber = validateToken(token);
+        String phone = phoneNumber.substring(2,12);
+        Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
+        Verification verification = Verification.creator(
+                twilioConfig.getTwilioNumber(),
+                PHONE_NUMBER_PREFIX+phone,
+                "sms"
+        ).create();
+        log.info(verification.getStatus());
+        if (verification.getStatus().equals(SMS_SENT_STATUS)) {
+            return SendSmsResponse.builder().message(SMS_SENT_SUCCESS+ ZERO_STRING+phone).success(true).build();
+        } else {
+            throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
+        }
+    }
+
     private boolean validatePhoneNumber( String phoneNumber) {
         return AppUtils.isValidPhoneNumber(phoneNumber);
 
     }
     private String generateJwtToken(String phoneNumber) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("role", NEW_USER.toString());
+
        return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).
                 withClaim("phoneNumber", phoneNumber).
+               withClaim("Roles", map).
                 sign(Algorithm.HMAC512("samuel".getBytes()));
     }
     private  String validateToken(String token) throws SpedireException {

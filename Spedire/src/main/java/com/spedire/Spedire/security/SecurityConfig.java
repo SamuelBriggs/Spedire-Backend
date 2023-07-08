@@ -60,12 +60,18 @@ public class SecurityConfig {
                 sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authorizationFilter, SpedireAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+<<<<<<< HEAD
 
                 .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/register", "/api/user/welcome").permitAll())
 
                 .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/**").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
                         hasAnyAuthority(String.valueOf(Role.ADMIN), Role.USER.name())).
+=======
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
+                authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
+                        hasAnyRole("ADMIN", "USER")).
+>>>>>>> ce8b91e6dd16e1bf16139c1c783b7a6485a5c13d
                 build();
 
     }
