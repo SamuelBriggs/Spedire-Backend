@@ -16,4 +16,5 @@ public interface SmsService {
     SendSmsResponse sendSmsWithTwilio(String phoneNumber) throws PhoneNumberNotVerifiedException, com.spedire.Spedire.exceptions.SpedireException;
     SendSmsResponse verifyOtp(String token, String otp) throws PhoneNumberNotVerifiedException, SpedireException, UserAlreadyExistsException;
 
+    SendSmsResponse resendOtp(String token) throws SpedireException, PhoneNumberNotVerifiedException;
 }
