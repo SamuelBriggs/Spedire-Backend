@@ -13,11 +13,16 @@ import com.github.fge.jsonpatch.JsonPatchOperation;
 import com.github.fge.jsonpatch.ReplaceOperation;
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ApiResponse;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ffd05eddb23e8efb0ee49a79b6f6df9b2c46e0b
 import com.spedire.Spedire.dtos.response.DashBoardDto;
-import com.spedire.Spedire.dtos.response.FindUserResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
+<<<<<<< HEAD
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
+=======
+>>>>>>> 1ffd05eddb23e8efb0ee49a79b6f6df9b2c46e0b
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
@@ -39,6 +44,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
 
 import static com.spedire.Spedire.services.TokenService.generateToken;
 import static com.spedire.Spedire.utils.Constants.*;
@@ -50,6 +56,12 @@ import static com.spedire.Spedire.utils.Constants.*;
 import static com.spedire.Spedire.utils.ExceptionUtils.PROFILE_UPDATE_FAILED;
 import static com.spedire.Spedire.utils.ExceptionUtils.USER_WITH_ID_NOT_FOUND;
 
+=======
+import static com.spedire.Spedire.models.Role.SENDER;
+import static com.spedire.Spedire.sms_sender.utils.AppUtils.PHONE_NOT_VALID;
+import static com.spedire.Spedire.utils.Constants.*;
+import static com.spedire.Spedire.utils.ExceptionUtils.*;
+>>>>>>> 1ffd05eddb23e8efb0ee49a79b6f6df9b2c46e0b
 import static com.spedire.Spedire.utils.ResponseUtils.*;
 import static java.time.Instant.now;
 
@@ -71,7 +83,6 @@ public class SpedireUserService implements UserService {
         String token = aToken.split(" ")[1];
         DecodedJWT decodedJWT = jwtUtil.verifyToken(token);
         String phoneNumber = decodedJWT.getClaim("phoneNumber").asString();
-        System.out.println(phoneNumber);
         User foundUser = userRepository.findByPhoneNumber(phoneNumber);
         if (foundUser == null) throw new SpedireException(PHONE_NOT_VALID);
         validateRegistrationRequest(registrationRequest);
@@ -122,21 +133,27 @@ public class SpedireUserService implements UserService {
     public ApiResponse<?> saveNewUser(String phoneNumber) {
         User user = new User();
         user.setPhoneNumber(phoneNumber);
+<<<<<<< HEAD
         user.setRoles(new HashSet<>());D
       //  user.getRoles().add(NEW_USER);
+=======
+        user.setRoles(new HashSet<>());
+        //  user.getRoles().add(NEW_USER);
+>>>>>>> 1ffd05eddb23e8efb0ee49a79b6f6df9b2c46e0b
         var savedUser =userRepository.save(user);
         return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY).success(true).data(savedUser.getId()).build();
     }
 
     @Override
-    public ApiResponse getCurrentUser(String phoneNumber) throws SpedireException {
+    public ApiResponse<?> getCurrentUser(String phoneNumber) throws SpedireException {
         User foundUser = userRepository.findByPhoneNumber(phoneNumber);
         if (foundUser == null) throw new SpedireException(CURRENT_USER_NOT_FOUND);
         DashBoardDto dashBoardDto = DashBoardDto.builder().
                 firstName(foundUser.getFirstName()).build();
         return ApiResponse.builder().success(true).message("User Found").data(dashBoardDto).build();
-    }
+}
 
+<<<<<<< HEAD
     @Override
     public ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest) throws SpedireException, JsonPointerException, IllegalAccessException {
         return null;
@@ -161,6 +178,15 @@ public class SpedireUserService implements UserService {
 
 
     public SendEmailRequest buildEmailRequest(User user) throws SpedireException {
+=======
+@Override
+public boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException {
+        User foundUser = userRepository.findByPhoneNumber(phoneNumber);
+        return foundUser != null;
+        }
+
+public SendEmailRequest buildEmailRequest(User user) throws SpedireException {
+>>>>>>> 1ffd05eddb23e8efb0ee49a79b6f6df9b2c46e0b
         SendEmailRequest request = new SendEmailRequest();
         Sender sender = new Sender(APP_NAME, APP_EMAIL);
         Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
@@ -170,97 +196,97 @@ public class SpedireUserService implements UserService {
 //        var link =  FRONTEND_BASE_URL+"/user/verify?token="+token;
         request.setContent(verifyEmailTemplate.buildEmail(user.getFirstName(), FRONTEND_BASE_URL));
         return request;
-    }
+        }
 
-    private void validateRegistrationRequest(RegistrationRequest request) throws SpedireException {
+private void validateRegistrationRequest(RegistrationRequest request) throws SpedireException {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<RegistrationRequest>> violations = validator.validate(request);
 
         if (!violations.isEmpty()) {
-            List<String> errorMessages = new ArrayList<>();
-            for (ConstraintViolation<RegistrationRequest> violation : violations) {
-                errorMessages.add(violation.getMessage());
-            }
-
-            throw new SpedireException("Validation error: " + String.join(", ", errorMessages));
+        List<String> errorMessages = new ArrayList<>();
+        for (ConstraintViolation<RegistrationRequest> violation : violations) {
+        errorMessages.add(violation.getMessage());
         }
-    }
-    @Override
-    public ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest)
-            throws SpedireException, JsonPointerException, IllegalAccessException {
+
+        throw new SpedireException("Validation error: " + String.join(", ", errorMessages));
+        }
+        }
+@Override
+public ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest)
+        throws SpedireException, JsonPointerException, IllegalAccessException {
         Optional<User> foundUser = userRepository.findById(id);
         MultipartFile image = updateUserRequest.getProfileImage();
         JsonPatch jsonPatch = buildUpdatePatch(updateUserRequest);
         User user = foundUser.orElseThrow(()->
-                new SpedireException(USER_WITH_ID_NOT_FOUND));
+        new SpedireException(USER_WITH_ID_NOT_FOUND));
         User updatedUser =  updateUser(user,jsonPatch, image);
         userRepository.save(updatedUser);
         return ApiResponse.builder()
-                .message(PROFILE_UPDATED_SUCCESSFULLY)
-                .build();
-    }
+        .message(PROFILE_UPDATED_SUCCESSFULLY)
+        .build();
+        }
 
-    private User updateUser(User user, JsonPatch jsonPatch, MultipartFile image) throws SpedireException {
+private User updateUser(User user, JsonPatch jsonPatch, MultipartFile image) throws SpedireException {
         ObjectMapper mapper = new ObjectMapper();
         log.info("Patch {}", jsonPatch.toString());
         JsonNode customerNode = mapper.convertValue(user, JsonNode.class);
         try {
-            JsonNode updatedNode= jsonPatch.apply(customerNode);
+        JsonNode updatedNode= jsonPatch.apply(customerNode);
 
-            var updatedUser  =  mapper.convertValue(updatedNode, User.class);
-            boolean isProfileImagePresent = image != null;
-            if (isProfileImagePresent) uploadImage(image, updatedUser);
-            updatedUser.setUpdatedAt(LocalDateTime.now());
-            return updatedUser;
+        var updatedUser  =  mapper.convertValue(updatedNode, User.class);
+        boolean isProfileImagePresent = image != null;
+        if (isProfileImagePresent) uploadImage(image, updatedUser);
+        updatedUser.setUpdatedAt(LocalDateTime.now());
+        return updatedUser;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new SpedireException(PROFILE_UPDATE_FAILED);
+        e.printStackTrace();
+        throw new SpedireException(PROFILE_UPDATE_FAILED);
         }
-    }
+        }
 
-    private void uploadImage(MultipartFile image, User user) throws SpedireException,
-            IOException, com.spedire.Spedire.Exception.SpedireException {
+private void uploadImage(MultipartFile image, User user) throws SpedireException,
+        IOException, com.spedire.Spedire.Exception.SpedireException {
         String imageUrl = cloudService.upload(image.getBytes());
         user.setProfileImage(imageUrl);
-    }
+        }
 
 
-    private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest)
-            throws IllegalAccessException, JsonPointerException {
+private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest)
+        throws IllegalAccessException, JsonPointerException {
         List<JsonPatchOperation> operations =new ArrayList<>();
         List<String> updateFields =
-                List.of("bankName", "accountName", "accountNumber", "email",
-                        "password", "profileImage", "firstName", "lastName", "phoneNumber",
-                        "streetName", "streetNumber", "landMark", "state", "city");
+        List.of("bankName", "accountName", "accountNumber", "email",
+        "password", "profileImage", "firstName", "lastName", "phoneNumber",
+        "streetName", "streetNumber", "landMark", "state", "city");
         Field[] fields = updateUserRequest.getClass().getDeclaredFields();
         for (Field field:fields) {
-            field.setAccessible(true);
+        field.setAccessible(true);
 
-            if (field.get(updateUserRequest)!=null&&
-                    !updateFields.contains(field.getName())){
-                var operation = new ReplaceOperation(
-                        new JsonPointer("/"+field.getName()),
-                        new TextNode(field.get(updateUserRequest).toString())
-                );
-                operations.add(operation);
-            }else if (field.get(updateUserRequest)!=null&&
-                    updateFields.contains(field.getName())&&!field.getName().equals("profileImage")){
-                ReplaceOperation operation;
-                if (field.getName().contains("bank")||field.getName().contains("account")){
-                    operation = new ReplaceOperation(
-                            new JsonPointer("/bankAccount/" + field.getName()),
-                            new TextNode(field.get(updateUserRequest).toString())
-                    );
-                }else{
-                    operation = new ReplaceOperation(
-                            new JsonPointer("/address/" + field.getName()),
-                            new TextNode(field.get(updateUserRequest).toString())
-                    );
-                }
-                operations.add(operation);
-            }
+        if (field.get(updateUserRequest)!=null&&
+        !updateFields.contains(field.getName())){
+        var operation = new ReplaceOperation(
+        new JsonPointer("/"+field.getName()),
+        new TextNode(field.get(updateUserRequest).toString())
+        );
+        operations.add(operation);
+        }else if (field.get(updateUserRequest)!=null&&
+        updateFields.contains(field.getName())&&!field.getName().equals("profileImage")){
+        ReplaceOperation operation;
+        if (field.getName().contains("bank")||field.getName().contains("account")){
+        operation = new ReplaceOperation(
+        new JsonPointer("/bankAccount/" + field.getName()),
+        new TextNode(field.get(updateUserRequest).toString())
+        );
+        }else{
+        operation = new ReplaceOperation(
+        new JsonPointer("/address/" + field.getName()),
+        new TextNode(field.get(updateUserRequest).toString())
+        );
+        }
+        operations.add(operation);
+        }
         }
         return new JsonPatch(operations);
-    }
-}
+        }
+        }

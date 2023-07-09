@@ -19,10 +19,14 @@ import static com.spedire.Spedire.utils.Constants.*;
 public class BeanConfig {
    @Value(SENDINBLUE_API_KEY)
     private String mailApiKey;
+<<<<<<< HEAD
 
 
      @Value(JWT_SECRET)
 
+=======
+   @Value(JWT_SECRET)
+>>>>>>> 1ffd05eddb23e8efb0ee49a79b6f6df9b2c46e0b
     private String jwt_secret;
     @Value(CLOUDINARY_API_KEY)
     private String apiKey;
@@ -34,7 +38,6 @@ public class BeanConfig {
 
     @Bean
     public ModelMapper modelMapper(){
-        log.info(mailApiKey + "apik ekyyy");
         return new ModelMapper();
     }
 
