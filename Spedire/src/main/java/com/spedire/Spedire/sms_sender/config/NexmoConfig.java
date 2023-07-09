@@ -16,14 +16,8 @@ public class NexmoConfig {
     private String authToken;
     @Value(TWILO_NUMBER)
     private String twilioNumber;
-    @Value(VONAGE_API_KEYS)
-    private String VONAGE_API_KEY;
-    @Value(VONAGE_API_SECRETS)
-    private String VONAGE_API_SECRET;
-    @Bean
-    public NexmoClient nexmoClient(){
-        return NexmoClient.builder().apiKey(VONAGE_API_KEY).apiSecret(VONAGE_API_SECRET).build();
-    }
+
+
     @Bean
     public TwilioConfig twilioConfig(){
         return new TwilioConfig(accountSid,authToken,twilioNumber);

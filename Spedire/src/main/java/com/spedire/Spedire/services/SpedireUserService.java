@@ -5,6 +5,7 @@ import com.spedire.Spedire.dtos.request.RegistrationRequest;
 import com.spedire.Spedire.dtos.request.SendEmailRequest;
 import com.spedire.Spedire.dtos.request.Sender;
 import com.spedire.Spedire.dtos.response.ApiResponse;
+import com.spedire.Spedire.dtos.response.DashBoardDto;
 import com.spedire.Spedire.dtos.response.FindUserResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
@@ -27,6 +28,7 @@ import java.util.*;
 import static com.spedire.Spedire.services.TokenService.generateToken;
 import static com.spedire.Spedire.utils.Constants.*;
 import static com.spedire.Spedire.utils.Constants.FRONTEND_BASE_URL;
+import static com.spedire.Spedire.utils.ExceptionUtils.CURRENT_USER_NOT_FOUND;
 import static com.spedire.Spedire.utils.ResponseUtils.*;
 
 @Service
@@ -70,10 +72,12 @@ public class SpedireUserService implements UserService {
     }
 
     @Override
-    public ApiResponse getCurrentUser(String phoneNumber) {
+    public ApiResponse getCurrentUser(String phoneNumber) throws SpedireException {
         User foundUser = userRepository.findByPhoneNumber(phoneNumber);
-
-        return ApiResponse.builder().success(true).message("User Found").data(foundUser).build();
+        if (foundUser == null) throw new SpedireException(CURRENT_USER_NOT_FOUND);
+        DashBoardDto dashBoardDto = DashBoardDto.builder().
+                firstName(foundUser.getFirstName()).build();
+        return ApiResponse.builder().success(true).message("User Found").data(dashBoardDto).build();
     }
 
     @Override

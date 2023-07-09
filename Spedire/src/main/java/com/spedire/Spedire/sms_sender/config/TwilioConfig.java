@@ -2,6 +2,7 @@ package com.spedire.Spedire.sms_sender.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.context.annotation.Configuration;
 
 @AllArgsConstructor
 @Getter

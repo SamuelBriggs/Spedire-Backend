@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
-import static com.spedire.Spedire.models.Role.NEW_USER;
+
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
 import static com.spedire.Spedire.utils.Constants.ZERO_STRING;
@@ -71,9 +71,12 @@ public class SmsServiceImpl implements SmsService {
 
     @Override
     public SendSmsResponse verifyOtp(String aToken, String otp) throws SpedireException, PhoneNumberNotVerifiedException {
+      log.info(aToken + "atoken");
        String token = aToken.split(" ")[1];
+       log.info(token + " split in the middle");
         String phoneNumber = validateToken(token);
         String phone = phoneNumber.substring(2,12);
+        log.info(phone + "this number");
         Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
         VerificationCheck verification = VerificationCheck.creator(
                         twilioConfig.getTwilioNumber())
@@ -82,11 +85,10 @@ public class SmsServiceImpl implements SmsService {
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
            ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
-<<<<<<< HEAD
-            return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY+ phoneNumber).success(true).data((String) newUser.getData()).build();
-=======
+
+
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
->>>>>>> ce8b91e6dd16e1bf16139c1c783b7a6485a5c13d
+
         } else {
             throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
 
@@ -118,13 +120,13 @@ public class SmsServiceImpl implements SmsService {
     }
     private String generateJwtToken(String phoneNumber) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("role", NEW_USER.toString());
+        map.put("role", "NEW_USER");
 
        return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).
                 withClaim("phoneNumber", phoneNumber).
                withClaim("Roles", map).
-                sign(Algorithm.HMAC512("samuel".getBytes()));
+                sign(Algorithm.HMAC512("spedire"));
     }
     private  String validateToken(String token) throws SpedireException {
 

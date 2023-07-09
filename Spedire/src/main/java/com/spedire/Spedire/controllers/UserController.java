@@ -46,7 +46,12 @@ public class UserController {
 
         String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         String newPhoneNumber = phoneNumber.substring(1, phoneNumber.length()-1);
-        ApiResponse apiResponse = userService.getCurrentUser(newPhoneNumber);
+        ApiResponse apiResponse = null;
+        try {
+            apiResponse = userService.getCurrentUser(newPhoneNumber);
+        } catch (SpedireException e) {
+            throw new RuntimeException();
+        }
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
 
     }
