@@ -1,11 +1,9 @@
 package com.spedire.Spedire.sms_services;
 
 
-import com.nexmo.client.NexmoClientException;
 import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.exceptions.SpedireException;
-import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
 import com.spedire.Spedire.services.UserService;
 import com.spedire.Spedire.sms_sender.dtos.request.SmsNotificationRequest;
 import com.spedire.Spedire.sms_sender.sms_service.SmsService;
@@ -13,8 +11,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,8 +33,13 @@ private UserService userService;
 public void verifyOtpTest(){
     OtpVerificationRequest request = new OtpVerificationRequest();
 
+<<<<<<< HEAD
     String otp ="244271";
     String token ="Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4NDk0NDEsImV4cCI6MTY4ODk2OTQ0MSwicGhvbmVOdW1iZXIiOiIwOTA1MTI0MzEzMyIsIlJvbGVzIjp7InJvbGUiOiJORVdfVVNFUiJ9fQ.7L-OT-5RXskYMyJ1GwBKfjE04m_NOWTjbC1vN6x5G6PQzO8yWj9TiqzwwOt24fbkh8YDuTu6_dwquIHArgtc-A";
+=======
+    String otp ="502543";
+    String token ="Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4NDkyMzYsImV4cCI6MTY4ODk2OTIzNiwicGhvbmVOdW1iZXIiOiIwNzA2OTMxMDAwNiIsIlJvbGVzIjp7InJvbGUiOiJBRE1JTiJ9fQ.s5zHM924B5wqtrl2m9HoOGHEIVWDDm1mzk4rsv6W5YoK-U_yjeFJh0d6EeQAvWkPScUJQGcqWrAAwXEUiR0s0Q";
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
     var response = smsService.verifyOtp(token, otp);
     assertNotNull(response);
 

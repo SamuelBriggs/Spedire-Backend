@@ -1,9 +1,14 @@
 package com.spedire.Spedire.controllers;
 
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
+<<<<<<< HEAD
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
+=======
+import com.spedire.Spedire.dtos.request.UpdateUserRequest;
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
 import com.spedire.Spedire.exceptions.SpedireException;
+import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
 @RestController
 @RequestMapping("/api/v1/user")
 @AllArgsConstructor
@@ -19,12 +27,16 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
+<<<<<<< HEAD
 
 
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
 
+=======
+    public ResponseEntity<?> registerUser(@RequestHeader ("Authorization") String token, @RequestBody RegistrationRequest registrationRequest) {
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
         try {
-            RegistrationResponse response = userService.register(request);
+            var response = userService.register(token, registrationRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (SpedireException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -32,15 +44,16 @@ public class UserController {
     }
 
     @GetMapping("/checkUserExistence")
-    public ResponseEntity<?> findUserByEmail(@RequestParam("email") String email) throws SpedireException {
+    public ResponseEntity<?> findUserByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber) throws SpedireException {
         try {
-            RegistrationResponse response = userService.checkUserExistence(email);
+            boolean response = userService.findUserByPhoneNumber(phoneNumber);
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (SpedireException e) {
             return ResponseEntity.badRequest().body("User with the provided email already exists, Kindly login");
         }
     }
 
+<<<<<<< HEAD
     @GetMapping("/getCurrentUser")
     public ResponseEntity<?> getCurrentUser(){
 
@@ -60,4 +73,25 @@ public class UserController {
 
 
 
+=======
+    @GetMapping("/findByEmail")
+    public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws SpedireException {
+        try {
+            User response = userService.findUserByEmail(email);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (SpedireException e) {
+            return ResponseEntity.badRequest().body("User with the provided email already exists, Kindly login");
+        }
+    }
+
+    @PatchMapping("updateProfile")
+    public ResponseEntity<?> updateProfile(@RequestParam String id, @ModelAttribute UpdateUserRequest updateUserRequest){
+        try{
+            var response = userService.updateUserDetails(id, updateUserRequest);
+            return ResponseEntity.ok(response);
+        }catch (Exception exception){
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
 }

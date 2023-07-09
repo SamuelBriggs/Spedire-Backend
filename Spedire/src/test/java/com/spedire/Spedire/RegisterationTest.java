@@ -20,16 +20,19 @@ public class RegisterationTest {
 
         @BeforeEach
         public void setUp() throws SpedireException {
-            response = new RegistrationResponse();
+
+        }
+        @Test
+        public void testThatUserCanRegister() throws SpedireException {
             RegistrationRequest request = new RegistrationRequest();
             request.setEmail("spediretech@gmail.com");
             request.setFirstName("Michael");
             request.setLastName("Josh");
             request.setPassword("Mich1234!");
-            userService.register(request);
-        }
-        @Test
-        public void testThatUserCanRegister() throws SpedireException {
+
+            var response = userService
+                    .register("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4NDkyMzYsImV4cCI6MTY4ODk2OTIzNiwicGhvbmVOdW1iZXIiOiIwNzA2OTMxMDAwNiIsIlJvbGVzIjp7InJvbGUiOiJBRE1JTiJ9fQ.s5zHM924B5wqtrl2m9HoOGHEIVWDDm1mzk4rsv6W5YoK-U_yjeFJh0d6EeQAvWkPScUJQGcqWrAAwXEUiR0s0Q", request);
+            System.out.println(response.toString());
             assertThat(response).isNotNull();
         }
 }
