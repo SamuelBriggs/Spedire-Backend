@@ -28,14 +28,12 @@ public class JwtUtils {
         DecodedJWT decodedJwt = validateToken(token);
             return decodedJwt.getClaims();
     }
-<<<<<<< HEAD
+
     private DecodedJWT validateToken(String token){
-        return JWT.require(Algorithm.HMAC512(secret))
-=======
+        return JWT.require(Algorithm.HMAC512(secret));
     private static DecodedJWT validateToken(String token){
         System.out.println(token);
         return JWT.require(Algorithm.HMAC512("samuel".getBytes()))
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
                 .build().verify(token);
     }
 

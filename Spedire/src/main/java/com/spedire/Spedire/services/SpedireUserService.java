@@ -13,13 +13,11 @@ import com.github.fge.jsonpatch.JsonPatchOperation;
 import com.github.fge.jsonpatch.ReplaceOperation;
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ApiResponse;
-<<<<<<< HEAD
+
 import com.spedire.Spedire.dtos.response.DashBoardDto;
 import com.spedire.Spedire.dtos.response.FindUserResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
-=======
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
@@ -41,20 +39,17 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-<<<<<<< HEAD
 
 import static com.spedire.Spedire.services.TokenService.generateToken;
 import static com.spedire.Spedire.utils.Constants.*;
 import static com.spedire.Spedire.utils.Constants.FRONTEND_BASE_URL;
-import static com.spedire.Spedire.utils.ExceptionUtils.CURRENT_USER_NOT_FOUND;
-=======
-import static com.spedire.Spedire.models.Role.NEW_USER;
+import static com.spedire.Spedire.utils.ExceptionUtils.CURRENT_USER_NOT_FOUND;;
 import static com.spedire.Spedire.models.Role.SENDER;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.PHONE_NOT_VALID;
 import static com.spedire.Spedire.utils.Constants.*;
 import static com.spedire.Spedire.utils.ExceptionUtils.PROFILE_UPDATE_FAILED;
 import static com.spedire.Spedire.utils.ExceptionUtils.USER_WITH_ID_NOT_FOUND;
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
+
 import static com.spedire.Spedire.utils.ResponseUtils.*;
 import static java.time.Instant.now;
 
@@ -119,11 +114,15 @@ public class SpedireUserService implements UserService {
     }
 
     @Override
+    public boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException {
+        return false;
+    }
+
+    @Override
     public ApiResponse<?> saveNewUser(String phoneNumber) {
         User user = new User();
         user.setPhoneNumber(phoneNumber);
-        user.setRoles(new HashSet<>());
-<<<<<<< HEAD
+        user.setRoles(new HashSet<>());D
       //  user.getRoles().add(NEW_USER);
         var savedUser =userRepository.save(user);
         return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY).success(true).data(savedUser.getId()).build();
@@ -138,21 +137,10 @@ public class SpedireUserService implements UserService {
         return ApiResponse.builder().success(true).message("User Found").data(dashBoardDto).build();
     }
 
-=======
-        user.getRoles().add(NEW_USER);
-        var savedUser = userRepository.save(user);
-        return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY)
-                .success(true).data(savedUser.getId()).build();
-    }
-
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
     @Override
-    public boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException {
-        User foundUser = userRepository.findByPhoneNumber(phoneNumber);
-        return foundUser != null;
+    public ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest) throws SpedireException, JsonPointerException, IllegalAccessException {
+        return null;
     }
-
-<<<<<<< HEAD
 
     private void buildRegisterRequest(RegistrationRequest request, User user) {
         user.setFirstName(request.getFirstName());
@@ -171,8 +159,7 @@ public class SpedireUserService implements UserService {
     }
 
 
-=======
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
+
     public SendEmailRequest buildEmailRequest(User user) throws SpedireException {
         SendEmailRequest request = new SendEmailRequest();
         Sender sender = new Sender(APP_NAME, APP_EMAIL);

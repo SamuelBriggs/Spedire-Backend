@@ -22,11 +22,7 @@ public class GeneralConfig {
 
     @Bean
     public JwtUtils jwtUtils(){
-<<<<<<< HEAD
         return new JwtUtils(jwt_secret);
-=======
-        return new JwtUtils();
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
     }
 
 
