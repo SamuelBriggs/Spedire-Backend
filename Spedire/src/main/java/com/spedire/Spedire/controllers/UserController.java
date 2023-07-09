@@ -1,15 +1,25 @@
 package com.spedire.Spedire.controllers;
 
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
+<<<<<<< HEAD
+import com.spedire.Spedire.dtos.response.ApiResponse;
+import com.spedire.Spedire.dtos.response.RegistrationResponse;
+=======
 import com.spedire.Spedire.dtos.request.UpdateUserRequest;
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
 @RestController
 @RequestMapping("/api/v1/user")
 @AllArgsConstructor
@@ -17,7 +27,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
+<<<<<<< HEAD
+
+
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
+
+=======
     public ResponseEntity<?> registerUser(@RequestHeader ("Authorization") String token, @RequestBody RegistrationRequest registrationRequest) {
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
         try {
             var response = userService.register(token, registrationRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -36,6 +53,27 @@ public class UserController {
         }
     }
 
+<<<<<<< HEAD
+    @GetMapping("/getCurrentUser")
+    public ResponseEntity<?> getCurrentUser(){
+
+        String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String newPhoneNumber = phoneNumber.substring(1, phoneNumber.length()-1);
+        ApiResponse apiResponse = null;
+        try {
+            apiResponse = userService.getCurrentUser(newPhoneNumber);
+        } catch (SpedireException e) {
+            throw new RuntimeException();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+
+    }
+
+
+
+
+
+=======
     @GetMapping("/findByEmail")
     public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws SpedireException {
         try {
@@ -55,4 +93,5 @@ public class UserController {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
     }
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
 }

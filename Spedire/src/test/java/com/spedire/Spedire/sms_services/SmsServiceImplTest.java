@@ -24,7 +24,7 @@ private UserService userService;
 
 @Test
     public void sendSmsTest() throws PhoneNumberNotVerifiedException, SpedireException {
-    var response = smsService.sendSmsWithTwilio("07069310006");
+    var response = smsService.sendSmsWithTwilio("09051243133");
     System.out.println(response.toString());
     assertNotNull(response);
 }
@@ -33,8 +33,13 @@ private UserService userService;
 public void verifyOtpTest(){
     OtpVerificationRequest request = new OtpVerificationRequest();
 
+<<<<<<< HEAD
+    String otp ="244271";
+    String token ="Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4NDk0NDEsImV4cCI6MTY4ODk2OTQ0MSwicGhvbmVOdW1iZXIiOiIwOTA1MTI0MzEzMyIsIlJvbGVzIjp7InJvbGUiOiJORVdfVVNFUiJ9fQ.7L-OT-5RXskYMyJ1GwBKfjE04m_NOWTjbC1vN6x5G6PQzO8yWj9TiqzwwOt24fbkh8YDuTu6_dwquIHArgtc-A";
+=======
     String otp ="502543";
     String token ="Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4NDkyMzYsImV4cCI6MTY4ODk2OTIzNiwicGhvbmVOdW1iZXIiOiIwNzA2OTMxMDAwNiIsIlJvbGVzIjp7InJvbGUiOiJBRE1JTiJ9fQ.s5zHM924B5wqtrl2m9HoOGHEIVWDDm1mzk4rsv6W5YoK-U_yjeFJh0d6EeQAvWkPScUJQGcqWrAAwXEUiR0s0Q";
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
     var response = smsService.verifyOtp(token, otp);
     assertNotNull(response);
 

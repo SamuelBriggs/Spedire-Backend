@@ -5,6 +5,7 @@ public class ExceptionUtils {
     public static final String USER_WITH_ID_NOT_FOUND = "User with id %d not found";
     public static final String PROFILE_UPDATE_FAILED="Profile Update Failed";
     public static final String FAILED_TO_GET_ACTIVATION_LINK= "Failed to send activation link";
+    public static final String CURRENT_USER_NOT_FOUND = "Current user cannot be found";
 
     public static final String ACCOUNT_VERIFICATION_FAILED="Account verification failed";
 

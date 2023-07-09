@@ -1,5 +1,6 @@
 package com.spedire.Spedire.security;
 
+import com.spedire.Spedire.models.Role;
 import com.spedire.Spedire.security.filter.SpedireAuthenticationFilter;
 import com.spedire.Spedire.security.filter.SpedireAuthorizationFilter;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import org.springframework.security.web.session.SessionManagementFilter;
 
 import static org.springframework.http.HttpMethod.POST;
 
@@ -49,15 +52,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         UsernamePasswordAuthenticationFilter authenticationFilter = new SpedireAuthenticationFilter(authenticationManager, jwtUtil, null, null
-        );
+                );
+        var authorizationFilter =new SpedireAuthorizationFilter(jwtUtil);
+
         return httpSecurity.csrf(AbstractHttpConfigurer::disable).
-                cors(Customizer.withDefaults()).
-                sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
-                addFilterBefore(new SpedireAuthorizationFilter(), SpedireAuthenticationFilter.class)
+               cors(Customizer.withDefaults()).
+                sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(authorizationFilter, SpedireAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/register", "/api/user/welcome").permitAll())
+
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/**").permitAll()).
+                authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
+                        hasAnyAuthority(String.valueOf(Role.ADMIN), Role.USER.name()))
+
                 .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
                         hasAnyRole("ADMIN", "USER")).
+
                 build();
 
     }

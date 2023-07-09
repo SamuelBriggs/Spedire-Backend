@@ -9,9 +9,12 @@ import com.spedire.Spedire.Exception.SpedireException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 
 import java.util.Map;
+
+import static com.spedire.Spedire.utils.Constants.JWT_SECRET;
 
 @AllArgsConstructor
 @Getter
@@ -19,13 +22,20 @@ import java.util.Map;
 public class JwtUtils {
     private final String secret ="samuel";
 
-    public static Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {
+
+
+    public  Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {
         DecodedJWT decodedJwt = validateToken(token);
             return decodedJwt.getClaims();
     }
+<<<<<<< HEAD
+    private DecodedJWT validateToken(String token){
+        return JWT.require(Algorithm.HMAC512(secret))
+=======
     private static DecodedJWT validateToken(String token){
         System.out.println(token);
         return JWT.require(Algorithm.HMAC512("samuel".getBytes()))
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
                 .build().verify(token);
     }
 

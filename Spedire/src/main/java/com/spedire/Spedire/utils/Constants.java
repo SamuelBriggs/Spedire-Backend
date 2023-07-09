@@ -13,6 +13,10 @@ public class Constants {
     public static final String SUBJECT="subject";
     public static  final String HTML_CONTENT_VALUE = "htmlContent";
     public static  final String ZERO_STRING ="0";
+<<<<<<< HEAD
+
+    public static final String JWT_SECRET = "${jwt.secret}";
+=======
     public static final String CLOUDINARY_IMAGE_URL="secure_url";
     public static final String CLOUDINARY_API_KEY = "${cloudinary.api.key}";
     public static final String CLOUDINARY_CLOUD_NAME="${cloudinary.cloud.name}";
@@ -27,4 +31,5 @@ public class Constants {
     public static final String TWILIO_NUMBER = "${twilio.number}";
     public static final String EMAIL_NOT_FOUND = "Email not found";
 
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
 }

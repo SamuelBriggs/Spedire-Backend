@@ -16,6 +16,11 @@ public class NexmoConfig {
     private String authToken;
     @Value(TWILO_NUMBER)
     private String twilioNumber;
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
     @Bean
     public TwilioConfig twilioConfig(){
         return new TwilioConfig(accountSid,authToken,twilioNumber);
