@@ -12,14 +12,12 @@ public interface UserService {
 
     User findUserByEmail(String request) throws SpedireException;
     boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException;
-<<<<<<< HEAD
-    ApiResponse saveNewUser(String phoneNumber);
 
-    ApiResponse getCurrentUser(String phoneNumber) throws SpedireException;
-
-=======
-    ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest) throws SpedireException, JsonPointerException, IllegalAccessException;
     ApiResponse<?> saveNewUser(String phoneNumber);
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
+
+    ApiResponse<?> getCurrentUser(String phoneNumber) throws SpedireException;
+
+    ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest) throws SpedireException, JsonPointerException, IllegalAccessException;
+
 
 }
