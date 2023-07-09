@@ -33,8 +33,8 @@ private UserService userService;
 public void verifyOtpTest(){
     OtpVerificationRequest request = new OtpVerificationRequest();
 
-    String otp ="596489";
-    String token ="eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg3NTM1NjksImV4cCI6MTY4ODg3MzU2OSwicGhvbmVOdW1iZXIiOiIwODEzODczMjUwMyJ9.DdXFPI9-jIadGKCuXUDEYocyD5NLRgfUW59tRI4RAwhosRfeva1py8dmhDzZyt_dhPmzZLWuUcv_7JP2rXxC2w";
+    String otp ="502543";
+    String token ="Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4NDkyMzYsImV4cCI6MTY4ODk2OTIzNiwicGhvbmVOdW1iZXIiOiIwNzA2OTMxMDAwNiIsIlJvbGVzIjp7InJvbGUiOiJBRE1JTiJ9fQ.s5zHM924B5wqtrl2m9HoOGHEIVWDDm1mzk4rsv6W5YoK-U_yjeFJh0d6EeQAvWkPScUJQGcqWrAAwXEUiR0s0Q";
     var response = smsService.verifyOtp(token, otp);
     assertNotNull(response);
 

@@ -31,7 +31,7 @@ public class RegisterationTest {
             request.setPassword("Mich1234!");
 
             var response = userService
-                    .register("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg3NTM1NjksImV4cCI6MTY4ODg3MzU2OSwicGhvbmVOdW1iZXIiOiIwODEzODczMjUwMyJ9.DdXFPI9-jIadGKCuXUDEYocyD5NLRgfUW59tRI4RAwhosRfeva1py8dmhDzZyt_dhPmzZLWuUcv_7JP2rXxC2w", request);
+                    .register("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4NDkyMzYsImV4cCI6MTY4ODk2OTIzNiwicGhvbmVOdW1iZXIiOiIwNzA2OTMxMDAwNiIsIlJvbGVzIjp7InJvbGUiOiJBRE1JTiJ9fQ.s5zHM924B5wqtrl2m9HoOGHEIVWDDm1mzk4rsv6W5YoK-U_yjeFJh0d6EeQAvWkPScUJQGcqWrAAwXEUiR0s0Q", request);
             System.out.println(response.toString());
             assertThat(response).isNotNull();
         }

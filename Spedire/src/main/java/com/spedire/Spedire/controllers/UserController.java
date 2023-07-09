@@ -17,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestHeader(value = "token") String token, @RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<?> registerUser(@RequestHeader ("Authorization") String token, @RequestBody RegistrationRequest registrationRequest) {
         try {
             var response = userService.register(token, registrationRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);

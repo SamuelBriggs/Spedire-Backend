@@ -72,6 +72,7 @@ public class SmsServiceImpl implements SmsService {
        String token = aToken.split(" ")[1];
         String phoneNumber = validateToken(token);
         String phone = phoneNumber.substring(2,12);
+
         Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
         VerificationCheck verification = VerificationCheck.creator(
                         twilioConfig.getTwilioNumber())
@@ -79,7 +80,7 @@ public class SmsServiceImpl implements SmsService {
                 .setCode(otp)
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
-           ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
+           ApiResponse<?> newUser= userService.saveNewUser(ZERO_STRING+phone);
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
         } else {
             throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
@@ -112,7 +113,7 @@ public class SmsServiceImpl implements SmsService {
     }
     private String generateJwtToken(String phoneNumber) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("role", NEW_USER.toString());
+        map.put("role", "NEW_USER");
 
        return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).

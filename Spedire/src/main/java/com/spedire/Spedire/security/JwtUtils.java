@@ -24,6 +24,7 @@ public class JwtUtils {
             return decodedJwt.getClaims();
     }
     private static DecodedJWT validateToken(String token){
+        System.out.println(token);
         return JWT.require(Algorithm.HMAC512("samuel".getBytes()))
                 .build().verify(token);
     }

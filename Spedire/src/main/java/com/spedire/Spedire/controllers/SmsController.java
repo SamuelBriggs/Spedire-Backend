@@ -1,6 +1,5 @@
 package com.spedire.Spedire.controllers;
 
-import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.dtos.request.VerifyOtpRequest;
 import com.spedire.Spedire.dtos.request.VerifyPhoneNumberRequest;
@@ -32,6 +31,7 @@ public class SmsController {
     }
     @PostMapping("/verify-otp")
     public ResponseEntity<SendSmsResponse> verifyOtp(@RequestHeader("Authorization") String token, @RequestBody VerifyOtpRequest request){
+        System.out.println(token);
         try{
             SendSmsResponse response = smsService.verifyOtp(token, request.getOtpNumber());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);

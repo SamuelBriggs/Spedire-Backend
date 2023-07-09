@@ -30,7 +30,5 @@ public class RegistrationRequest {
     @NotBlank(message = "Last name is required.")
     @Size(min = 2, message = "Last name should have at least 2 letters.")
     private String lastName;
-    private Address addressId;
-    private String phoneNumber;
 
 }

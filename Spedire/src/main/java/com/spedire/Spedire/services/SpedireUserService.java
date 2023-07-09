@@ -56,8 +56,9 @@ public class SpedireUserService implements UserService {
     public static VerifyEmailTemplate verifyEmailTemplate = new VerifyEmailTemplate();
 
     @Override
-    public ApiResponse<?> register(String token, RegistrationRequest registrationRequest)
+    public ApiResponse<?> register(String aToken, RegistrationRequest registrationRequest)
             throws SpedireException {
+        String token = aToken.split(" ")[1];
         DecodedJWT decodedJWT = jwtUtil.verifyToken(token);
         String phoneNumber = decodedJWT.getClaim("phoneNumber").asString();
         System.out.println(phoneNumber);

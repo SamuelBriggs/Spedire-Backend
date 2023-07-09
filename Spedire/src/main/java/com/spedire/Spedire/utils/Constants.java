@@ -19,10 +19,9 @@ public class Constants {
     public static final String CLOUDINARY_API_SECRET="${cloudinary.api.secret}";
     public static final String CLOUD_NAME_VALUE = "cloud_name";
     public static final String CLOUD_API_KEY_VALUE = "api_key";
-    public static final String JWT_SIGNING_SECRET = "${jwt.signing.secret}";
+    public static final String JWT_SECRET = "${jwt.secret}";
     public static final String SENDINBLUE_API_KEY = "${sendinblue.api.key}";
     public static final String API_SECRET_VALUE="api_secret";
-
     public static final String TWILIO_ACCOUNT_SID = "${twilio.accountSid}";
     public static final String TWILIO_AUTH_TOKEN = "${twilio.authToken}";
     public static final String TWILIO_NUMBER = "${twilio.number}";

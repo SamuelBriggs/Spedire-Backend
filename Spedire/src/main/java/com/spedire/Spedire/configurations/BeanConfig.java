@@ -17,7 +17,7 @@ import static com.spedire.Spedire.utils.Constants.*;
 public class BeanConfig {
    @Value(SENDINBLUE_API_KEY)
     private String mailApiKey;
-     @Value(JWT_SIGNING_SECRET)
+     @Value(JWT_SECRET)
     private String jwt_secret;
     @Value(CLOUDINARY_API_KEY)
     private String apiKey;
