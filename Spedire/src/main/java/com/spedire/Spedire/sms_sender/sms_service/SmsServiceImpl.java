@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.spedire.Spedire.Exception.SpedireException;
-import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
@@ -24,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
-import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
+import static com.spedire.Spedire.utils.Constants.USER;
 import static com.spedire.Spedire.utils.Constants.ZERO_STRING;
 import static com.spedire.Spedire.utils.ResponseUtils.USER_ALREADY_EXIST;
 import static java.time.Instant.now;
@@ -38,6 +37,8 @@ import static java.time.Instant.now;
 public class SmsServiceImpl implements SmsService {
     private final TwilioConfig twilioConfig;
     private final UserService userService;
+
+    private final JwtUtils jwtUtils;
 
 
 
@@ -79,8 +80,9 @@ public class SmsServiceImpl implements SmsService {
                 .setCode(otp)
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
-           ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
+           ApiResponse<?> newUser= userService.saveNewUser(ZERO_STRING+phone);
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
+
         } else {
             throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
 
@@ -112,16 +114,18 @@ public class SmsServiceImpl implements SmsService {
     }
     private String generateJwtToken(String phoneNumber) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("role", NEW_USER.toString());
+        map.put("role", USER);
 
        return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).
                 withClaim("phoneNumber", phoneNumber).
-               withClaim("Roles", map).
+                withClaim("Roles", map).
                 sign(Algorithm.HMAC512("samuel".getBytes()));
+
     }
-    private static String validateToken(String token) throws SpedireException {
-        Map<String, Claim> map = JwtUtils.extractClaimsFromToken(token);
+    private  String validateToken(String token) throws SpedireException {
+
+        Map<String, Claim> map = jwtUtils.extractClaimsFromToken(token);
         Claim phoneNumber = map.get("phoneNumber");
         return phoneNumber.toString();
     }

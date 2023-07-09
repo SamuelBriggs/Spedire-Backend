@@ -1,6 +1,5 @@
-package com.spedire.Spedire.sms_sender.controller;
+package com.spedire.Spedire.controllers;
 
-import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.dtos.request.VerifyOtpRequest;
 import com.spedire.Spedire.dtos.request.VerifyPhoneNumberRequest;
@@ -9,13 +8,11 @@ import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
 import com.spedire.Spedire.sms_sender.dtos.response.SendSmsResponse;
 import com.spedire.Spedire.sms_sender.sms_service.SmsService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Slf4j
 @AllArgsConstructor
 @RequestMapping("/api/v1/user")
 public class SmsController {
@@ -34,18 +31,9 @@ public class SmsController {
     }
     @PostMapping("/verify-otp")
     public ResponseEntity<SendSmsResponse> verifyOtp(@RequestHeader("Authorization") String token, @RequestBody VerifyOtpRequest request){
+        System.out.println(token);
         try{
             SendSmsResponse response = smsService.verifyOtp(token, request.getOtpNumber());
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(e.getMessage()).build());
-        }
-
-    }
-    @GetMapping("/resend-otp")
-    public ResponseEntity<SendSmsResponse> resendOtp(@RequestHeader("Authorization") String token){
-        try{
-            SendSmsResponse response = smsService.resendOtp(token);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(e.getMessage()).build());

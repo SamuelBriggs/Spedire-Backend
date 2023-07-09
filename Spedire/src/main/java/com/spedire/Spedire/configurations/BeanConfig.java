@@ -1,7 +1,9 @@
 package com.spedire.Spedire.configurations;
 
-import com.spedire.Spedire.utils.JwtUtil;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,11 +15,18 @@ import static com.spedire.Spedire.utils.Constants.*;
 
 @Getter
 @Configuration
+@Slf4j
 public class BeanConfig {
-   @Value(SENDIN_BLU_API_KEY)
+   @Value(SENDINBLUE_API_KEY)
     private String mailApiKey;
-     @Value(JWT_SIGNING_SECRET)
+   @Value(JWT_SECRET)
     private String jwt_secret;
+    @Value(CLOUDINARY_API_KEY)
+    private String apiKey;
+    @Value(CLOUDINARY_API_SECRET)
+    private String apiSecret;
+    @Value(CLOUDINARY_CLOUD_NAME)
+    private String cloudName;
 
 
     @Bean
@@ -27,6 +36,7 @@ public class BeanConfig {
 
     @Bean
     public EmailConfig mailConfig(){
+
         return new EmailConfig(mailApiKey);
     }
 
@@ -34,11 +44,12 @@ public class BeanConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
     @Bean
-    public JwtUtil jwtUtil(){
-        return new JwtUtil(jwt_secret);
+    public Cloudinary cloudinary(){
+        return new Cloudinary(ObjectUtils.asMap(
+                CLOUD_NAME_VALUE, cloudName,
+                CLOUD_API_KEY_VALUE, apiKey,
+                API_SECRET_VALUE, apiSecret
+        ));
     }
-
-
 }
