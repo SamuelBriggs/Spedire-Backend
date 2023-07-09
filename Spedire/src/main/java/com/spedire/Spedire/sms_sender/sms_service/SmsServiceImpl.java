@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.spedire.Spedire.Exception.SpedireException;
-import com.spedire.Spedire.OtpConfig.dtos.request.OtpVerificationRequest;
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.exceptions.UserAlreadyExistsException;
@@ -24,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
-
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
+import static com.spedire.Spedire.utils.Constants.USER;
 import static com.spedire.Spedire.utils.Constants.ZERO_STRING;
 import static com.spedire.Spedire.utils.ResponseUtils.USER_ALREADY_EXIST;
 import static java.time.Instant.now;
@@ -71,16 +70,9 @@ public class SmsServiceImpl implements SmsService {
 
     @Override
     public SendSmsResponse verifyOtp(String aToken, String otp) throws SpedireException, PhoneNumberNotVerifiedException {
-      log.info(aToken + "atoken");
        String token = aToken.split(" ")[1];
-       log.info(token + " split in the middle");
         String phoneNumber = validateToken(token);
         String phone = phoneNumber.substring(2,12);
-<<<<<<< HEAD
-        log.info(phone + "this number");
-=======
-
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
         Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
         VerificationCheck verification = VerificationCheck.creator(
                         twilioConfig.getTwilioNumber())
@@ -88,13 +80,7 @@ public class SmsServiceImpl implements SmsService {
                 .setCode(otp)
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
-<<<<<<< HEAD
-           ApiResponse newUser= userService.saveNewUser(ZERO_STRING+phone);
-
-
-=======
            ApiResponse<?> newUser= userService.saveNewUser(ZERO_STRING+phone);
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
 
         } else {
@@ -128,18 +114,14 @@ public class SmsServiceImpl implements SmsService {
     }
     private String generateJwtToken(String phoneNumber) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("role", "NEW_USER");
+        map.put("role", USER);
 
        return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).
                 withClaim("phoneNumber", phoneNumber).
-<<<<<<< HEAD
-               withClaim("Roles", map).
-                sign(Algorithm.HMAC512("spedire"));
-=======
                 withClaim("Roles", map).
                 sign(Algorithm.HMAC512("samuel".getBytes()));
->>>>>>> 506e99c5c2e601512af8cf6dcd85c62f84b85b57
+
     }
     private  String validateToken(String token) throws SpedireException {
 
