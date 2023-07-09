@@ -14,7 +14,7 @@ public class TokenService {
     public static String generateToken(User user, String secret){
         return JWT.create()
                 .withIssuedAt(Instant.from(now()))
-                .withExpiresAt(now().plusSeconds(300L))
+                .withExpiresAt(now().plusSeconds(3600L))
                 .withClaim(ID, user.getId())
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }

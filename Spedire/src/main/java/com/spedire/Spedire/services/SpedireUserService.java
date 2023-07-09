@@ -114,8 +114,8 @@ public class SpedireUserService implements UserService {
                 .build().verify(token);
         if (decodedJWT == null) throw new PasswordResetFailedException(PASSWORD_RESET_FAILED);
         Claim claim = decodedJWT.getClaim(ID);
-        Long id = claim.asLong();
-        User user = userRepository.findById(String.valueOf(id)).orElseThrow(() ->
+        String id = claim.asString();
+        User user = userRepository.findById(id).orElseThrow(() ->
                 new PasswordResetFailedException(String.format(NOT_FOUND, id)));
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -171,7 +171,7 @@ public class SpedireUserService implements UserService {
         Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
         request.setSender(sender);
         request.setRecipients(Set.of(recipient));
-        request.setSubject(ACTIVATION_LINK_VALUE);
+        request.setSubject(PASSWORD_REST_VALUE);
         var link =  PASSWORD_RESET_BASE_URL+"?token="+token;
         request.setContent(resetPasswordEmailTemplate.buildEmail(user.getFirstName(), link));
         request.setToken(token);

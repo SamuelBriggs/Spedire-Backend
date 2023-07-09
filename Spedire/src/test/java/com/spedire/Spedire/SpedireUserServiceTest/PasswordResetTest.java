@@ -38,28 +38,30 @@ public class PasswordResetTest {
     private PasswordResetRequest passwordResetRequest = new PasswordResetRequest();
 
     @BeforeEach
-    public void setUp() throws SpedireException {
-        userService.saveNewUser("08028765443");
-        registrationRequest.setFirstName("you");
-        registrationRequest.setLastName("them");
-        registrationRequest.setEmail("gakkiterti@gufum.com");
-        registrationRequest.setPassword("Password12$");
-        registrationResponse = userService.register(registrationRequest);
+    public void setUp() {
+        registrationRequest.setFirstName("Zainab");
+        registrationRequest.setLastName("Alayande");
+        registrationRequest.setEmail("alayandezainab64@gmail.com");
+        registrationRequest.setPassword("Zainab87!");
     }
 
     @Test
-    public void forgotPasswordMethodSendMailToUser() throws SpedireException {
-        forgotPasswordRequest.setEmailAddress("gakkiterti@gufum.com");
+    public void userForgotPasswordMailToResetPasswordIsSentToUserTest() throws SpedireException {
+//        userService.saveNewUser("08181587649");
+//        registrationResponse = userService.register(registrationRequest);
+        forgotPasswordRequest.setEmailAddress("alayandezainab64@gmail.com");
         forgotPasswordResponse = userService.forgotPassword(forgotPasswordRequest);
         System.out.println("Response -> " + forgotPasswordResponse);
         assertThat(forgotPasswordResponse).isNotNull();
     }
 
+
     @Test
     public void userCanChangePasswordTest() throws EmailNotFoundException, PasswordResetFailedException {
         passwordResetRequest.setNewPassword("Abimbola64!");
         passwordResetRequest.setConfirmPassword("Abimbola64!");
-        passwordResetRequest.setToken("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4Mjc2MzgsImV4cCI6MTY4ODgyNzkzOCwiaWQiOiI2NGE5NzZmMzYxNThlNDExZDYxY2I4MzIifQ.i5lrks4d012rbAGPoV0hCa91vB4S9Ds4zLgNt9ewRVDO5f9jPJBMbCrVeJG6Hd6uEpiJXM-oQw7qsHhQNVA53g");
+        passwordResetRequest
+                .setToken("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODg4ODk4MTEsImV4cCI6MTY4ODg5MzQxMSwiaWQiOiI2NGFhNjlkMTAxZjRhNjQzN2UyNjEyNzgifQ.OpqqS4Ftv03RqITQmO73njJklfw1p6xLDuygizji_8AIkjAzonC2wF7KmUK3hh95R-dYvFEaStr1WhOW7f4nPQ");
         userService.resetPassword(passwordResetRequest);
     }
 }
