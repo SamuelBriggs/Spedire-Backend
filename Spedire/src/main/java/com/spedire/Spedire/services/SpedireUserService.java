@@ -15,6 +15,10 @@ import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.EmailNotFoundException;
 import com.spedire.Spedire.exceptions.PasswordResetFailedException;
+import com.spedire.Spedire.dtos.request.*;
+import com.spedire.Spedire.dtos.response.*;
+import com.spedire.Spedire.exceptions.EmailNotFoundException;
+import com.spedire.Spedire.exceptions.PasswordDoesNotMatchException;
 import com.spedire.Spedire.services.templates.ResetPasswordEmailTemplate;
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
 import com.spedire.Spedire.exceptions.SpedireException;
@@ -36,9 +40,14 @@ import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.models.Role.SENDER;
 import static com.spedire.Spedire.services.TokenService.generateToken;
 import static com.spedire.Spedire.utils.AppUtils.*;
+import static com.spedire.Spedire.utils.AppUtils.NOT_FOUND;
+import static com.spedire.Spedire.utils.AppUtils.PASSWORD_DOES_NOT_MATCH;
+import static com.spedire.Spedire.utils.AppUtils.PASSWORD_RESET_BASE_URL;
+import static com.spedire.Spedire.utils.AppUtils.PASSWORD_RESET_SUCCESSFUL;
 import static com.spedire.Spedire.utils.EmailConstants.*;
 import static com.spedire.Spedire.utils.EmailConstants.FRONTEND_BASE_URL;
 import static com.spedire.Spedire.utils.ResponseUtils.*;
+import static com.spedire.Spedire.utils.ResponseUtils.PASSWORD_RESET_LINK_SENT_SUCCESSFULLY;
 
 @Service
 @AllArgsConstructor
@@ -48,7 +57,7 @@ public class SpedireUserService implements UserService {
     private final EmailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-//    private String email;
+
     public static VerifyEmailTemplate verifyEmailTemplate = new VerifyEmailTemplate();
     private static ResetPasswordEmailTemplate resetPasswordEmailTemplate = new ResetPasswordEmailTemplate();
 

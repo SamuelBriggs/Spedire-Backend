@@ -13,7 +13,9 @@ import static com.spedire.Spedire.utils.EmailConstants.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class SendEmailRequest {
+
     @JsonProperty(SENDER)
     private Sender sender;
     @JsonProperty(TO)

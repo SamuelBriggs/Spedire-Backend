@@ -15,18 +15,12 @@ import static com.spedire.Spedire.security.SecretUtils.JWT_SIGNING_SECRET;
 @Configuration
 public class SpedireApplication {
 
-//	@Value(JWT_SIGNING_SECRET)
-//	private String jwt_secret;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpedireApplication.class, args);
 
 	}
 
-//	@Bean
-//	public JwtUtils jwtUtil() {
-//		return new JwtUtils(jwt_secret);
-//	}
 
 
 }

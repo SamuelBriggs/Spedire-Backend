@@ -30,7 +30,7 @@ public class RegisterationTest {
         }
 
         @Test
-        public void testThatUserCanRegister() throws SpedireException {
+        public void testThatUserCanRegister() {
             assertThat(response).isNotNull();
         }
 }

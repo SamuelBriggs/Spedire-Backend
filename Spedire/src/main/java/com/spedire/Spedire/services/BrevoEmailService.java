@@ -22,14 +22,15 @@ public class BrevoEmailService implements EmailService{
 
      @Override
     public SendEmailResponse sendMail(SendEmailRequest emailRequest) {
+         System.out.println();
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(API_KEY_VALUE,mailConfig.getMailApiKey());
-        httpHeaders.set("accept", APPLICATION_JSON_VALUE);
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        RequestEntity<SendEmailRequest> entity =
+         HttpHeaders httpHeaders = new HttpHeaders();
+         httpHeaders.set(API_KEY_VALUE,mailConfig.getMailApiKey());
+         httpHeaders.set("accept", APPLICATION_JSON_VALUE);
+         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+         RequestEntity<SendEmailRequest> entity =
                 new RequestEntity<>(emailRequest,httpHeaders, HttpMethod.POST, URI.create(EMAIL_URL));
-        ResponseEntity<SendEmailResponse> response =
+         ResponseEntity<SendEmailResponse> response =
                 restTemplate.postForEntity(EMAIL_URL, entity, SendEmailResponse.class);
 
         return response.getBody();

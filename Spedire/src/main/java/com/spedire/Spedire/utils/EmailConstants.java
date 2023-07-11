@@ -13,6 +13,14 @@ public class EmailConstants {
     public static final String TO = "to";
     public static final String SUBJECT="subject";
     public static  final String HTML_CONTENT_VALUE = "htmlContent";
+
     public static  final String ZERO_STRING = "0";
+
+
+    public static  final String NOT_FOUND ="Email not Found";
+    public static  final String PASSWORD_RESET_LINK_SENT_SUCCESSFULLY ="Password reset link sent to %s";
+    public static  final String PASSWORD_DOES_NOT_MATCH ="Password does not match";
+    public static  final String PASSWORD_RESET_SUCCESSFUL ="Password reset successful";
+    public static  final String PASSWORD_RESET_BASE_URL ="http://localhost:3000/changepassword";
 
 }
