@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFICATION_ERROR;
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
@@ -84,7 +85,7 @@ public class SmsServiceImpl implements SmsService {
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
 
         } else {
-            throw new PhoneNumberNotVerifiedException(SMS_SEND_FAILED + phoneNumber);
+            throw new PhoneNumberNotVerifiedException(String.format(OTP_VERIFICATION_ERROR, phoneNumber));
 
         }
     }

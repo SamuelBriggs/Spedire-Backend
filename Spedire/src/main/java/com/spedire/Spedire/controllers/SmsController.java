@@ -31,7 +31,6 @@ public class SmsController {
     }
     @PostMapping("/verify-otp")
     public ResponseEntity<SendSmsResponse> verifyOtp(@RequestHeader("Authorization") String token, @RequestBody VerifyOtpRequest request){
-        System.out.println(token);
         try{
             SendSmsResponse response = smsService.verifyOtp(token, request.getOtpNumber());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);

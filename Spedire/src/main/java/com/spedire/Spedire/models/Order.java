@@ -15,12 +15,11 @@ import java.time.LocalDateTime;
 public class Order {
     @Id
     private String id;
-    private User senderId;
-    private User carrierId;
+    private String senderId;
+    private String carrierId;
     private Payment paymentId;
-    private Address destination;
-    @Field("location")
-    private Location coordinates;
+    private PickUp pickUp;
+    private Destination destination;
     private ItemType type;
     private String description;
     private LocalDateTime createdAt;
