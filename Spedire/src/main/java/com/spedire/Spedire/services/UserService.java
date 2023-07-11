@@ -13,6 +13,8 @@ public interface UserService {
     User findUserByEmail(String request) throws SpedireException;
     boolean findUserByPhoneNumber(String phoneNumber) throws SpedireException;
 
+    User findByPhoneNumber(String phoneNumber);
+
     ApiResponse<?> saveNewUser(String phoneNumber);
 
     ApiResponse<?> getCurrentUser(String phoneNumber) throws SpedireException;

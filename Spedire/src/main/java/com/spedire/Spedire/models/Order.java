@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 public class Order {
     @Id
     private String id;
-    private User senderId;
-    private User carrierId;
+    private String senderId;
+    private String carrierId;
     private Payment paymentId;
     private Address destination;
     @Field("location")
@@ -28,6 +28,7 @@ public class Order {
     private LocalDateTime eta;
     private BigDecimal costOfItem;
     private BigDecimal costOfDelivery;
-    private String image;
+    private boolean isAccepted;
+    private boolean isCompleted;
 
 }

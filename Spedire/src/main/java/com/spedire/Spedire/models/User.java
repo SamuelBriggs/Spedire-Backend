@@ -1,6 +1,7 @@
 package com.spedire.Spedire.models;
 
 
+import com.spedire.Spedire.dtos.response.MatchedUserDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -41,5 +42,6 @@ public class User {
     private Set<Role> roles;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private MatchedUserDto matchedUserDTO;
 
 }

@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import org.springframework.security.web.session.SessionManagementFilter;
 
+import static com.spedire.Spedire.security.EndPointConstants.TEST;
 import static org.springframework.http.HttpMethod.POST;
 
 
@@ -61,15 +62,15 @@ public class SecurityConfig {
                 .addFilterBefore(authorizationFilter, SpedireAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
-                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/register", "/api/user/welcome").permitAll())
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/register", "/api/user/welcome").permitAll())
 
-                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/**").permitAll()).
+                .authorizeHttpRequests(c->c.requestMatchers("").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
-                        hasAnyAuthority(String.valueOf(Role.ADMIN), Role.USER.name()))
+                        hasAnyAuthority(String.valueOf(Role.SENDER), Role.USER.name()))
 
-                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
-                authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
-                        hasAnyRole("ADMIN", "USER")).
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/", "/api/v1/user/verify-otp",  "/login", "/api/v1/user/buildToken").permitAll()).
+                authorizeHttpRequests(c->c.requestMatchers(TEST).
+                        hasAnyAuthority( Role.USER.name())).
 
                 build();
 

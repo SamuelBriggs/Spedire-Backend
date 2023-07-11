@@ -120,7 +120,7 @@ public class SmsServiceImpl implements SmsService {
                 withExpiresAt(now().plusSeconds(120000L)).
                 withClaim("phoneNumber", phoneNumber).
                 withClaim("Roles", map).
-                sign(Algorithm.HMAC512("samuel".getBytes()));
+                sign(Algorithm.HMAC512(jwtUtils.getSecret().getBytes()));
 
     }
     private  String validateToken(String token) throws SpedireException {

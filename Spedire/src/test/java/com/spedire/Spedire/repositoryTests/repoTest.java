@@ -32,17 +32,10 @@ public class repoTest {
     @Test
 
     public void test_That_repoCanSave(){
-
-
-
         Role role = Role.USER;
-        Role role2 = Role.ADMIN;
+        Role role2 = Role.SENDER;
 
-
-
-        User user = User.builder().firstName("Sam").lastName("Tolu").
-                email("to@gmail.com").
-                phoneNumber("090").password(passwordEncoder.encode("1234")).roles(Set.of(role2)).build();
+        User user = User.builder().phoneNumber("09051243133").roles(Set.of(role)).build();
         var name = userRepository.save(user);
         Assertions.assertThat(name).isNotNull();
     }

@@ -14,16 +14,5 @@ public class SpedireApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpedireApplication.class, args);
 	}
-	@Bean
-	public WebMvcConfigurer corsConfigurer(){
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-						.allowedHeaders("*")
-						.allowedOrigins("*");
-			}
-		};
-	}
 
 }

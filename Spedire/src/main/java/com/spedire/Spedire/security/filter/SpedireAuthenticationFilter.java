@@ -15,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.spedire.Spedire.AppUtils.ExceptionUtils.BADCREDENTIALSEXCEPTION;
 import static java.time.Instant.now;
@@ -53,7 +55,6 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
             Authentication authResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authResult);
             return authResult;
-
         } catch (IOException e) {
             throw new BadCredentialsException(BADCREDENTIALSEXCEPTION);
         }
@@ -65,17 +66,45 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
         String accessToken = generateAccessToken(authResult.getAuthorities(), request);
         response.setContentType(APPLICATION_JSON_VALUE);
         response.getOutputStream().write(objectMapper.writeValueAsBytes(Map.of("access_token", accessToken)));
-    }
+     }
 
     private String generateAccessToken(Collection<? extends GrantedAuthority> authorities, HttpServletRequest request ) throws IOException {
-        Map<String, String > map = new HashMap<>();
-        for (GrantedAuthority authority: authorities){
+        Map<String, String> map = new HashMap<>();
+        log.info("Log here");
+        for (GrantedAuthority authority:authorities) {
+            log.info(authority.getAuthority());
             map.put("role", authority.getAuthority());
         }
+            log.info(map +  "now log map");
+     //   Map<String, String> map = new HashMap<>();
+    //    log.info(authorities.size() + "size of authories at this point");
+       // for (int i = 0; i < authorities.size()+1 ; i++) {
+
+           // log.info(authorities.toArray()[i].toString());
+         //   map.put("role", authorities.stream().toArray()[i].toString());
+           // log.info(authorities.toArray() + "");
+        //log.info(map + "this is map at this point ");
+
+        //}
+       // for (GrantedAuthority authority: authorities){
+         //   map.put("role", Collections.singletonList(authority.getAuthority()));
+      //  }
+     //   log.info(map + "this is map");
+
+        List<String> grantedAutho = new ArrayList<>();
+        for (int i = 0; i < authorities.stream().toList().size() ; i++) {
+            grantedAutho.add(authorities.stream().toList().get(i).toString());
+        }
+
+        log.info("please worrkkkkkk" + grantedAutho);
+
+
         return JWT.create().withIssuedAt(now()).
-                withExpiresAt(now().plusSeconds(120000L)).
-                withClaim("Roles", map).withClaim("phoneNumber", phoneNumber).
+                withExpiresAt(now().plusSeconds(120000L)).withClaim("phoneNumber", phoneNumber).
+                withClaim("Roles", grantedAutho).
                 sign(Algorithm.HMAC512(jwtUtil.getSecret()));
+
+
 
     }
 

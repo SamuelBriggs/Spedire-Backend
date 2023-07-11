@@ -16,29 +16,20 @@ import java.util.Map;
 @Getter
 @Slf4j
 public class JwtUtils {
-    private final String secret ="samuel";
-
-
+    private final String secret;
 
     public  Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {
         DecodedJWT decodedJwt = validateToken(token);
             return decodedJwt.getClaims();
     }
-<<<<<<< HEAD
+    private DecodedJWT validateToken(String token){
 
-    private DecodedJWT validateToken(String token){
-        return JWT.require(Algorithm.HMAC512(secret));
-    private static DecodedJWT validateToken(String token){
-        System.out.println(token);
-=======
-    private DecodedJWT validateToken(String token){
->>>>>>> 1ffd05eddb23e8efb0ee49a79b6f6df9b2c46e0b
-        return JWT.require(Algorithm.HMAC512("samuel".getBytes()))
+        return JWT.require(Algorithm.HMAC512(secret.getBytes()))
                 .build().verify(token);
     }
 
     public DecodedJWT verifyToken(String token) {
-            Algorithm algorithm = Algorithm.HMAC512("samuel".getBytes());
+            Algorithm algorithm = Algorithm.HMAC512(secret.getBytes());
             JWTVerifier verifier = JWT.require(algorithm).build();
             return verifier.verify(token);
         }
