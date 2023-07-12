@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,8 +33,8 @@ public class SpedireAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
 
         boolean isUnAuthorizedPath = EndPointConstants.UNAUTHORIZEDENDPOINTS.contains(request.getServletPath()) &&
                 request.getMethod().equals(HttpMethod.POST.name());
@@ -80,11 +81,12 @@ public class SpedireAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void addClaimToUserAuthorities(List<SimpleGrantedAuthority> authorities, Claim claim) {
-        for (int i = 0 ; i < claim.asMap().size() ; i++) {
-            String role = claim.asMap().get("role"+(i+1)).toString();
-            authorities.add(new SimpleGrantedAuthority(role));
+        for (int i = 0; i < claim.asMap().size(); i++) {
+            String role = (String) claim.asMap().get("role" + (i + 1));
+            if (role != null) {
+                authorities.add(new SimpleGrantedAuthority(role.toString()));
+            }
         }
-
     }
 
 }

@@ -9,13 +9,17 @@ import com.spedire.Spedire.Exception.SpedireException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Map;
+
+import static com.spedire.Spedire.utils.Constants.JWT_SECRET;
 
 @AllArgsConstructor
 @Getter
 @Slf4j
 public class JwtUtils {
+    @Value(JWT_SECRET)
     private final String secret;
 
     public  Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {
