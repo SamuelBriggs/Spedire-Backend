@@ -70,12 +70,11 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
 
     private String generateAccessToken(Collection<? extends GrantedAuthority> authorities, HttpServletRequest request ) throws IOException {
         Map<String, String> map = new HashMap<>();
-        log.info("Log here");
+        int number = 1;
         for (GrantedAuthority authority:authorities) {
-            log.info(authority.getAuthority());
-            map.put("role", authority.getAuthority());
+            map.put("role"+number, authority.getAuthority());
+            number++;
         }
-            log.info(map +  "now log map");
      //   Map<String, String> map = new HashMap<>();
     //    log.info(authorities.size() + "size of authories at this point");
        // for (int i = 0; i < authorities.size()+1 ; i++) {
@@ -96,12 +95,12 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
             grantedAutho.add(authorities.stream().toList().get(i).toString());
         }
 
-        log.info("please worrkkkkkk" + grantedAutho);
+     //   log.info("please worrkkkkkk" + grantedAutho);
 
 
         return JWT.create().withIssuedAt(now()).
                 withExpiresAt(now().plusSeconds(120000L)).withClaim("phoneNumber", phoneNumber).
-                withClaim("Roles", grantedAutho).
+                withClaim("Roles", map).
                 sign(Algorithm.HMAC512(jwtUtil.getSecret()));
 
 

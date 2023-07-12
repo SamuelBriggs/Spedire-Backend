@@ -28,11 +28,6 @@ public class UserController {
 
     private final JwtUtils jwtUtil;
 
-    @PostMapping("/test")
-    public String test(){
-        return "this is working mafo";
-    }
-
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestHeader ("Authorization") String token, @RequestBody RegistrationRequest registrationRequest) {
 

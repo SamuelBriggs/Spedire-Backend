@@ -1,23 +1,20 @@
 package com.spedire.Spedire.models;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document
-@Getter
-@Setter
+@Getter@Setter@Document
 @ToString
-public class Address {
+public class PickUp {
     @Id
     private String id;
-    private String streetName;
-    private String streetNumber;
-    private String landMark;
-    private String state;
-    private String city;
+
+    private Address currentLocation;
+
+    private String senderName;
+
+    private String phoneNumber;
 }

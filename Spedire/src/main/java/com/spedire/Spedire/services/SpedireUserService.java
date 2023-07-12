@@ -67,8 +67,10 @@ public class SpedireUserService implements UserService {
         validateRegistrationRequest(registrationRequest);
         var builtUser = buildRegistrationRequest(registrationRequest, foundUser);
         var savedUser = userRepository.save(builtUser);
-        mailService.sendMail(buildEmailRequest(savedUser));
+      //  mailService.sendMail(buildEmailRequest(savedUser));
         String newToken = generateJwtToken(savedUser);
+        log.info(newToken);
+        log.info("na me wey dey clean una house");
         return ApiResponse.builder().message(USER_REGISTRATION_SUCCESSFUL).success(true).data(newToken).build();
     }
 

@@ -3,7 +3,7 @@ package com.spedire.Spedire.security;
 import java.util.List;
 
 public class EndPointConstants {
-    public static final List<String> UNAUTHORIZEDENDPOINTS = List.of("/user", "/login");
+    public static final List<String> UNAUTHORIZEDENDPOINTS = List.of("/api/v1/user/verify-number",  "/api/v1/user/verify-otp", "/login");
 
     public static final String TEST = "/api/v1/user/test";
 

@@ -39,6 +39,7 @@ public class repoTest {
         var name = userRepository.save(user);
         Assertions.assertThat(name).isNotNull();
     }
+
     @Test
     public void test_that_repoCanFindById(){
 

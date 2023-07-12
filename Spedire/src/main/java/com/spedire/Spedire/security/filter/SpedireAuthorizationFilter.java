@@ -64,24 +64,27 @@ public class SpedireAuthorizationFilter extends OncePerRequestFilter {
 
     private void authorizeToken(String token) throws SpedireException {
         Map<String, Claim> map = jwtUtils.extractClaimsFromToken(token);
-        //List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         Claim claim = map.get("Roles");
-        Collection<? extends GrantedAuthority> newAuthories =  List.of(new SimpleGrantedAuthority("USER"), new SimpleGrantedAuthority("ADMIN"));
-        var string = claim.asList(SimpleGrantedAuthority.class);
-        log.info("now log this shit and let's see whats " + string);
+        log.info(claim + "this is claim here");
+    //    Collection<? extends GrantedAuthority> newAuthories =  List.of(new SimpleGrantedAuthority("USER"), new SimpleGrantedAuthority("ADMIN"));
+      //  var string = claim.asList(SimpleGrantedAuthority.class);
 
-        //log.info(string.get(0) + "this is the content of String");
         Claim phoneNumber = map.get("phoneNumber");
 
-      // addClaimToUserAuthorities(authorities,claim);
-      // log.info(authorities + "afdfd");
-        Authentication authentication = new UsernamePasswordAuthenticationToken(phoneNumber, null, string);
+       addClaimToUserAuthorities(authorities,claim);
+
+       log.info(authorities + "logging authorities");
+        Authentication authentication = new UsernamePasswordAuthenticationToken(phoneNumber, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private void addClaimToUserAuthorities(List<SimpleGrantedAuthority> authorities, Claim claim) {
-        String role = claim.asMap().get("role").toString();
-        authorities.add(new SimpleGrantedAuthority(role));
+        for (int i = 0 ; i < claim.asMap().size() ; i++) {
+            String role = claim.asMap().get("role"+(i+1)).toString();
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+
     }
 
 }
