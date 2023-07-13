@@ -22,7 +22,7 @@ public class SmsController {
     public ResponseEntity<SendSmsResponse> verifyPhoneNumber(@RequestBody VerifyPhoneNumberRequest request){
         System.out.println("It got here" + request.getPhoneNumber());
         try{
-            SendSmsResponse response =smsService.sendSmsWithTwilio(request.getPhoneNumber());
+            SendSmsResponse response =smsService.sendSms(request.getPhoneNumber());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch (PhoneNumberNotVerifiedException | UserAlreadyExistsException exception){
             return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(exception.getMessage()).build());
@@ -33,11 +33,20 @@ public class SmsController {
     @PostMapping("/verify-otp")
     public ResponseEntity<SendSmsResponse> verifyOtp(@RequestHeader("Authorization") String token, @RequestBody VerifyOtpRequest request){
         try{
-            SendSmsResponse response = smsService.verifyOtp(token, request.getOtpNumber());
+            SendSmsResponse response = smsService.verifySmsOtp(token, request.getOtpNumber());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(e.getMessage()).build());
         }
 
+    }
+    @GetMapping("/resend-otp")
+    public ResponseEntity<SendSmsResponse> resendOtp(@RequestHeader("Authorization") String token){
+        try{
+            SendSmsResponse response =smsService.resendOtp(token);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }catch (PhoneNumberNotVerifiedException | com.spedire.Spedire.Exception.SpedireException | SpedireException exception ){
+            return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(exception.getMessage()).build());
+        }
     }
 }

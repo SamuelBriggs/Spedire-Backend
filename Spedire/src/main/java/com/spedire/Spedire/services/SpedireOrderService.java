@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
-public class OrderServiceImpl implements OrderService {
+public class SpedireOrderService implements OrderService {
     private final OrderRepository orderRepository;
 
     private final UserService userService;
