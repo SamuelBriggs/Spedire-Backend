@@ -73,10 +73,10 @@ public class UserController {
         }
     }
 
-    @PatchMapping("updateProfile")
-    public ResponseEntity<?> updateProfile(@RequestParam String id, @ModelAttribute UpdateUserRequest updateUserRequest){
+    @PatchMapping("/updateProfile")
+    public ResponseEntity<?> updateProfile(@RequestHeader ("Authorization") String token, @ModelAttribute UpdateUserRequest updateUserRequest){
         try{
-            var response = userService.updateUserDetails(id, updateUserRequest);
+            var response = userService.updateUserDetails(token, updateUserRequest);
             return ResponseEntity.ok(response);
         }catch (Exception exception){
             return ResponseEntity.badRequest().body(exception.getMessage());

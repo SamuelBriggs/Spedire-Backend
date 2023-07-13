@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -43,5 +44,8 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private MatchedUserDto matchedUserDTO;
+    private String noOfItemsSent;
+    private String noOfItemsDelivered;
+    private BigDecimal totalAmountMade;
 
 }
