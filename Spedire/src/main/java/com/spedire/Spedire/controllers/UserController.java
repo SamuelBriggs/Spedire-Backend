@@ -2,6 +2,7 @@ package com.spedire.Spedire.controllers;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
+import com.spedire.Spedire.dtos.request.UpgradeUserRequest;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.request.UpdateUserRequest;
@@ -10,6 +11,7 @@ import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.security.JwtUtils;
 import com.spedire.Spedire.services.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +24,7 @@ import static java.time.Instant.now;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Slf4j
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -52,11 +55,12 @@ public class UserController {
     @GetMapping("/getCurrentUser")
     public ResponseEntity<?> getCurrentUser(){
 
-        String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        String newPhoneNumber = phoneNumber.substring(1, phoneNumber.length()-1);
+        String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
+        String newUserId = userId.substring(1, userId.length()-1);
         ApiResponse<?> apiResponse = null;
         try {
-            apiResponse = userService.getCurrentUser(newPhoneNumber);
+            apiResponse = userService.getCurrentUser(newUserId);
         } catch (SpedireException e) {
             throw new RuntimeException();
         }
@@ -89,6 +93,18 @@ public class UserController {
         return JWT.create().withIssuedAt(now()).withExpiresAt(now().plusSeconds(120000L)).withClaim
                         ("phoneNumber", "09051243133").withClaim("Roles", List.of("USERS")).
                 sign(Algorithm.HMAC512(jwtUtil.getSecret().getBytes()));
+
+
+    }
+
+    @PostMapping("upgrade")
+
+    public ResponseEntity<?> upgradeUser(@RequestBody UpgradeUserRequest upgradeUserRequest){
+
+        var response = userService.upgradeUserToCarrier(upgradeUserRequest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
 
 
     }

@@ -1,6 +1,7 @@
 package com.spedire.Spedire.security;
 
 import com.spedire.Spedire.models.Role;
+import com.spedire.Spedire.repositories.UserRepository;
 import com.spedire.Spedire.security.filter.SpedireAuthenticationFilter;
 import com.spedire.Spedire.security.filter.SpedireAuthorizationFilter;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class SecurityConfig {
 
     private final JwtUtils jwtUtil;
 
+    private final UserRepository userRepository;
 
 
 //    @Bean
@@ -51,7 +53,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        UsernamePasswordAuthenticationFilter authenticationFilter = new SpedireAuthenticationFilter(authenticationManager, jwtUtil, null, null
+        UsernamePasswordAuthenticationFilter authenticationFilter = new SpedireAuthenticationFilter(authenticationManager, userRepository, jwtUtil, null, null
         );
         var authorizationFilter =new SpedireAuthorizationFilter(jwtUtil);
 
@@ -63,7 +65,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(c->c.requestMatchers( "/api/user/welcome").permitAll())
 
-                .authorizeHttpRequests(c->c.requestMatchers( "matchOrder", "acceptOrder").permitAll()).
+                .authorizeHttpRequests(c->c.requestMatchers( "matchOrder", "acceptOrder", "/api/v1/user/upgrade").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
                         hasAnyAuthority(String.valueOf(Role.SENDER), Role.USER.name()))
 

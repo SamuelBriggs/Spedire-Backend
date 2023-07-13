@@ -70,12 +70,12 @@ public class SpedireAuthorizationFilter extends OncePerRequestFilter {
     //    Collection<? extends GrantedAuthority> newAuthories =  List.of(new SimpleGrantedAuthority("USER"), new SimpleGrantedAuthority("ADMIN"));
       //  var string = claim.asList(SimpleGrantedAuthority.class);
 
-        Claim phoneNumber = map.get("phoneNumber");
+        Claim userId = map.get("userId");
 
        addClaimToUserAuthorities(authorities,claim);
 
        log.info(authorities + "logging authorities");
-        Authentication authentication = new UsernamePasswordAuthenticationToken(phoneNumber, null, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

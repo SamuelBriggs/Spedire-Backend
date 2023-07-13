@@ -35,7 +35,7 @@ public class repoTest {
         Role role = Role.USER;
         Role role2 = Role.SENDER;
 
-        User user = User.builder().phoneNumber("09051243133").roles(Set.of(role)).build();
+        User user = User.builder().phoneNumber("0908").firstName("Mike").password(passwordEncoder.encode("1234")).roles(Set.of(role)).build();
         var name = userRepository.save(user);
         Assertions.assertThat(name).isNotNull();
     }

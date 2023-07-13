@@ -16,6 +16,7 @@ import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.DashBoardDto;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.SpedireException;
+import com.spedire.Spedire.models.Role;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
 import com.spedire.Spedire.security.JwtUtils;
@@ -70,7 +71,6 @@ public class SpedireUserService implements UserService {
       //  mailService.sendMail(buildEmailRequest(savedUser));
         String newToken = generateJwtToken(savedUser);
         log.info(newToken);
-        log.info("na me wey dey clean una house");
         return ApiResponse.builder().message(USER_REGISTRATION_SUCCESSFUL).success(true).data(newToken).build();
     }
 
@@ -117,11 +117,11 @@ public class SpedireUserService implements UserService {
     }
 
     @Override
-    public ApiResponse<?> getCurrentUser(String phoneNumber) throws SpedireException {
-        User foundUser = userRepository.findByPhoneNumber(phoneNumber);
+    public ApiResponse<?> getCurrentUser(String userId) throws SpedireException {
+        User foundUser = userRepository.findById(userId).get();
         if (foundUser == null) throw new SpedireException(CURRENT_USER_NOT_FOUND);
         DashBoardDto dashBoardDto = DashBoardDto.builder().
-                firstName(foundUser.getFirstName()).build();
+                firstName(foundUser.getFirstName()).setOfRole(foundUser.getRoles()).userId(foundUser.getId()).build();
         return ApiResponse.builder().success(true).message("User Found").data(dashBoardDto).build();
     }
 
@@ -134,6 +134,20 @@ public class SpedireUserService implements UserService {
     @Override
     public User findByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public ApiResponse<?> upgradeUserToCarrier(UpgradeUserRequest upgradeUserRequest) {
+        User user = userRepository.findById(upgradeUserRequest.getUserId()).get();
+        var roles = user.getRoles();
+        user.setBvn(upgradeUserRequest.getBvn());
+        user.setGuarantorName(upgradeUserRequest.getGuarantorName());
+        user.setGuarantorPhoneNumber(upgradeUserRequest.getGuarantorPhoneNumber());
+        roles.add(Role.CARRIER);
+        user.setRoles(roles);
+        String token = jwtUtil.generateAccessToken(user, Role.USER);
+        userRepository.save(user);
+        return ApiResponse.builder().message("User saved successfully").data(token).success(true).build();
     }
 
     public SendEmailRequest buildEmailRequest(User user) throws SpedireException {

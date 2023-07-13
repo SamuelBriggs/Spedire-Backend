@@ -43,5 +43,8 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private MatchedUserDto matchedUserDTO;
+    private String bvn;
+    private String guarantorName;
+    private String guarantorPhoneNumber;
 
 }

@@ -4,6 +4,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spedire.Spedire.dtos.request.LoginRequest;
+import com.spedire.Spedire.models.Role;
+import com.spedire.Spedire.models.User;
+import com.spedire.Spedire.repositories.UserRepository;
 import com.spedire.Spedire.security.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +37,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
+    private final UserRepository userRepository;
+
     private final JwtUtils jwtUtil;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -54,6 +59,7 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
             Authentication authentication = new UsernamePasswordAuthenticationToken(phoneNumber, password);
             Authentication authResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authResult);
+            log.info(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString() + "this should be the phone number");
             return authResult;
         } catch (IOException e) {
             throw new BadCredentialsException(BADCREDENTIALSEXCEPTION);
@@ -63,7 +69,10 @@ public class SpedireAuthenticationFilter extends UsernamePasswordAuthenticationF
     public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                          FilterChain chain, Authentication authResult
                                          ) throws IOException {
-        String accessToken = generateAccessToken(authResult.getAuthorities(), request);
+
+        User user = userRepository.findUserByPhoneNumber(phoneNumber).get();
+        String accessToken = jwtUtil.generateAccessToken(user,Role.SENDER);
+        //String accessToken = generateAccessToken(authResult.getAuthorities(), request);
         response.setContentType(APPLICATION_JSON_VALUE);
         response.getOutputStream().write(objectMapper.writeValueAsBytes(Map.of("access_token", accessToken)));
      }
