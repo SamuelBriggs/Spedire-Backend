@@ -65,11 +65,11 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/**").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
-                        hasAnyAuthority(String.valueOf(Role.ADMIN), Role.USER.name()))
+                        hasAnyAuthority(String.valueOf(Role.ADMIN), Role.SENDER.name()))
 
                 .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
-                        hasAnyRole("ADMIN", "USER")).
+                        hasAnyRole("ADMIN", "NEW_USER")).
 
                 build();
 

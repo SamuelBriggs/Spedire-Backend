@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.models.Role.SENDER;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.PHONE_NOT_VALID;
 import static com.spedire.Spedire.utils.Constants.*;
@@ -66,7 +67,7 @@ public class SpedireUserService implements UserService {
         validateRegistrationRequest(registrationRequest);
         var builtUser = buildRegistrationRequest(registrationRequest, foundUser);
         var savedUser = userRepository.save(builtUser);
-        mailService.sendMail(buildEmailRequest(savedUser));
+//        mailService.sendMail(buildEmailRequest(savedUser));
         String newToken = generateJwtToken(savedUser);
         return ApiResponse.builder().message(USER_REGISTRATION_SUCCESSFUL).success(true).data(newToken).build();
     }
@@ -107,7 +108,7 @@ public class SpedireUserService implements UserService {
         User user = new User();
         user.setPhoneNumber(phoneNumber);
         user.setRoles(new HashSet<>());
-        //  user.getRoles().add(NEW_USER);
+        user.getRoles().add(NEW_USER);
         var savedUser =userRepository.save(user);
         return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY).success(true).data(savedUser.getId()).build();
     }

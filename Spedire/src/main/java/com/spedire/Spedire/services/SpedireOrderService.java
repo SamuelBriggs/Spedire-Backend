@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class OrderServiceImpl implements OrderService {
+public class SpedireOrderService implements OrderService {
     private final OrderRepository orderRepository;
 
     @Override
