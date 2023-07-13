@@ -2,6 +2,7 @@ package com.spedire.Spedire.configurations;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.spedire.Spedire.models.Request;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -51,5 +52,9 @@ public class BeanConfig {
                 CLOUD_API_KEY_VALUE, apiKey,
                 API_SECRET_VALUE, apiSecret
         ));
+    }
+    @Bean
+    public Request request(){
+        return new Request();
     }
 }
