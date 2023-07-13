@@ -35,7 +35,6 @@ public class UpdateUserRequest {
     @Size(min = 2, message = "Last name should have at least 2 letters.")
     private String lastName;
     private String phoneNumber;
-    private String bankId;
     private String accountName;
     private String accountNumber;
     private String streetName;

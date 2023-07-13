@@ -6,6 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
 import com.github.fge.jackson.jsonpointer.JsonPointerException;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -97,7 +98,6 @@ public class SpedireUserService implements UserService {
                 .withClaim("phoneNumber", registrationResponse.getPhoneNumber())
                 .sign(Algorithm.HMAC512(jwtUtil.getSecret().getBytes()));
     }
-
     @Override
     public User findUserByEmail(String email) throws SpedireException {
         User existingUser = userRepository.findByEmail(email);
@@ -163,22 +163,29 @@ public class SpedireUserService implements UserService {
         }
     }
     @Override
-    public ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest)
+    public ApiResponse<?> updateUserDetails(String aToken, UpdateUserRequest updateUserRequest)
             throws SpedireException, JsonPointerException, IllegalAccessException {
-        Optional<User> foundUser = userRepository.findById(id);
+        String token = aToken.split(" ")[1];
+        DecodedJWT decodedJWT = jwtUtil.verifyToken(token);
+        Optional<User> foundUser = userRepository.
+                findUserByPhoneNumber(decodedJWT.getClaim("phoneNumber").asString());
         MultipartFile image = updateUserRequest.getProfileImage();
         JsonPatch jsonPatch = buildUpdatePatch(updateUserRequest);
         User user = foundUser.orElseThrow(()->
                 new SpedireException(USER_WITH_ID_NOT_FOUND));
-        User updatedUser =  updateUser(user,jsonPatch, image);
-        userRepository.save(updatedUser);
+        User updatedUser = updateUser(user, jsonPatch, image);
+        User savedUser = userRepository.save(updatedUser);
+// Refresh the 'updatedUser' object with the saved state from the database
+//        String newToken = updateJwtToken(updatedUser);
         return ApiResponse.builder()
                 .message(PROFILE_UPDATED_SUCCESSFULLY)
+                .success(true).data(savedUser)
                 .build();
     }
 
     private User updateUser(User user, JsonPatch jsonPatch, MultipartFile image) throws SpedireException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         log.info("Patch {}", jsonPatch.toString());
         JsonNode customerNode = mapper.convertValue(user, JsonNode.class);
         try {
@@ -238,6 +245,19 @@ public class SpedireUserService implements UserService {
             }
         }
         return new JsonPatch(operations);
+    }
+    private String updateJwtToken(User registrationResponse) {
+        List<String> rolesList = registrationResponse.getRoles()
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        return JWT.create()
+                .withIssuedAt(now())
+                .withExpiresAt(now().plusSeconds(86400L))
+                .withClaim("id", registrationResponse.getId())
+                .withClaim("Roles", rolesList)
+                .withClaim("phoneNumber", registrationResponse.getPhoneNumber())
+                .sign(Algorithm.HMAC512(jwtUtil.getSecret().getBytes()));
     }
 
 
