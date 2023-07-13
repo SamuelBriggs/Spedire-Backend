@@ -14,10 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import org.springframework.security.web.session.SessionManagementFilter;
-
-import static org.springframework.http.HttpMethod.POST;
-
 
 //import static com.spedire.Spedire.AppUtils.SecurityUtils.JWT_SIGNING_SECRET;
 
@@ -65,11 +61,12 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(c->c.requestMatchers( "matchOrder", "acceptOrder").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
-                        hasAnyAuthority(String.valueOf(Role.SENDER), Role.USER.name()))
 
-                .authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/verify-otp","/api/v1/user/buildToken", "/api/v1/user/register").permitAll()).
-                authorizeHttpRequests(c->c.requestMatchers( "a").
-                        hasAnyRole("ADMIN", "USER")).
+                        hasAnyAuthority(String.valueOf(Role.ADMIN), Role.SENDER.name()))
+
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
+                authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
+                        hasAnyRole("ADMIN", "NEW_USER")).
 
                 build();
 

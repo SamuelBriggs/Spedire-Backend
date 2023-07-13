@@ -2,6 +2,5 @@ package com.spedire.Spedire.models;
 
 
 public enum Role {
-    MANAGER, ADMIN, USER, SENDER, CARRIER
-
+    MANAGER, ADMIN, NEW_USER, SENDER, CARRIER
 }
