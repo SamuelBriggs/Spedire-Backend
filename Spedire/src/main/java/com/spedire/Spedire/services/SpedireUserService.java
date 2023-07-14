@@ -67,11 +67,8 @@ public class SpedireUserService implements UserService {
         validateRegistrationRequest(registrationRequest);
         var builtUser = buildRegistrationRequest(registrationRequest, foundUser);
         var savedUser = userRepository.save(builtUser);
-
         mailService.sendMail(buildEmailRequest(savedUser));
         String newToken = generateJwtToken(savedUser);
-        log.info(newToken);
-        log.info("na me wey dey clean una house");
         return ApiResponse.builder().message(USER_REGISTRATION_SUCCESSFUL).success(true).data(newToken).build();
     }
 
@@ -121,7 +118,8 @@ public class SpedireUserService implements UserService {
         User foundUser = userRepository.findByPhoneNumber(phoneNumber);
         if (foundUser == null) throw new SpedireException(CURRENT_USER_NOT_FOUND);
         DashBoardDto dashBoardDto = DashBoardDto.builder().
-                firstName(foundUser.getFirstName()).build();
+                firstName(foundUser.getFirstName()).
+                lastName(foundUser.getLastName()).build();
         return ApiResponse.builder().success(true).message("User Found").data(dashBoardDto).build();
     }
 
@@ -175,8 +173,6 @@ public class SpedireUserService implements UserService {
                 new SpedireException(USER_WITH_ID_NOT_FOUND));
         User updatedUser = updateUser(user, jsonPatch, image);
         User savedUser = userRepository.save(updatedUser);
-// Refresh the 'updatedUser' object with the saved state from the database
-//        String newToken = updateJwtToken(updatedUser);
         return ApiResponse.builder()
                 .message(PROFILE_UPDATED_SUCCESSFULLY)
                 .success(true).data(savedUser)

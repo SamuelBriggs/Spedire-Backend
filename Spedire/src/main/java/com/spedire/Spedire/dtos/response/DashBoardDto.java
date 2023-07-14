@@ -9,5 +9,6 @@ import lombok.Setter;
 @Setter
 public class DashBoardDto {
     private String firstName;
+    private String lastName;
 
 }

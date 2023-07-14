@@ -117,7 +117,7 @@ public class SmsServiceImpl implements SmsService {
         String phone = phoneNumber.substring(1, 12);
         var found = otpService.findByOtp(otp);
         if (found.getPhoneNumber().equals(phone)) {
-            ApiResponse<?> newUser = userService.saveNewUser(ZERO_STRING + phone);
+            ApiResponse<?> newUser = userService.saveNewUser(phone);
             otpService.deleteOtp(phone);
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
         }
