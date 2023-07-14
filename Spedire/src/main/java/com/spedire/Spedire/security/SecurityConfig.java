@@ -14,8 +14,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.security.web.session.SessionManagementFilter;
 
-//import static com.spedire.Spire.AppUtils.SecurityUtils.JWT_SIGNING_SECRET;
+import static org.springframework.http.HttpMethod.POST;
+
+
+//import static com.spedire.Spedire.AppUtils.SecurityUtils.JWT_SIGNING_SECRET;
 
 @AllArgsConstructor
 @Configuration
@@ -57,17 +61,8 @@ public class SecurityConfig {
                 .addFilterBefore(authorizationFilter, SpedireAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
-                .authorizeHttpRequests(c->c.requestMatchers( "/api/user/welcome", "/api/v1/user/verify-number").permitAll())
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/register", "/api/user/welcome").permitAll())
 
-<<<<<<< HEAD
-                .authorizeHttpRequests(c->c.requestMatchers( "matchOrder", "acceptOrder").permitAll()).
-                authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser", "/api/v1/user/updateProfile" ).
-                        hasAnyAuthority(String.valueOf(Role.SENDER), Role.USER.name()))
-
-                .authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/verify-otp","/api/v1/user/buildToken", "/api/v1/user/register").permitAll()).
-                authorizeHttpRequests(c->c.requestMatchers( "a").
-                        hasAnyRole("ADMIN", "USER", "SENDER")).
-=======
                 .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/**").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
                         hasAnyAuthority(String.valueOf(Role.ADMIN), Role.SENDER.name()))
@@ -75,7 +70,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
                         hasAnyRole("ADMIN", "NEW_USER")).
->>>>>>> fe2e6db2b924eb0a2f422ea8bd0c120a36d204f0
 
                 build();
 
