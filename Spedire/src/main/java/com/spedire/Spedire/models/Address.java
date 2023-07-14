@@ -1,6 +1,7 @@
 package com.spedire.Spedire.models;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Getter
 @Setter
 @ToString
+@Builder
+
 public class Address {
     @Id
     private String id;

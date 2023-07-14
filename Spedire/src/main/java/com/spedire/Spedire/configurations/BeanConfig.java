@@ -2,6 +2,7 @@ package com.spedire.Spedire.configurations;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spedire.Spedire.models.Request;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class BeanConfig {
     public ModelMapper modelMapper(){
         return new ModelMapper();
     }
+
 
     @Bean
     public EmailConfig mailConfig(){
