@@ -14,5 +14,7 @@ public class DashBoardDto {
     private String userId;
     private String firstName;
     private Set<Role> setOfRole;
+    private String lastName;
+
 
 }

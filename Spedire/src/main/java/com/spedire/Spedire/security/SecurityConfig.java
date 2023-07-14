@@ -62,16 +62,16 @@ public class SecurityConfig {
                 sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authorizationFilter, SpedireAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/upgrade").hasAnyAuthority(Role.SENDER.name(), Role.NEW_USER.name()))
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/register", "/api/user/welcome").permitAll())
 
-                .authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/upgrade").hasAnyAuthority(Role.SENDER.name(), Role.USER.name()))
-
-                .authorizeHttpRequests(c->c.requestMatchers( "matchOrder", "acceptOrder").permitAll()).
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/users/**").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
-                        hasAnyAuthority(String.valueOf(Role.SENDER), Role.USER.name()))
+                        hasAnyAuthority(String.valueOf(Role.ADMIN), Role.SENDER.name()))
 
-                .authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/verify-otp","/api/v1/user/buildToken", "/api/v1/user/register").permitAll()).
-                authorizeHttpRequests(c->c.requestMatchers( "a").
-                        hasAnyRole("ADMIN", "USER")).
+                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
+                authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
+                        hasAnyRole("ADMIN", "NEW_USER")).
 
                 build();
 

@@ -8,7 +8,9 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class OtpResponse {
-    private int otpNumber;
+    private String otpNumber;
+
     private String message;
+    private boolean success;
 
 }

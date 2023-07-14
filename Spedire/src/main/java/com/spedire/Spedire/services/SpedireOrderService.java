@@ -1,6 +1,7 @@
 package com.spedire.Spedire.services;
 
 import com.spedire.Spedire.dtos.request.AcceptOrderRequest;
+import com.spedire.Spedire.dtos.request.DeliveryRequest;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.MatchedUserDto;
 import com.spedire.Spedire.exceptions.SpedireException;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
-public class OrderServiceImpl implements OrderService {
+public class SpedireOrderService implements OrderService {
     private final OrderRepository orderRepository;
 
     private final UserService userService;
@@ -26,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
 
     @Override
-    public ApiResponse acceptOrder(AcceptOrderRequest acceptOrderRequest) throws SpedireException {
+    public ApiResponse<?> acceptOrder(AcceptOrderRequest acceptOrderRequest) throws SpedireException {
         Optional<Order> foundOrder = orderRepository.findById(acceptOrderRequest.getOrderId());
         Order order = foundOrder.get();
         order.setAccepted(true);
@@ -43,14 +44,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ApiResponse matchOrder(Request requestItem) {
+    public ApiResponse<?> matchOrder(DeliveryRequest deliveryRequest) {
       List<Order> unPairedOrders = orderRepository.findAll();
         System.out.println(unPairedOrders + " unpaired orders");
         List<Order> orderList = new ArrayList<>();
       for(Order order: unPairedOrders){
           if (order.getDestination().getReceiverLocation().getCity().
-                  equals(requestItem.getDestination().getCity())  && order.getPickUp().getCurrentLocation().getCity().
-                  equals(requestItem.getCurrentLocation().getCity())) orderList.add(order);
+                  equals(deliveryRequest.getDestination().getCity())  && order.getPickUp().getCurrentLocation().getCity().
+                  equals(deliveryRequest.getCurrentLocation().getCity())) orderList.add(order);
       }
 
         orderList.sort((o1, o2) -> {

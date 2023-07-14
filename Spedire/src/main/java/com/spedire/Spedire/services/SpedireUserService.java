@@ -6,6 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
 import com.github.fge.jackson.jsonpointer.JsonPointerException;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -14,7 +15,6 @@ import com.github.fge.jsonpatch.ReplaceOperation;
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.DashBoardDto;
-import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.Role;
 import com.spedire.Spedire.models.User;
@@ -29,7 +29,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -38,6 +37,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.models.Role.SENDER;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.PHONE_NOT_VALID;
 import static com.spedire.Spedire.utils.Constants.*;
@@ -68,13 +68,14 @@ public class SpedireUserService implements UserService {
         validateRegistrationRequest(registrationRequest);
         var builtUser = buildRegistrationRequest(registrationRequest, foundUser);
         var savedUser = userRepository.save(builtUser);
+
       //  mailService.sendMail(buildEmailRequest(savedUser));
 
        var generatedToken =  jwtUtil.generateAccessToken(savedUser, SENDER);
-
+     //   mailService.sendMail(buildEmailRequest(savedUser));
         String newToken = generateJwtToken(savedUser);
-        log.info(newToken);
         return ApiResponse.builder().message(USER_REGISTRATION_SUCCESSFUL).success(true).data(generatedToken).build();
+
     }
 
     private User buildRegistrationRequest(RegistrationRequest registrationRequest, User foundUser) {
@@ -100,7 +101,6 @@ public class SpedireUserService implements UserService {
                 .withClaim("phoneNumber", registrationResponse.getPhoneNumber())
                 .sign(Algorithm.HMAC512(jwtUtil.getSecret().getBytes()));
     }
-
     @Override
     public User findUserByEmail(String email) throws SpedireException {
         User existingUser = userRepository.findByEmail(email);
@@ -113,8 +113,8 @@ public class SpedireUserService implements UserService {
         User user = new User();
         user.setPhoneNumber(phoneNumber);
         user.setRoles(new HashSet<>());
-
         //  user.getRoles().add(NEW_USER);
+        user.getRoles().add(NEW_USER);
         var savedUser =userRepository.save(user);
         return ApiResponse.builder().message(NEW_USER_ADDED_SUCCESSFULLY).success(true).data(savedUser.getId()).build();
     }
@@ -125,6 +125,7 @@ public class SpedireUserService implements UserService {
         if (foundUser == null) throw new SpedireException(CURRENT_USER_NOT_FOUND);
         DashBoardDto dashBoardDto = DashBoardDto.builder().
                 firstName(foundUser.getFirstName()).setOfRole(foundUser.getRoles()).userId(foundUser.getId()).build();
+
         return ApiResponse.builder().success(true).message("User Found").data(dashBoardDto).build();
     }
 
@@ -148,7 +149,7 @@ public class SpedireUserService implements UserService {
         user.setGuarantorPhoneNumber(upgradeUserRequest.getGuarantorPhoneNumber());
         roles.add(Role.CARRIER);
         user.setRoles(roles);
-        String token = jwtUtil.generateAccessToken(user, Role.USER);
+        String token = jwtUtil.generateAccessToken(user, Role.CARRIER);
         userRepository.save(user);
         return ApiResponse.builder().message("User saved successfully").data(token).success(true).build();
     }
@@ -180,22 +181,27 @@ public class SpedireUserService implements UserService {
         }
     }
     @Override
-    public ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest)
+    public ApiResponse<?> updateUserDetails(String aToken, UpdateUserRequest updateUserRequest)
             throws SpedireException, JsonPointerException, IllegalAccessException {
-        Optional<User> foundUser = userRepository.findById(id);
+        String token = aToken.split(" ")[1];
+        DecodedJWT decodedJWT = jwtUtil.verifyToken(token);
+        Optional<User> foundUser = userRepository.
+                findUserByPhoneNumber(decodedJWT.getClaim("phoneNumber").asString());
         MultipartFile image = updateUserRequest.getProfileImage();
         JsonPatch jsonPatch = buildUpdatePatch(updateUserRequest);
         User user = foundUser.orElseThrow(()->
                 new SpedireException(USER_WITH_ID_NOT_FOUND));
-        User updatedUser =  updateUser(user,jsonPatch, image);
-        userRepository.save(updatedUser);
+        User updatedUser = updateUser(user, jsonPatch, image);
+        User savedUser = userRepository.save(updatedUser);
         return ApiResponse.builder()
                 .message(PROFILE_UPDATED_SUCCESSFULLY)
+                .success(true).data(savedUser)
                 .build();
     }
 
     private User updateUser(User user, JsonPatch jsonPatch, MultipartFile image) throws SpedireException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         log.info("Patch {}", jsonPatch.toString());
         JsonNode customerNode = mapper.convertValue(user, JsonNode.class);
         try {
@@ -255,6 +261,19 @@ public class SpedireUserService implements UserService {
             }
         }
         return new JsonPatch(operations);
+    }
+    private String updateJwtToken(User registrationResponse) {
+        List<String> rolesList = registrationResponse.getRoles()
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        return JWT.create()
+                .withIssuedAt(now())
+                .withExpiresAt(now().plusSeconds(86400L))
+                .withClaim("id", registrationResponse.getId())
+                .withClaim("Roles", rolesList)
+                .withClaim("phoneNumber", registrationResponse.getPhoneNumber())
+                .sign(Algorithm.HMAC512(jwtUtil.getSecret().getBytes()));
     }
 
 

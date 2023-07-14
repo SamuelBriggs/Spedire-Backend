@@ -11,7 +11,11 @@ import com.spedire.Spedire.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.GrantedAuthority;
+
+import org.springframework.beans.factory.annotation.Value;
+
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -19,20 +23,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import static java.time.LocalTime.now;
+
+import static com.spedire.Spedire.utils.Constants.JWT_SECRET;
+
 
 @AllArgsConstructor
 @Getter
 @Slf4j
 public class JwtUtils {
+    @Value(JWT_SECRET)
     private final String secret;
 
     public  Map<String, Claim> extractClaimsFromToken(String token) throws SpedireException {
+        log.info("this id get into here?");
         DecodedJWT decodedJwt = validateToken(token);
+        log.info("this is decodedjwt" + decodedJwt);
             return decodedJwt.getClaims();
     }
     private DecodedJWT validateToken(String token){
-
+        log.info("is it getting ito validate token ?");
+        log.info("print the token athis point " + token);
         return JWT.require(Algorithm.HMAC512(secret.getBytes()))
                 .build().verify(token);
     }
