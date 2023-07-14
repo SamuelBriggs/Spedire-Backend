@@ -15,11 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-<<<<<<< HEAD
-//import static com.spedire.Spedire.AppUtils.SecurityUtils.JWT_SIGNING_SECRET;
-=======
+
 //import static com.spedire.Spire.AppUtils.SecurityUtils.JWT_SIGNING_SECRET;
->>>>>>> 181dcc0b515128c01be6a4fd393d4635d2185536
+
 
 @AllArgsConstructor
 @Configuration
@@ -64,22 +62,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(c->c.requestMatchers( "/api/user/welcome", "/api/v1/user/verify-number").permitAll())
 
                 .authorizeHttpRequests(c->c.requestMatchers( "matchOrder", "acceptOrder").permitAll()).
-<<<<<<< HEAD
-                authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
-
-                        hasAnyAuthority(String.valueOf(Role.ADMIN), Role.SENDER.name()))
-
-                .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
-                authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
-                        hasAnyRole("ADMIN", "NEW_USER")).
-=======
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser", "/api/v1/user/updateProfile" ).
-                        hasAnyAuthority(String.valueOf(Role.SENDER), Role.USER.name()))
+                        hasAnyAuthority(String.valueOf(Role.SENDER), Role.NEW_USER.name()))
 
                 .authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/verify-otp","/api/v1/user/buildToken", "/api/v1/user/register").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "a").
-                        hasAnyRole("ADMIN", "USER", "SENDER")).
->>>>>>> 181dcc0b515128c01be6a4fd393d4635d2185536
+                        hasAnyRole("ADMIN", "NEW_USER", "SENDER")).
 
                 build();
 
