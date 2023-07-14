@@ -43,6 +43,7 @@ private OtpRepository otpRepository;
 @Test
 public void verifyOtpTest(){
 
+    OtpVerificationRequest request = new OtpVerificationRequest();
     String otp ="187";
     String token ="Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODkyNTQ4MTAsImV4cCI6MTY4OTM3NDgxMCwicGhvbmVOdW1iZXIiOiIwOTA1MTI0MzEzMyIsIlJvbGVzIjp7InJvbGUiOiJ1c2VyIn19.1UCFcRtqX1yFYpwP0nVQPXElWkQeqqdYfeQTePQO0nvOPoiobqOlZiiLKrxZaWlvrbwflC9rigyIBICmkl2V0w";
     var response = smsService.verifySmsOtp(token, otp);

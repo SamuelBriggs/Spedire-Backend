@@ -110,7 +110,6 @@ public class SpedireUserService implements UserService {
         User user = new User();
         user.setPhoneNumber(phoneNumber);
         user.setRoles(new HashSet<>());
-
         //  user.getRoles().add(NEW_USER);
         user.getRoles().add(NEW_USER);
         var savedUser =userRepository.save(user);
