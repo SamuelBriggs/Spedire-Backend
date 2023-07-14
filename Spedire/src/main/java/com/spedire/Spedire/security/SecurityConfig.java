@@ -63,9 +63,9 @@ public class SecurityConfig {
                 .addFilterBefore(authorizationFilter, SpedireAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
-                .authorizeHttpRequests(c->c.requestMatchers( "/api/user/welcome").permitAll())
+                .authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/upgrade").hasAnyAuthority(Role.SENDER.name(), Role.USER.name()))
 
-                .authorizeHttpRequests(c->c.requestMatchers( "matchOrder", "acceptOrder", "/api/v1/user/upgrade").permitAll()).
+                .authorizeHttpRequests(c->c.requestMatchers( "matchOrder", "acceptOrder").permitAll()).
                 authorizeHttpRequests(c->c.requestMatchers( "/api/v1/user/getCurrentUser" ).
                         hasAnyAuthority(String.valueOf(Role.SENDER), Role.USER.name()))
 
