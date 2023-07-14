@@ -15,7 +15,6 @@ import com.github.fge.jsonpatch.ReplaceOperation;
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.DashBoardDto;
-import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
@@ -29,7 +28,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

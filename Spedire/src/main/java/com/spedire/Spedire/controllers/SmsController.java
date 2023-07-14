@@ -20,7 +20,6 @@ public class SmsController {
 
     @PostMapping("/verify-number")
     public ResponseEntity<SendSmsResponse> verifyPhoneNumber(@RequestBody VerifyPhoneNumberRequest request){
-        System.out.println("It got here" + request.getPhoneNumber());
         try{
             SendSmsResponse response =smsService.sendSms(request.getPhoneNumber());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
