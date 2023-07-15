@@ -16,6 +16,7 @@ import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.OrderRepository;
 import com.spedire.Spedire.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class SpedireOrderService implements OrderService {
     private final OrderRepository orderRepository;
 
@@ -35,13 +37,17 @@ public class SpedireOrderService implements OrderService {
 
     @Override
     public ApiResponse<?> acceptOrder(AcceptOrderRequest acceptOrderRequest) throws SpedireException {
+        log.info("In the acceptOrder service");
         Optional<Order> foundOrder = orderRepository.findById(acceptOrderRequest.getOrderId());
         Order order = foundOrder.get();
         order.setAccepted(true);
-        String senderId = order.getSenderId();
+        String senderId = foundOrder.get().getSenderId();
+        String carrierId = foundOrder.get().getCarrierId();
+        log.info("senderId: " + senderId);
+        log.info("carrierId: " + carrierId);
         Optional<User> foundSender = userRepository.findById(senderId);
         User sender = foundSender.get();
-        Optional<User> foundCarrier = userRepository.findById(acceptOrderRequest.getCarrierId());
+        Optional<User> foundCarrier = userRepository.findById(carrierId);
         User carrier = foundCarrier.get();
         sender.setMatchedUserDTO(MatchedUserDto.builder().carrierName(carrier.getFirstName())
                 .carrierPhoneNumber(carrier.getPhoneNumber()).build());
@@ -80,7 +86,7 @@ public class SpedireOrderService implements OrderService {
         });
 
 
-      var response =  orderList.stream().map(order -> convertFromOrderToOrderListDto(order)).toList();
+      var response =  orderList.stream().map(this::convertFromOrderToOrderListDto).toList();
 
       if(orderList.size() > 0){
           return ApiResponse.builder().message("Matching Orders Fetched Successfully").data(response).success(true).build();
@@ -108,9 +114,6 @@ public class SpedireOrderService implements OrderService {
                 senderPhoneNumber(order.getPickUp().getPhoneNumber()).
                 currentLocationStreetName(order.getPickUp().getCurrentLocation().getStreetName()).
                 destinationStreetName(order.getDestination().getReceiverLocation().getStreetName()).destinationLandmark(order.getDestination().getReceiverLocation().getLandMark()).build();
-
-
-
 
     }
 }

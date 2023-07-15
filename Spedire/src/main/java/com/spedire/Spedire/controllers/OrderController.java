@@ -37,7 +37,9 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @PostMapping("/acceptOrder")
-        public ResponseEntity<?> acceptOrder(@RequestBody AcceptOrderRequest acceptOrderRequest) throws SpedireException {
+        public ResponseEntity<?> acceptOrder(@RequestBody AcceptOrderRequest acceptOrderRequest)
+            throws SpedireException {
+        log.info("In the acceptOrder controller");
         var response = orderService.acceptOrder(acceptOrderRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
