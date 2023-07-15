@@ -1,31 +1,23 @@
 package com.spedire.Spedire.security;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.Role;
 import com.spedire.Spedire.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.security.core.GrantedAuthority;
-
 import org.springframework.beans.factory.annotation.Value;
-
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
 import static com.spedire.Spedire.utils.EmailConstants.JWT_SECRET;
+
 
 @AllArgsConstructor
 @Getter

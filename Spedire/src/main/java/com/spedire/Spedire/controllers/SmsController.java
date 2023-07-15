@@ -47,7 +47,7 @@ public class SmsController {
         try{
             SendSmsResponse response =smsService.resendOtp(token);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }catch (PhoneNumberNotVerifiedException | com.spedire.Spedire.Exception.SpedireException | SpedireException exception ){
+        }catch (PhoneNumberNotVerifiedException | SpedireException exception ){
             return ResponseEntity.badRequest().body( SendSmsResponse.builder().message(exception.getMessage()).build());
         }
     }

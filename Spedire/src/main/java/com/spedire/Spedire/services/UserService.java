@@ -1,4 +1,5 @@
 package com.spedire.Spedire.services;
+import com.github.fge.jackson.jsonpointer.JsonPointerException;
 import com.spedire.Spedire.dtos.request.ForgotPasswordRequest;
 import com.spedire.Spedire.dtos.request.PasswordResetRequest;
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
@@ -38,7 +39,7 @@ public interface UserService {
 
     ApiResponse<?> getCurrentUser(String userId) throws SpedireException;
 
-    ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest) throws SpedireException, IllegalAccessException;
+    ApiResponse<?> updateUserDetails(String id, UpdateUserRequest updateUserRequest) throws SpedireException, IllegalAccessException, JsonPointerException;
 
 
 }

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
+//@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegistrationResponse {
 
@@ -16,4 +16,5 @@ public class RegistrationResponse {
     private String message;
     private boolean success;
     private String data;
+
 }

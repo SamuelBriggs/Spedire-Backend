@@ -2,15 +2,13 @@ package com.spedire.Spedire.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.spedire.Spedire.Exception.SpedireException;
+import com.spedire.Spedire.exceptions.SpedireException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Map;
-
-import static com.spedire.Spedire.utils.Constants.CLOUDINARY_IMAGE_URL;
+import java.util.Map;;import static com.spedire.Spedire.utils.EmailConstants.CLOUDINARY_IMAGE_URL;
 
 
 @Service

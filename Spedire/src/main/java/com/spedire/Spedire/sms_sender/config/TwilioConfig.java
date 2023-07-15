@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
-import static com.spedire.Spedire.utils.Constants.*;
+import static com.spedire.Spedire.utils.EmailConstants.*;
 
 @AllArgsConstructor
 @Getter

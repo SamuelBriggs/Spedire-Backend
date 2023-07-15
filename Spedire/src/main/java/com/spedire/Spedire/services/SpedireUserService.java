@@ -2,7 +2,7 @@ package com.spedire.Spedire.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-<<<<<<< HEAD
+
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.spedire.Spedire.dtos.request.*;
@@ -22,7 +22,7 @@ import com.spedire.Spedire.exceptions.EmailNotFoundException;
 import com.spedire.Spedire.exceptions.PasswordDoesNotMatchException;
 import com.spedire.Spedire.services.templates.ResetPasswordEmailTemplate;
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
-=======
+
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,13 +36,12 @@ import com.github.fge.jsonpatch.ReplaceOperation;
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.DashBoardDto;
->>>>>>> ec4de2c98445776248af365f1a3a381f4cbdcf7d
+
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.Role;
 import com.spedire.Spedire.models.User;
 import com.spedire.Spedire.repositories.UserRepository;
 import com.spedire.Spedire.security.JwtUtils;
-import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -61,7 +60,6 @@ import java.util.stream.Collectors;
 
 import static com.spedire.Spedire.models.Role.NEW_USER;
 import static com.spedire.Spedire.models.Role.SENDER;
-<<<<<<< HEAD
 import static com.spedire.Spedire.services.TokenService.generateToken;
 import static com.spedire.Spedire.utils.AppUtils.*;
 import static com.spedire.Spedire.utils.AppUtils.NOT_FOUND;
@@ -72,14 +70,9 @@ import static com.spedire.Spedire.utils.EmailConstants.*;
 import static com.spedire.Spedire.utils.EmailConstants.FRONTEND_BASE_URL;
 import static com.spedire.Spedire.utils.ResponseUtils.*;
 import static com.spedire.Spedire.utils.ResponseUtils.PASSWORD_RESET_LINK_SENT_SUCCESSFULLY;
-=======
-import static com.spedire.Spedire.sms_sender.utils.AppUtils.PHONE_NOT_VALID;
-import static com.spedire.Spedire.utils.Constants.*;
+import static com.spedire.Spedire.sms_sender.utils.AppUtils.PHONE_NOT_VALID;;
 import static com.spedire.Spedire.utils.ExceptionUtils.*;
-import static com.spedire.Spedire.utils.ResponseUtils.*;
 import static java.time.Instant.now;
-
->>>>>>> ec4de2c98445776248af365f1a3a381f4cbdcf7d
 
 @Service
 @AllArgsConstructor
@@ -89,29 +82,24 @@ public class SpedireUserService implements UserService {
     private final EmailService mailService;
     private final CloudService cloudService;
     private final PasswordEncoder passwordEncoder;
-<<<<<<< HEAD
-    private final JwtUtil jwtUtil;
-
-=======
     private final JwtUtils jwtUtil;
->>>>>>> ec4de2c98445776248af365f1a3a381f4cbdcf7d
+
     public static VerifyEmailTemplate verifyEmailTemplate = new VerifyEmailTemplate();
     private static ResetPasswordEmailTemplate resetPasswordEmailTemplate = new ResetPasswordEmailTemplate();
 
-    @Override
-<<<<<<< HEAD
-    public RegistrationResponse register(RegistrationRequest request) throws SpedireException {
-        User user = new User();
-        checkUserExistence(request.getEmail());
-        validateRegistrationRequest(request);
-        buildRegisterRequest(request, user);
-        var savedUser = userRepository.save(user);
-        SendEmailRequest emailRequest = buildRegistrationEmailRequest(savedUser);
-        mailService.sendMail(emailRequest);
-        return buildRegisterResponse(savedUser.getId());
-=======
-    public ApiResponse<?> register(String aToken, RegistrationRequest registrationRequest)
-            throws SpedireException {
+//    @Override
+//    public RegistrationResponse register(RegistrationRequest request) throws SpedireException {
+//        User user = new User();
+//        checkUserExistence(request.getEmail());
+//        validateRegistrationRequest(request);
+//        buildRegisterRequest(request, user);
+//        var savedUser = userRepository.save(user);
+//        SendEmailRequest emailRequest = buildRegistrationEmailRequest(savedUser);
+//        mailService.sendMail(emailRequest);
+//        return buildRegisterResponse(savedUser.getId());
+//    }
+
+    public ApiResponse<?> register(String aToken, RegistrationRequest registrationRequest) throws SpedireException {
         String token = aToken.split(" ")[1];
         DecodedJWT decodedJWT = jwtUtil.verifyToken(token);
         String phoneNumber = decodedJWT.getClaim("phoneNumber").asString();
@@ -120,14 +108,16 @@ public class SpedireUserService implements UserService {
         validateRegistrationRequest(registrationRequest);
         var builtUser = buildRegistrationRequest(registrationRequest, foundUser);
         var savedUser = userRepository.save(builtUser);
-
       //  mailService.sendMail(buildEmailRequest(savedUser));
-
        var generatedToken =  jwtUtil.generateAccessToken(savedUser, SENDER);
      //   mailService.sendMail(buildEmailRequest(savedUser));
         String newToken = generateJwtToken(savedUser);
         return ApiResponse.builder().message(USER_REGISTRATION_SUCCESSFUL).success(true).data(generatedToken).build();
+    }
 
+    @Override
+    public RegistrationResponse checkUserExistence(String request) throws SpedireException {
+        return null;
     }
 
     private User buildRegistrationRequest(RegistrationRequest registrationRequest, User foundUser) {
@@ -139,6 +129,7 @@ public class SpedireUserService implements UserService {
         foundUser.setCreatedAt(LocalDateTime.now());
         return foundUser;
     }
+
     private String generateJwtToken(User registrationResponse) {
         List<String> rolesList = registrationResponse.getRoles()
                 .stream()
@@ -158,7 +149,6 @@ public class SpedireUserService implements UserService {
         User existingUser = userRepository.findByEmail(email);
         if (existingUser == null) throw new SpedireException(EMAIL_NOT_FOUND);
         return existingUser;
->>>>>>> ec4de2c98445776248af365f1a3a381f4cbdcf7d
     }
 
     @Override
@@ -189,7 +179,6 @@ public class SpedireUserService implements UserService {
     }
 
     @Override
-<<<<<<< HEAD
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest forgotPasswordRequest) throws SpedireException {
         String emailAddress = forgotPasswordRequest.getEmailAddress();
         User user = userRepository.findByEmail(emailAddress);
@@ -212,7 +201,7 @@ public class SpedireUserService implements UserService {
         String token = passwordResetRequest.getToken();
         String newPassword = passwordResetRequest.getNewPassword();
         validatePasswordMatch(passwordResetRequest);
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtUtil.secret().getBytes()))
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtUtil.getSecret().getBytes()))
                 .build().verify(token);
         if (decodedJWT == null) throw new PasswordResetFailedException(PASSWORD_RESET_FAILED);
         Claim claim = decodedJWT.getClaim(ID);
@@ -244,6 +233,7 @@ public class SpedireUserService implements UserService {
         user.setRoles(Collections.singleton(SENDER));
     }
 
+
     private static RegistrationResponse buildRegisterResponse(String userId) {
         RegistrationResponse response = new RegistrationResponse();
         response.setMessage(USER_REGISTRATION_SUCCESSFUL);
@@ -253,8 +243,10 @@ public class SpedireUserService implements UserService {
 
 
     public SendEmailRequest buildRegistrationEmailRequest(User user) throws SpedireException {
-        String token = generateToken(user, jwtUtil.secret());
-=======
+        String token = generateToken(user, jwtUtil.getSecret());
+        return null;
+    }
+
     public User findByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber);
     }
@@ -274,7 +266,6 @@ public class SpedireUserService implements UserService {
     }
 
     public SendEmailRequest buildEmailRequest(User user) throws SpedireException {
->>>>>>> ec4de2c98445776248af365f1a3a381f4cbdcf7d
         SendEmailRequest request = new SendEmailRequest();
         Sender sender = new Sender(APP_NAME, APP_EMAIL);
         Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
@@ -286,9 +277,9 @@ public class SpedireUserService implements UserService {
         return request;
     }
 
-<<<<<<< HEAD
+
     public SendEmailRequest buildResetPasswordEmailRequest(User user) throws SpedireException {
-        String token = generateToken(user, jwtUtil.secret());
+        String token = generateToken(user, jwtUtil.getSecret());
         SendEmailRequest request = new SendEmailRequest();
         Sender sender = new Sender(APP_NAME, APP_EMAIL);
         Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
@@ -301,8 +292,7 @@ public class SpedireUserService implements UserService {
         return request;
     }
 
-=======
->>>>>>> ec4de2c98445776248af365f1a3a381f4cbdcf7d
+
     private void validateRegistrationRequest(RegistrationRequest request) throws SpedireException {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -313,13 +303,14 @@ public class SpedireUserService implements UserService {
             for (ConstraintViolation<RegistrationRequest> violation : violations) {
                 errorMessages.add(violation.getMessage());
             }
-
             throw new SpedireException("Validation error: " + String.join(", ", errorMessages));
         }
     }
+
+
     @Override
     public ApiResponse<?> updateUserDetails(String aToken, UpdateUserRequest updateUserRequest)
-            throws SpedireException, JsonPointerException, IllegalAccessException {
+            throws SpedireException, IllegalAccessException, JsonPointerException {
         String token = aToken.split(" ")[1];
         DecodedJWT decodedJWT = jwtUtil.verifyToken(token);
         Optional<User> foundUser = userRepository.
@@ -356,7 +347,7 @@ public class SpedireUserService implements UserService {
     }
 
     private void uploadImage(MultipartFile image, User user) throws SpedireException,
-            IOException, com.spedire.Spedire.Exception.SpedireException {
+            IOException {
         String imageUrl = cloudService.upload(image.getBytes());
         user.setProfileImage(imageUrl);
     }
@@ -399,6 +390,7 @@ public class SpedireUserService implements UserService {
         }
         return new JsonPatch(operations);
     }
+
     private String updateJwtToken(User registrationResponse) {
         List<String> rolesList = registrationResponse.getRoles()
                 .stream()
@@ -412,6 +404,5 @@ public class SpedireUserService implements UserService {
                 .withClaim("phoneNumber", registrationResponse.getPhoneNumber())
                 .sign(Algorithm.HMAC512(jwtUtil.getSecret().getBytes()));
     }
-
 
 }

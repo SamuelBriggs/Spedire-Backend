@@ -3,12 +3,8 @@ package com.spedire.Spedire.sms_sender.dtos.request.sms_service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
-<<<<<<< HEAD:Spedire/src/main/java/com/spedire/Spedire/sms_sender/dtos/request/sms_service/SmsServiceImpl.java
-=======
-import com.spedire.Spedire.Exception.SpedireException;
 import com.spedire.Spedire.OtpConfig.dtos.response.OtpResponse;
 import com.spedire.Spedire.OtpConfig.exceptions.OtpException;
->>>>>>> ec4de2c98445776248af365f1a3a381f4cbdcf7d:Spedire/src/main/java/com/spedire/Spedire/sms_sender/sms_service/SmsServiceImpl.java
 import com.spedire.Spedire.OtpConfig.exceptions.PhoneNumberNotVerifiedException;
 import com.spedire.Spedire.OtpConfig.services.OtpService;
 import com.spedire.Spedire.dtos.response.ApiResponse;
@@ -34,12 +30,6 @@ import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFICATION
 import static com.spedire.Spedire.OtpConfig.utils.ResponseUtils.OTP_VERIFIED_SUCCESSFULLY;
 import static com.spedire.Spedire.sms_sender.utils.AppUtils.*;
 import static com.spedire.Spedire.sms_sender.utils.ResponseUtils.*;
-<<<<<<< HEAD:Spedire/src/main/java/com/spedire/Spedire/sms_sender/dtos/request/sms_service/SmsServiceImpl.java
-import static com.spedire.Spedire.utils.EmailConstants.ZERO_STRING;
-=======
-import static com.spedire.Spedire.utils.Constants.USER;
-import static com.spedire.Spedire.utils.Constants.ZERO_STRING;
->>>>>>> ec4de2c98445776248af365f1a3a381f4cbdcf7d:Spedire/src/main/java/com/spedire/Spedire/sms_sender/sms_service/SmsServiceImpl.java
 import static com.spedire.Spedire.utils.ResponseUtils.USER_ALREADY_EXIST;
 import static java.time.Instant.now;
 
@@ -111,7 +101,7 @@ public class SmsServiceImpl implements SmsService {
                 .setCode(otp)
                 .create();
                 if (verification.getStatus().equals(OTP_VALIDATION_STATUS)) {
-           ApiResponse<?> newUser= userService.saveNewUser(ZERO_STRING+phone);
+           ApiResponse<?> newUser= userService.saveNewUser(phone);
             return SendSmsResponse.builder().message(OTP_VERIFIED_SUCCESSFULLY).success(true).build();
 
         } else {
