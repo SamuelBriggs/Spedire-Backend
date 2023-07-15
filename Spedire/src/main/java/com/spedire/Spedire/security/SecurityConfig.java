@@ -70,8 +70,8 @@ public class SecurityConfig {
                         hasAnyAuthority(String.valueOf(Role.ADMIN), Role.SENDER.name()))
 
                 .authorizeHttpRequests(c->c.requestMatchers("/api/v1/user/**", "/api/v1/user/verify-otp").permitAll()).
-                authorizeHttpRequests(c->c.requestMatchers( "/api/user/detail").
-                        hasAnyRole("ADMIN", "NEW_USER")).
+                authorizeHttpRequests(c->c.requestMatchers( "/api/v1/order/matchOrder", "/api/v1/order/acceptOrder").
+                        hasAuthority( Role.CARRIER.name())).
 
                 build();
 
