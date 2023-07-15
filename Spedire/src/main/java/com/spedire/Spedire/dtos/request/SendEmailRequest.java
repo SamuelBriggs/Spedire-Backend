@@ -17,9 +17,9 @@ import static com.spedire.Spedire.utils.EmailConstants.*;
 public class SendEmailRequest {
 
     @JsonProperty(SENDER)
-    private Sender sender;
+    private MailSender sender;
     @JsonProperty(TO)
-    private Set<Recipient> recipients;
+    private Set<EmailRecipient> recipients;
     @JsonProperty(SUBJECT)
     private String subject;
     @JsonProperty(HTML_CONTENT_VALUE)

@@ -5,23 +5,32 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spedire.Spedire.dtos.request.AcceptOrderRequest;
 import com.spedire.Spedire.dtos.request.DeliveryRequestDTO;
+import com.spedire.Spedire.dtos.request.SaveOrderRequest;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.MatchedUserDto;
 import com.spedire.Spedire.dtos.response.OrderListDtoResponse;
 import com.spedire.Spedire.exceptions.SpedireException;
-import com.spedire.Spedire.models.Address;
-import com.spedire.Spedire.models.Order;
-import com.spedire.Spedire.models.Request;
-import com.spedire.Spedire.models.User;
+import com.spedire.Spedire.models.*;
 import com.spedire.Spedire.repositories.OrderRepository;
 import com.spedire.Spedire.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.spedire.Spedire.utils.AppUtils.ORDER_PROCESSED;
 
 @AllArgsConstructor
 @Service
@@ -32,8 +41,9 @@ public class SpedireOrderService implements OrderService {
     private final UserService userService;
     private final DeliveryRequestService deliveryRequestService;
     private final UserRepository userRepository;
-
+    private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Override
     public ApiResponse<?> acceptOrder(AcceptOrderRequest acceptOrderRequest) throws SpedireException {
@@ -74,8 +84,8 @@ public class SpedireOrderService implements OrderService {
 
         List<Order> orderList = new ArrayList<>();
       for(Order order: unPairedOrders){
-          if (order.getDestination().getReceiverLocation().getCity().
-                  equals(newDestinationCity)  && order.getPickUp().getCurrentLocation().getCity().
+          if (order.getReceiverDestination().getReceiverDestination().getCity().
+                  equals(newDestinationCity)  && order.getPickUpLocation().getCurrentLocation().getCity().
                   equals(newCurrentCity)) orderList.add(order);
       }
 
@@ -95,6 +105,44 @@ public class SpedireOrderService implements OrderService {
       return ApiResponse.builder().message("No Found Match Currently").success(false).data(response).build();
     }
 
+    @Override
+    public ApiResponse<?> saveOrder(SaveOrderRequest saveOrderRequest, String senderId) throws  ParseException {
+        BigDecimal cost = new BigDecimal(saveOrderRequest.getCostOfItem());
+        Date date = dateConverter(saveOrderRequest);
+        LocalTime time = timeConverter(saveOrderRequest);
+        PickUp pickUp = modelMapper.map(saveOrderRequest, PickUp.class);
+        Reciever reciever = modelMapper.map(saveOrderRequest, Reciever.class);
+
+        Order order = new Order();
+        order.setPickUpLocation(pickUp);
+        order.setReceiverDestination(reciever);
+        order.setCostOfDelivery(cost);
+        order.setReceiverName(saveOrderRequest.getReceiverName());
+        order.setDescription(saveOrderRequest.getDescription());
+        order.setDueDate(date);
+        order.setDueTime(time);
+        order.setType(ItemType.valueOf(saveOrderRequest.getItemType()));
+        order.setCreatedAt(LocalDateTime.now());
+        order.setSenderId(senderId);
+        orderRepository.save(order);
+        return ApiResponse.builder().message(ORDER_PROCESSED).success(true).data("").build();
+    }
+
+    private static LocalTime timeConverter(SaveOrderRequest saveOrderRequest) {
+        String timeString = saveOrderRequest.getDueTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:a");
+        LocalTime time = LocalTime.parse(timeString, formatter);
+        return time;
+    }
+
+    private static Date dateConverter(SaveOrderRequest saveOrderRequest) throws ParseException {
+        String date = saveOrderRequest.getDueDate();
+        String format = "mm/dd/yyyy";
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        Date newDate = dateFormat.parse(date);
+        return newDate;
+    }
+
     private static Request buildDeliveryRequest(DeliveryRequestDTO deliveryRequestDTO) {
         return Request.builder().
                 currentLocation(Address.builder().
@@ -109,11 +157,10 @@ public class SpedireOrderService implements OrderService {
                         streetName(deliveryRequestDTO.getDestinationStreetName()).build()).build();
     }
     private OrderListDtoResponse convertFromOrderToOrderListDto(Order order){
-      return   OrderListDtoResponse.builder().senderName(order.getPickUp().getSenderName()).orderId(order.getId()).senderName(
-                order.getPickUp().getSenderName()).senderId(order.getSenderId()).
-                senderPhoneNumber(order.getPickUp().getPhoneNumber()).
-                currentLocationStreetName(order.getPickUp().getCurrentLocation().getStreetName()).
-                destinationStreetName(order.getDestination().getReceiverLocation().getStreetName()).destinationLandmark(order.getDestination().getReceiverLocation().getLandMark()).build();
-
+      return   OrderListDtoResponse.builder().senderName(order.getPickUpLocation().getSenderName()).orderId(order.getId()).senderName(
+                order.getPickUpLocation().getSenderName()).senderId(order.getSenderId()).
+                senderPhoneNumber(order.getPickUpLocation().getPickPhoneNumber()).
+                currentLocationStreetName(order.getPickUpLocation().getCurrentLocation().getStreetName()).
+                destinationStreetName(order.getReceiverDestination().getReceiverDestination().getStreetName()).destinationLandmark(order.getReceiverDestination().getReceiverDestination().getLandMark()).build();
     }
 }

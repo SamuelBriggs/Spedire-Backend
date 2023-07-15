@@ -11,10 +11,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PickUp {
     @Id
     private String id;
-
     private Address currentLocation;
-
     private String senderName;
+    private String pickHouseNumber;
+    private String pickUpStreetName;
+    private String pickPhoneNumber;
+    private String pickBusStop;
+    private String pickUpLandmark;
 
-    private String phoneNumber;
 }

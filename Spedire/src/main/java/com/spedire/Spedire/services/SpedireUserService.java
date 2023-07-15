@@ -8,22 +8,17 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.spedire.Spedire.dtos.request.*;
 import com.spedire.Spedire.dtos.response.ForgotPasswordResponse;
 import com.spedire.Spedire.dtos.response.PasswordResetResponse;
-import com.spedire.Spedire.dtos.request.Recipient;
+import com.spedire.Spedire.dtos.request.EmailRecipient;
 import com.spedire.Spedire.dtos.request.RegistrationRequest;
 import com.spedire.Spedire.dtos.request.SendEmailRequest;
-import com.spedire.Spedire.dtos.request.Sender;
+import com.spedire.Spedire.dtos.request.MailSender;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.RegistrationResponse;
 import com.spedire.Spedire.exceptions.EmailNotFoundException;
 import com.spedire.Spedire.exceptions.PasswordResetFailedException;
-import com.spedire.Spedire.dtos.request.*;
-import com.spedire.Spedire.dtos.response.*;
-import com.spedire.Spedire.exceptions.EmailNotFoundException;
-import com.spedire.Spedire.exceptions.PasswordDoesNotMatchException;
 import com.spedire.Spedire.services.templates.ResetPasswordEmailTemplate;
 import com.spedire.Spedire.services.templates.VerifyEmailTemplate;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -33,8 +28,6 @@ import com.github.fge.jackson.jsonpointer.JsonPointerException;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchOperation;
 import com.github.fge.jsonpatch.ReplaceOperation;
-import com.spedire.Spedire.dtos.request.*;
-import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.DashBoardDto;
 
 import com.spedire.Spedire.exceptions.SpedireException;
@@ -267,8 +260,8 @@ public class SpedireUserService implements UserService {
 
     public SendEmailRequest buildEmailRequest(User user) throws SpedireException {
         SendEmailRequest request = new SendEmailRequest();
-        Sender sender = new Sender(APP_NAME, APP_EMAIL);
-        Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
+        MailSender sender = new MailSender(APP_NAME, APP_EMAIL);
+        EmailRecipient recipient = new EmailRecipient(user.getFirstName(), user.getEmail());
         request.setSender(sender);
         request.setRecipients(Set.of(recipient));
         request.setSubject(ACTIVATION_LINK_VALUE);
@@ -281,8 +274,8 @@ public class SpedireUserService implements UserService {
     public SendEmailRequest buildResetPasswordEmailRequest(User user) throws SpedireException {
         String token = generateToken(user, jwtUtil.getSecret());
         SendEmailRequest request = new SendEmailRequest();
-        Sender sender = new Sender(APP_NAME, APP_EMAIL);
-        Recipient recipient = new Recipient(user.getFirstName(), user.getEmail());
+        MailSender sender = new MailSender(APP_NAME, APP_EMAIL);
+        EmailRecipient recipient = new EmailRecipient(user.getFirstName(), user.getEmail());
         request.setSender(sender);
         request.setRecipients(Set.of(recipient));
         request.setSubject(PASSWORD_REST_VALUE);

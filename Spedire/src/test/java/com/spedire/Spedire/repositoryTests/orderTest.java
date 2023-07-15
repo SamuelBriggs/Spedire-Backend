@@ -1,7 +1,7 @@
 //package com.spedire.Spedire.repositoryTests;
 //
 //import com.spedire.Spedire.models.Address;
-//import com.spedire.Spedire.models.Destination;
+//import com.spedire.Spedire.models.Reciever;
 //import com.spedire.Spedire.models.Order;
 //import com.spedire.Spedire.models.PickUp;
 //import com.spedire.Spedire.repositories.OrderRepository;
@@ -22,9 +22,9 @@
 //        Address address_a = new Address();
 //        address_a.setCity("Yaba");
 //        address_a.setStreetName("Herbert Macaulay");
-//        Destination destination = new Destination();
+//        Reciever destination = new Reciever();
 //        destination.setReceiverName("Joshua");
-//        destination.setReceiverLocation(address_a);
+//        destination.getReceiverDestination(address_a);
 //
 //        Address address_b = new Address();
 //        address_b.setCity("Ikeja");
@@ -35,8 +35,8 @@
 //        pickUp.setPhoneNumber("09051243133");
 //
 //        Order order = new Order();
-//        order.setPickUp(pickUp);
-//        order.setDestination(destination);
+//        order.setPickUpLocation(pickUp);
+//        order.setReceiverDestination(destination);
 //        order.setCreatedAt(LocalDateTime.now().plusDays(70L));
 //        order.setDescription("Clothing");
 //
@@ -44,7 +44,7 @@
 //        Address address1_a = new Address();
 //        address1_a.setCity("Yaba");
 //        address1_a.setStreetName("Herbert Macaulay");
-//        Destination destination1 = new Destination();
+//        Reciever destination1 = new Reciever();
 //        destination1.setReceiverName("Renike");
 //        destination1.setReceiverLocation(address1_a);
 //
@@ -57,17 +57,15 @@
 //        pickUp1.setPhoneNumber("09051243133");
 //
 //        Order order1 = new Order();
-//        order1.setPickUp(pickUp1);
-//        order1.setDestination(destination1);
+//        order1.setPickUpLocation(pickUp1);
+//        order1.setReceiverDestination(destination1);
 //        order1.setCreatedAt(LocalDateTime.now().plusDays(500L));
 //        order1.setDescription("Document");
-//
-//
 //
 //        Address address2_a = new Address();
 //        address2_a.setCity("VI");
 //        address2_a.setStreetName("Amodu Tijani");
-//        Destination destination2 = new Destination();
+//        Reciever destination2 = new Reciever();
 //        destination2.setReceiverName("Folahan");
 //        destination2.setReceiverLocation(address2_a);
 //
@@ -80,8 +78,8 @@
 //        pickUp2.setPhoneNumber("09051243133");
 //
 //        Order order2 = new Order();
-//        order2.setPickUp(pickUp2);
-//        order2.setDestination(destination2);
+//        order2.setPickUpLocation(pickUp2);
+//        order2.setReceiverDestination(destination2);
 //        order2.setCreatedAt(LocalDateTime.now().plusDays(2L));
 //        order2.setDescription("Phone Accessories");
 //        order2.setCarrierId("64a96d4af418912106950d5e");
@@ -90,7 +88,7 @@
 //      //   orderRepository.save(order);
 //     //   orderRepository.save(order1);
 //       orderRepository.save(order2);
-//
-//
 //    }
+//
+//
 //}

@@ -1,10 +1,5 @@
 package com.spedire.Spedire.models;
-
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -14,8 +9,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Setter
 @ToString
 @Builder
-
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Address {
+
     @Id
     private String id;
     private String streetName;
@@ -23,4 +20,5 @@ public class Address {
     private String landMark;
     private String state;
     private String city;
+
 }
