@@ -13,7 +13,10 @@ public class AppUtils {
     public static final String TWILO_NUMBER="${twilio.number}";
     public static final String VONAGE_API_KEYS="${nexmo.creds.api-key}";
     public static final String VONAGE_API_SECRETS="${nexmo.creds.secret}";
+    public static final String JWT_SIGNING_SECRET="${jwt.signing.secret}";
     public static final String PHONE_NUMBER_PREFIX="+234";
+
+    public static final String PHONE_NOT_VALID= "User with the provided number dose not exists, Kindly register";
     public static final String SMS_SENT_STATUS="pending";
     public static final String OTP_VALIDATION_STATUS="approved";
     public static  final String OTP_VERIFIED_FAILED= "OTP verification failed";

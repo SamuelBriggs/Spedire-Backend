@@ -3,6 +3,7 @@ package com.spedire.Spedire.security.secureUser;
 import com.spedire.Spedire.models.Role;
 import com.spedire.Spedire.models.User;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 @AllArgsConstructor
+@Slf4j
 public class SpredireSecureUser implements UserDetails {
     private final User user;
     @Override

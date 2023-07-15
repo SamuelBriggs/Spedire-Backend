@@ -32,7 +32,6 @@ public class BrevoEmailService implements EmailService{
                 new RequestEntity<>(emailRequest,httpHeaders, HttpMethod.POST, URI.create(EMAIL_URL));
          ResponseEntity<SendEmailResponse> response =
                 restTemplate.postForEntity(EMAIL_URL, entity, SendEmailResponse.class);
-
         return response.getBody();
     }
 }

@@ -2,6 +2,7 @@ package com.spedire.Spedire.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -12,15 +13,15 @@ import java.time.LocalDateTime;
 @Document
 @Getter
 @Setter
+@ToString
 public class Order {
     @Id
     private String id;
-    private User senderId;
-    private User carrierId;
+    private String senderId;
+    private String carrierId;
     private Payment paymentId;
-    private Address destination;
-    @Field("location")
-    private Location coordinates;
+    private PickUp pickUp;
+    private Destination destination;
     private ItemType type;
     private String description;
     private LocalDateTime createdAt;
@@ -28,6 +29,7 @@ public class Order {
     private LocalDateTime eta;
     private BigDecimal costOfItem;
     private BigDecimal costOfDelivery;
-    private String image;
+    private boolean isAccepted;
+    private boolean isCompleted;
 
 }

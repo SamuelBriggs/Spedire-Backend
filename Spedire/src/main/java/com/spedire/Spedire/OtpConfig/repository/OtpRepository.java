@@ -8,4 +8,6 @@ public interface OtpRepository extends MongoRepository<Otp, String> {
     Otp findByPhoneNumber(String phoneNumber);
 
     void deleteByPhoneNumber(String phoneNumber);
+
+    Otp findByOtpNumber(String otpNumber);
 }

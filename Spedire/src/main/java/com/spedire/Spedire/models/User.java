@@ -1,15 +1,14 @@
 package com.spedire.Spedire.models;
 
 
+import com.spedire.Spedire.dtos.response.MatchedUserDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.MongoId;
-import org.springframework.security.core.userdetails.UserDetails;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -43,14 +42,14 @@ public class User {
 
     private Set<Role> roles;
     private LocalDateTime createdAt;
-//
-//=======
-//    @DBRef
-//    private Role USER;
-//    private LocalDateTime createdAt;
-//    private Set<Role> roles;
-//    private Boolean isConfirmed = false;
-//    private Boolean isVerified = false;
-//>>>>>>> e10467bc7d8031ee3cfb02133d2fff3769db5c0d
+
+    private LocalDateTime updatedAt;
+    private MatchedUserDto matchedUserDTO;
+    private String bvn;
+    private String guarantorName;
+    private String guarantorPhoneNumber;
+    private String noOfItemsSent;
+    private String noOfItemsDelivered;
+    private BigDecimal totalAmountMade;
 
 }
