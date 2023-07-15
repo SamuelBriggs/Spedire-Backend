@@ -1,15 +1,13 @@
 package com.spedire.Spedire.dtos.request;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class SaveOrderRequest {
     private String senderName;
-    private String phoneNumber;
+    private String senderPhoneNumber;
     private String pickUpCity;
     private String pickHouseNumber;
     private String pickBusStop;

@@ -9,6 +9,8 @@ import com.spedire.Spedire.dtos.request.SaveOrderRequest;
 import com.spedire.Spedire.dtos.response.ApiResponse;
 import com.spedire.Spedire.dtos.response.MatchedUserDto;
 import com.spedire.Spedire.dtos.response.OrderListDtoResponse;
+import com.spedire.Spedire.dtos.response.OrderResponse;
+import com.spedire.Spedire.exceptions.InvalidOrderException;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.models.*;
 import com.spedire.Spedire.repositories.OrderRepository;
@@ -30,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static com.spedire.Spedire.utils.AppUtils.INVALID_ORDER;
 import static com.spedire.Spedire.utils.AppUtils.ORDER_PROCESSED;
 
 @AllArgsConstructor
@@ -106,26 +109,73 @@ public class SpedireOrderService implements OrderService {
     }
 
     @Override
-    public ApiResponse<?> saveOrder(SaveOrderRequest saveOrderRequest, String senderId) throws  ParseException {
+    public ApiResponse<?> saveOrder(SaveOrderRequest saveOrderRequest, String senderId) throws ParseException {
+        Order order = buildOrderRequest(saveOrderRequest, senderId);
+        orderRepository.save(order);
+        return ApiResponse.builder().message(ORDER_PROCESSED).success(true).data("").build();
+    }
+
+    private Order buildOrderRequest(SaveOrderRequest saveOrderRequest, String senderId) throws ParseException {
+        Order order = new Order();
         BigDecimal cost = new BigDecimal(saveOrderRequest.getCostOfItem());
         Date date = dateConverter(saveOrderRequest);
         LocalTime time = timeConverter(saveOrderRequest);
+        Address senderAddress = getSenderAddress(saveOrderRequest);
+        Address receiverAddress = getReceiverAddress(saveOrderRequest);
         PickUp pickUp = modelMapper.map(saveOrderRequest, PickUp.class);
         Reciever reciever = modelMapper.map(saveOrderRequest, Reciever.class);
-
-        Order order = new Order();
         order.setPickUpLocation(pickUp);
+        order.getPickUpLocation().setCurrentLocation(senderAddress);
         order.setReceiverDestination(reciever);
+        order.getReceiverDestination().setReceiverDestination(receiverAddress);
         order.setCostOfDelivery(cost);
-        order.setReceiverName(saveOrderRequest.getReceiverName());
-        order.setDescription(saveOrderRequest.getDescription());
         order.setDueDate(date);
         order.setDueTime(time);
+        order.setReceiverName(saveOrderRequest.getReceiverName());
+        order.setDescription(saveOrderRequest.getDescription());
         order.setType(ItemType.valueOf(saveOrderRequest.getItemType()));
         order.setCreatedAt(LocalDateTime.now());
         order.setSenderId(senderId);
-        orderRepository.save(order);
-        return ApiResponse.builder().message(ORDER_PROCESSED).success(true).data("").build();
+        return order;
+    }
+
+    private Address getReceiverAddress(SaveOrderRequest saveOrderRequest) {
+        return Address.builder()
+                .landMark(saveOrderRequest.getReceiverLandmark())
+                .streetName(saveOrderRequest.getReceiverStreetName())
+                .city(saveOrderRequest.getReceiverDestination())
+                .streetNumber(saveOrderRequest.getReceiverHouseNumber())
+                .build();
+    }
+
+    private static Address getSenderAddress(SaveOrderRequest saveOrderRequest) {
+        return Address.builder()
+                .city(saveOrderRequest.getPickUpCity())
+                .streetName(saveOrderRequest.getPickUpStreetName())
+                .landMark(saveOrderRequest.getPickUpLandmark())
+                .streetNumber(saveOrderRequest.getPickHouseNumber())
+                .build();
+    }
+
+    @Override
+    public OrderResponse findOrderById(String id) throws InvalidOrderException {
+        Optional<Order> order = orderRepository.findById(id);
+        Order foundOrder = order.orElseThrow(() -> new InvalidOrderException(INVALID_ORDER));
+        return convertOrderToOrderResponse(foundOrder);
+    }
+
+    private OrderResponse convertOrderToOrderResponse(Order foundOrder) {
+        return OrderResponse.builder()
+                .senderName(foundOrder.getPickUpLocation().getSenderName())
+                .senderPhoneNumber(foundOrder.getPickUpLocation().getSenderPhoneNumber())
+                .location(foundOrder.getPickUpLocation().getCurrentLocation().getCity())
+                .carrierName("")
+                .destination(foundOrder.getReceiverDestination().getReceiverDestination().getCity())
+                .itemType(foundOrder.getType().toString())
+                .destination(foundOrder.getReceiverDestination().getReceiverDestination().getCity())
+                .location(foundOrder.getPickUpLocation().getCurrentLocation().getCity())
+                .orderId(foundOrder.getId())
+                .build();
     }
 
     private static LocalTime timeConverter(SaveOrderRequest saveOrderRequest) {
@@ -159,7 +209,7 @@ public class SpedireOrderService implements OrderService {
     private OrderListDtoResponse convertFromOrderToOrderListDto(Order order){
       return   OrderListDtoResponse.builder().senderName(order.getPickUpLocation().getSenderName()).orderId(order.getId()).senderName(
                 order.getPickUpLocation().getSenderName()).senderId(order.getSenderId()).
-                senderPhoneNumber(order.getPickUpLocation().getPickPhoneNumber()).
+                senderPhoneNumber(order.getPickUpLocation().getSenderPhoneNumber()).
                 currentLocationStreetName(order.getPickUpLocation().getCurrentLocation().getStreetName()).
                 destinationStreetName(order.getReceiverDestination().getReceiverDestination().getStreetName()).destinationLandmark(order.getReceiverDestination().getReceiverDestination().getLandMark()).build();
     }

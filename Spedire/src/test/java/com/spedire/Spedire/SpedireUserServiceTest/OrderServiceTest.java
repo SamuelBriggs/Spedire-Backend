@@ -1,9 +1,10 @@
 package com.spedire.Spedire.SpedireUserServiceTest;
 
 import com.spedire.Spedire.dtos.request.SaveOrderRequest;
+import com.spedire.Spedire.dtos.response.OrderResponse;
+import com.spedire.Spedire.exceptions.InvalidOrderException;
 import com.spedire.Spedire.exceptions.SpedireException;
 import com.spedire.Spedire.services.OrderService;
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,12 @@ public class OrderServiceTest {
     @BeforeEach
     void setUp() {
         saveOrderRequest.setSenderName("Michael Ike Joshua");
-        saveOrderRequest.setPhoneNumber("07069310006");
+        saveOrderRequest.setSenderPhoneNumber("07069310006");
         saveOrderRequest.setDescription("I am sending 5 pairs of shoe and 100 pieces of necklace");
         saveOrderRequest.setImage("Michael Image");
         saveOrderRequest.setDueTime("09:00:PM");
         saveOrderRequest.setReceiverName("Prince of Dubai");
+        saveOrderRequest.setReceiverPhoneNumber("0909383748723");
         saveOrderRequest.setItemType("FASHION");
         saveOrderRequest.setCostOfItem("50000");
         saveOrderRequest.setWeight("50kg");
@@ -44,6 +46,13 @@ public class OrderServiceTest {
         saveOrderRequest.setPickBusStop("Eko Hotel");
         saveOrderRequest.setPickHouseNumber("87");
         saveOrderRequest.setPickUpStreetName("John Jones");
+    }
+
+    @Test
+    void findOrderByIdTest() throws InvalidOrderException {
+        OrderResponse response = orderService.findOrderById("64b2d6e92235ac715cd9295d");
+        System.out.println(response);
+        assertThat(response).isNotNull();
     }
 
 

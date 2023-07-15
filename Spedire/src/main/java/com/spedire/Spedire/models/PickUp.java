@@ -13,10 +13,5 @@ public class PickUp {
     private String id;
     private Address currentLocation;
     private String senderName;
-    private String pickHouseNumber;
-    private String pickUpStreetName;
-    private String pickPhoneNumber;
-    private String pickBusStop;
-    private String pickUpLandmark;
-
+    private String senderPhoneNumber;
 }

@@ -16,11 +16,5 @@ public class Reciever {
     private String id;
     private Address receiverDestination;
     private String receiverName;
-    private String receiverBusStop;
     private String receiverPhoneNumber;
-    private String receiverStreetName;
-    private String receiverHouseNumber;
-    private String receiverLandmark;
-
-
 }
